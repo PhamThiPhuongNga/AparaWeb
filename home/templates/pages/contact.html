@@ -1,0 +1,53 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Liên hệ{% endblock %}
+{% block content %}
+<div class="light-page">
+    <div id="wrap">
+        <section id="contact-form-map" class="pt-150 pb-150 light">
+            <div class="container">
+                <div class="row flex-md-vmiddle">
+                    <div class="col-md-5">
+                        <h2 class="mb-50">Liên hệ</h2>
+                        <div class="add-contact">
+                            <ul class="info-list clearfix">
+                                <li>
+                                    <i class="flaticon-telephone"></i>
+                                    <p class="text-color">Hotline:<br><a href="tel:0942874647">0942.874.647</a></p>
+                                </li>
+                                <li>
+                                    <i class="flaticon-email"></i>
+                                    <p class="text-color">Email:<br><a href="congtypcccthienminh@gmail.com">congtypcccthienminh@gmail.com</a></p>
+                                </li>
+                                <li>
+                                    <i class="flaticon-pin"></i>
+                                    <p class="text-color">Địa chỉ:</p><p>số 20/C43 Khu đô thị mới hai bên đường Lê Trọng Tấn, P Dương Nội, Q.Hà Đông,TP.Hà Nội.</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <form action="./scripts/request.php" class="contact_form" novalidate="novalidate" id="contact-form-map-form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Họ tên" name="NAME">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email" name="EMAIL">
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="6" placeholder="Nhập lời nhắn hoặc câu hỏi của bạn" name="MESSAGE" style="height: 120px;"></textarea>
+                            </div>
+                            <button type="submit" data-loading-text="•••" data-complete-text="Completed!" data-reset-text="Try again later..." class="btn btn-block btn-primary"><span>Gửi</span></button>
+                        </form>
+                        {% comment %} <small class="desc-text">You are very important to us, all information received will always remain confidential.</small> {% endcomment %}
+                    </div>
+                    <div class="col-md-6 col-md-offset-1">
+                        <div id="contact-form-map-map" class="embed-responsive embed-responsive-4by3 g-map light"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg"></div>
+        </section>
+    </div>
+    <footer></footer>
+    <div class="modal-container"></div>
+</div>
+{% endblock %}

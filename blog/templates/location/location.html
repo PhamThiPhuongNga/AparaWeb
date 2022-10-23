@@ -1,0 +1,9 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Danh sách địa điểm{% endblock %}
+
+{% block content %}
+{% for location in Locations %}
+    <h4>{{location.date|date:"d-m-Y"}}<a href="/location/{{location.id}}">{{location.name}}</a></h4>
+{% endfor %}
+ {% endblock %}
