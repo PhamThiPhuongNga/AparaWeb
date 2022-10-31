@@ -1,9 +1,10 @@
+
 #header-center-slogan-form-2 {
     background: #000000;
 }
 
 #header-center-slogan-form-2 .bg {
-    background-image: url('../images/bg-nature-4.jpg');
+    background-image: url('C:\xampp\htdocs\AparaWeb\home\static\images\bg-nature-4.jpg');
     background-repeat: no-repeat;
     background-position: center bottom;
     background-size: cover;
@@ -11,3 +12,6 @@
 }#footer-list-subscribe-2{
     background: #222222;
 }
+
+
+

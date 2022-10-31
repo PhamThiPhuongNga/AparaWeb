@@ -3,7 +3,96 @@
 {% block title %}Danh sách địa điểm{% endblock %}
 
 {% block content %}
-{% for location in Locations %}
-    <h4>{{location.date|date:"d-m-Y"}}<a href="/location/{{location.id}}">{{location.name}}</a></h4>
-{% endfor %}
+
+<section id="desc-img-text-4col-2" class="pt-125 pb-125 light">
+    <div class="container">
+        <h4 class="mb-40">Bộ lọc tìm kiếm</h4>
+        <form action="scripts/request.php" class="contact_form form-inline form-flex" id="header-center-slogan-form-2-form" novalidate="novalidate">
+            <div class="form-group select-group">
+                <select class="form-control" name="wardcommune">
+                    <option value="wardcommune" selected="" disabled="">Phường/Xã</option>
+                    <option value="1">Sơn</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="form-group select-group">
+                <select class="form-control" name="district">
+                    <option value="district" selected="" disabled="">Quận/Huyện</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="form-group select-group">
+                <select class="form-control" name="city">
+                    <option value="city" selected="" disabled="">Thành phố</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="form-group select-group">
+                <select class="form-control" name="mincost">
+                    <option value="mincost" selected="" disabled="">Giá từ</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="form-group select-group">
+                <select class="form-control" name="maxcost">
+                    <option value="maxcost" selected="" disabled="">đến</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="form-group select-group">
+                <select class="form-control" name="guests">
+                    <option value="guests" selected="" disabled="">Số người</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <button type="submit" data-loading-text="•••" data-complete-text="Completed!" data-reset-text="Try again later..." class="btn btn-primary"><span>Tìm</span></button>
+        </form>
+        <h4 class="mb-40">Danh sách sản phẩm</h4>
+        <div class="row">
+            {% for location in Locations %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card" style="border: 0.5px solid #f2f2f2;">
+                    <div style="">
+                        <img src="{{location.image.url}}" alt="Photo" class="card-img">
+                    </div>
+                    <div style="margin: 10px;">
+                        <h4 class="mt-20 mb-0"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
+                        <h4 class="mb-20">{{location.category}}</h4>
+                        <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                            <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.distric}}, {{location.city}}</p>
+                        <ul class="text-icon-list text-icon-list-sep">
+                            <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                                <span>Đánh giá</span>
+                                <span class="pull-right">{{location.vote}}</span>
+                            </li>
+                            <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
+                                <span>Giá</span>
+                                <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
  {% endblock %}

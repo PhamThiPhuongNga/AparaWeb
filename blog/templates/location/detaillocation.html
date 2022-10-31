@@ -1,0 +1,67 @@
+{% extends "pages/base.html" %}
+{% load static %}
+
+{% block title %}{{detaillocation.name}}{% endblock %}
+
+{% block content %}
+<section id="desc-img-text-list" class="pt-150 pb-100 light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-push-8">
+                <h2 class="mb-10"><a href="{% url 'detaillocation' detaillocation.id %}"><strong>{{detaillocation.name}}</strong></a></h2>
+                <h4 class="mb-50">{{detaillocation.category}}</h4>
+                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.distric}}, {{detaillocation.city}}</p>
+                <ul class="text-icon-list text-icon-list-sep">
+                    <li class="clearfix"><i class="icon-phone icon-color icon-size-m icon-position-left"></i>
+                        <span>Số điện thoại</span>
+                        <span class="pull-right">{{detaillocation.phone}}</span>
+                    </li>
+                    <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                        <span>Đánh giá</span>
+                        <span class="pull-right">{{detaillocation.vote}}</span>
+                    </li>
+                    <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
+                        <span>Khoảng giá</span>
+                        <span class="pull-right"><strong>{{detaillocation.costmin}}</strong>-<strong>{{detaillocation.costmax}} VND</strong></span>
+                    </li>
+                </ul>
+                <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a>
+            </div>
+            <div class="col-md-8 col-md-pull-4 text-center">
+                <img src="{% static 'images/screen-43.jpg' %}" alt="screen" class="screen">
+            </div>
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+
+<section id="desc-tabs" class="pt-100 pb-125 text-center light">
+    <div class="container">
+        <h2 class="mb-50">About us</h2>
+        <div class="row">
+            <div class="col-md-12">
+
+                <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                    <li class=""><a href="#desc_tabs_0--0" id="desc_tabs_0--0-tab" role="tab" data-toggle="tab" aria-controls="desc_tabs_0--0" aria-expanded="false"><span>History</span></a></li><li class="active"><a href="#desc_tabs_0--1" role="tab" id="desc_tabs_0--1-tab" data-toggle="tab" aria-controls="desc_tabs_0--1" aria-expanded="true"><span>Vision</span></a></li><li class=""><a href="#desc_tabs_0--2" role="tab" id="desc_tabs_0--2-tab" data-toggle="tab" aria-controls="desc_tabs_0--2" aria-expanded="false"><span>Targets</span></a></li>
+                </ul>
+                <div class="tab-content mt-40" id="myTabContent">
+                    <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--0" aria-labelledby="desc_tabs_0--0-tab">
+                        <h4 class="mb-30">Since 1904 till today</h4>
+                        <p>{{detaillocation.describe|safe|linebreaks}}</p>
+                    </div>
+                    <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
+                        <h4 class="mb-30">A little bit about our ideas</h4>
+                        <p>Of course, this text is just a little thing, one of those smalls that create this product in whole. They are – each of them – are responsible for the fact whether this product would be great or ordinary. It is possible to raise the whole product up only through raising smalls on a new level. So, this is what we are busy now. We spend our time and attention exactly to these things. So, what is the secret of successful template design? First of all, it is its friendliness – both for the template’s owner and for his or her future targeted audience. UX and UI are not just empty phrases for us. It is very important for us that the user could understand correctly the message your project’s trying to say to him or her. But, correct giving of the information is just a half of success. Emotions that causes your project in visitor are no less important ticket to success</p>
+                    </div>
+                    <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--2" aria-labelledby="desc_tabs_0--2-tab">
+                        <h4 class="mb-30">What we want to achieve</h4>
+                        <p>Of course, this text is just a little thing, one of those smalls that create this product in whole. They are – each of them – are responsible for the fact whether this product would be great or ordinary. It is possible to raise the whole product up only through raising smalls on a new level. So, this is what we are busy now. We spend our time and attention exactly to these things. So, what is the secret of successful template design? First of all, it is its friendliness – both for the template’s owner and for his or her future targeted audience. UX and UI are not just empty phrases for us. It is very important for us that the user could understand correctly the message your project’s trying to say to him or her. But, correct giving of the information is just a half of success. Emotions that causes your project in visitor are no less important ticket to success</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+ {% endblock %}
