@@ -1,11 +1,12 @@
 from django.contrib import admin
-from .models import Account, Role, Account_role, Location, Category
+from .models import Account, Role, Account_role, Location, Category, Comment
 # Register your models here.
 
 admin.site.register(Account)
 admin.site.register(Role)
 admin.site.register(Account_role)
 admin.site.register(Category)
+admin.site.register(Comment)
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['name', 'phone', 'city', 'representative', 'vote']

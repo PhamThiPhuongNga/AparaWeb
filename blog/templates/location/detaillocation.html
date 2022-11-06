@@ -8,21 +8,21 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-push-8">
-                <h2 class="mb-10"><a href="{% url 'detaillocation' detaillocation.id %}"><strong>{{detaillocation.name}}</strong></a></h2>
-                <h4 class="mb-50">{{detaillocation.category}}</h4>
-                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.distric}}, {{detaillocation.city}}</p>
+                <h2 class="mb-10"><a href=""><strong>{{location.name}}</strong></a></h2>
+                <h4 class="mb-50">{{location.category}}</h4>
+                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.distric}}, {{location.city}}</p>
                 <ul class="text-icon-list text-icon-list-sep">
                     <li class="clearfix"><i class="icon-phone icon-color icon-size-m icon-position-left"></i>
                         <span>Số điện thoại</span>
-                        <span class="pull-right">{{detaillocation.phone}}</span>
+                        <span class="pull-right">{{location.phone}}</span>
                     </li>
                     <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
                         <span>Đánh giá</span>
-                        <span class="pull-right">{{detaillocation.vote}}</span>
+                        <span class="pull-right">{{location.vote}}</span>
                     </li>
                     <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
                         <span>Khoảng giá</span>
-                        <span class="pull-right"><strong>{{detaillocation.costmin}}</strong>-<strong>{{detaillocation.costmax}} VND</strong></span>
+                        <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
                     </li>
                 </ul>
                 <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a>
