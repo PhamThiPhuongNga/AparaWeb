@@ -47,7 +47,7 @@ class Location(models.Model):
         return self.name
     
 class Comment(models.Model):
-    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'comments')
+    detaillocation = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     body = models.TextField(null=True)
     date = models.DateTimeField(null=True,auto_now_add=True)

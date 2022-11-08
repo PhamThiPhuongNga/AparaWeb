@@ -54,8 +54,20 @@
                         <p>Of course, this text is just a little thing, one of those smalls that create this product in whole. They are – each of them – are responsible for the fact whether this product would be great or ordinary. It is possible to raise the whole product up only through raising smalls on a new level. So, this is what we are busy now. We spend our time and attention exactly to these things. So, what is the secret of successful template design? First of all, it is its friendliness – both for the template’s owner and for his or her future targeted audience. UX and UI are not just empty phrases for us. It is very important for us that the user could understand correctly the message your project’s trying to say to him or her. But, correct giving of the information is just a half of success. Emotions that causes your project in visitor are no less important ticket to success</p>
                     </div>
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--2" aria-labelledby="desc_tabs_0--2-tab">
-                        <h4 class="mb-30">What we want to achieve</h4>
-                        <p>Of course, this text is just a little thing, one of those smalls that create this product in whole. They are – each of them – are responsible for the fact whether this product would be great or ordinary. It is possible to raise the whole product up only through raising smalls on a new level. So, this is what we are busy now. We spend our time and attention exactly to these things. So, what is the secret of successful template design? First of all, it is its friendliness – both for the template’s owner and for his or her future targeted audience. UX and UI are not just empty phrases for us. It is very important for us that the user could understand correctly the message your project’s trying to say to him or her. But, correct giving of the information is just a half of success. Emotions that causes your project in visitor are no less important ticket to success</p>
+                        {% for comment in detaillocation.comments.all%}
+                        <h4 class="mb-30"><strong>{{comment.author}}</strong></h4>
+                        <h6><p>{{comment.author}}</p></h6>
+                        <p>{{comment.body|linebreaks}}</p>
+                        {% endfor %}
+                        {% if user.name%}
+                        <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST'>
+                            {% csrf_token %}
+                            <p> <lable>Bình luận </lable></p>
+                            {{form.body}}
+                            <br/>
+                            <input type="submit" value="Bình luận"/>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
 

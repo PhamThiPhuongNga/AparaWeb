@@ -1,7 +1,10 @@
-from django.shortcuts import render 
-from .models import Location 
+from django.shortcuts import render, get_object_or_404
+from blog.models import Location, Comment
+from blog.forms import CommentForm
+from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
+
 
 # Create your views here.
 class LocationListView(ListView):
@@ -18,9 +21,15 @@ class LocationListView(ListView):
     #     else:
     #         Locations = {'Locations': Location.objects.all().order_by("-date")}
     #         return Locations
-class LocationDetailView(DetailView):
-    model = Location
-    template_name = 'location/detaillocation.html'
-# def detaillocation(request , id):
-#     detaillocation = Location.objects.get(id=id)
-#     return render(request, 'location/detaillocation.html', {'detaillocation': detaillocation})
+# class LocationDetailView(DetailView):
+#     model = Location
+#     template_name = 'location/detaillocation.html'
+def detaillocation(request , pk):
+    detaillocation = get_object_or_404(Location, pk=pk)
+    form = CommentForm()
+    if request.method == 'POST':
+        form = CommentForm(request.POST, author=request.user, detaillocation = detaillocation)
+        if form.is_valid():
+            form.save()
+            HttpResponseRedirect(pk)
+    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})

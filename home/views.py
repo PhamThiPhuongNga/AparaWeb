@@ -16,3 +16,5 @@ def register(request):
             form.save()
             return HttpResponseRedirect('/')
     return render(request, 'pages/register.html', {'form': form})
+def error(request):
+    return render(request, 'pages/error.html')
