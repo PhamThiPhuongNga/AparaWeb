@@ -8,8 +8,12 @@ admin.site.register(Account_role)
 admin.site.register(Category)
 admin.site.register(Comment)
 
+class CommentInLine(admin.TabularInline):
+    model = Comment 
+
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['name', 'phone', 'city', 'representative', 'vote']
     list_filter = ['date','costmin', 'costmax', 'vote']
     search_fields =['name']
+    inlines = [CommentInLine]
 admin.site.register(Location, LocationAdmin)

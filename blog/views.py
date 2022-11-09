@@ -28,8 +28,8 @@ def detaillocation(request , pk):
     detaillocation = get_object_or_404(Location, pk=pk)
     form = CommentForm()
     if request.method == 'POST':
-        form = CommentForm(request.POST, author=request.user, detaillocation = detaillocation)
+        form = CommentForm(request.POST, author=request.user, detaillocation=detaillocation)
         if form.is_valid():
             form.save()
-            HttpResponseRedirect(pk)
+            return HttpResponseRedirect(request.path)
     return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})

@@ -68,12 +68,12 @@
                                 </div>
                             </div>
                         </li>
-                        <li class=""><a href="#"><span>Về chúng tôi</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
+                        {% comment %} <li class=""><a href="#"><span>Về chúng tôi</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
                             <ul class="sub-menu" style="background: #fff;">
                                 <li class=""><a href="#"><i class="icon-man icon-position-left icon-color"></i><span>Team</span></a></li>
                                 <li class=""><a href="#"><i class="icon-bubble icon-position-left icon-color"></i><span>Reviews</span></a></li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <li><a href="{% url 'location' %}"><span>Địa điểm</span></a></li>  
                         <li><a href="{% url 'contact' %}"><span>Liên hệ</span></a></li>
                         <li class="">
@@ -81,7 +81,17 @@
                                 <i class="icon-phone-wave icon-size-m icon-color icon-position-left"></i><strong>+1(890)1321312</strong>
                             </p>
                         </li>
+                        {% if user.username %}
+                        <li class=""><a href="#"><span>{{ user.username }}</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
+                            <ul class="sub-menu" style="background: #fff;">
+                                <li class=""><a href="{% url 'logout' %}"><i class="icon-man icon-position-left icon-color"></i><span>Đăng xuất</span></a></li>
+                            </ul>
+                        </li> 
+                        {% else %}
                         <li><a href="{% url 'register' %}"><span>Đăng ký</span></a></li>  
+                        <li><a href=""><span>/</span></a></li> 
+                        <li><a href="{% url 'login' %}"><span>Đăng nhập</span></a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
