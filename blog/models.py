@@ -50,5 +50,8 @@ class Comment(models.Model):
     detaillocation = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     body = models.TextField(null=True)
+    rating = models.IntegerField(null=True,max_length=70)
     date = models.DateTimeField(null=True,auto_now_add=True)
+    
+    
     

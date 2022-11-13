@@ -17,3 +17,4 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields =['name']
     inlines = [CommentInLine]
 admin.site.register(Location, LocationAdmin)
+
