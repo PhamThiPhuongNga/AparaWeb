@@ -219,35 +219,35 @@
                       
                           });
                       
-                          $('#save_review').click(function(){
+                            $('#save_review').click(function(){
                       
-                              var user_name = $('#user_name').val();
+                                var user_name = $('#user_name').val();
+                        
+                                var user_review = $('#user_review').val();
+                        
+                                if(user_name == '' || user_review == '')
+                                {
+                                    alert("Please Fill Both Field");
+                                    return false;
+                                }
+                                else
+                                {
+                                    $.ajax({
+                                        url:"submit_rating.php",
+                                        method:"POST",
+                                        data:{rating_data:rating_data, user_name:user_name, user_review:user_review},
+                                        success:function(data)
+                                        {
+                                            $('#review_modal').modal('hide');
+                        
+                                            load_rating_data();
+                        
+                                            alert(data);
+                                        }
+                                    })
+                                }
                       
-                              var user_review = $('#user_review').val();
-                      
-                              if(user_name == '' || user_review == '')
-                              {
-                                  alert("Please Fill Both Field");
-                                  return false;
-                              }
-                              else
-                              {
-                                  $.ajax({
-                                      url:"submit_rating.php",
-                                      method:"POST",
-                                      data:{rating_data:rating_data, user_name:user_name, user_review:user_review},
-                                      success:function(data)
-                                      {
-                                          $('#review_modal').modal('hide');
-                      
-                                          load_rating_data();
-                      
-                                          alert(data);
-                                      }
-                                  })
-                              }
-                      
-                          });
+                            });
                       
                           load_rating_data();
                       
