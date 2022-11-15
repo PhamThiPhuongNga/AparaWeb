@@ -233,9 +233,9 @@
                                 else
                                 {
                                     $.ajax({
-                                        url:"submit_rating.php",
+                                        url:"detaillocation",
                                         method:"POST",
-                                        data:{rating_data:rating_data, user_name:user_name, user_review:user_review},
+                                        data:{rating_data:rating},
                                         success:function(data)
                                         {
                                             $('#review_modal').modal('hide');
@@ -256,7 +256,7 @@
                               $.ajax({
                                   url:"submit_rating.php",
                                   method:"POST",
-                                  data:{action:'load_data'},
+                                  data:{action:'load_data'},    
                                   dataType:"JSON",
                                   success:function(data)
                                   {
