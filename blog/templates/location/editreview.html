@@ -1,0 +1,23 @@
+{% extends "pages/base.html" %}
+{% load static %}
+
+{% block title %} Sửa {{detaillocation.name}}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-125">
+	<div class="card">
+		<div class="card-body">
+			<h3 class="text-center">Chỉnh sửa bình luận</h3>
+			<form action="" method="POST">
+				{% csrf_token %}
+				{{ form }}
+				{% if error %}
+					<strong style="color:red;">{{ error }}</strong>
+				{% endif %}
+				<input type="submit" value="Lưu thay đổi" class="btn btn-danger">
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

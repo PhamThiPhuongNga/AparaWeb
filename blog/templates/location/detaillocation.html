@@ -10,7 +10,7 @@
             <div class="col-md-4 col-md-push-8">
                 <h2 class="mb-10"><a href=""><strong>{{detaillocation.name}}</strong></a></h2>
                 <h4 class="mb-50">{{detaillocation.category}}</h4>
-                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{location.wardcommune}}, {{detaillocation.distric}}, {{detaillocation.city}}</p>
+                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.distric}}, {{detaillocation.city}}</p>
                 <ul class="text-icon-list text-icon-list-sep">
                     <li class="clearfix"><i class="icon-phone icon-color icon-size-m icon-position-left"></i>
                         <span>Số điện thoại</span>
@@ -37,12 +37,12 @@
 
 <section id="desc-tabs" class="pt-100 pb-125 text-center light">
     <div class="container">
-        <h2 class="mb-50">About us</h2>
+        {% comment %} <h2 class="mb-50">About us</h2> {% endcomment %}
         <div class="row">
             <div class="col-md-12">
 
                 <ul class="nav nav-tabs" id="myTabs" role="tablist">
-                    <li class=""><a href="#desc_tabs_0--0" id="desc_tabs_0--0-tab" role="tab" data-toggle="tab" aria-controls="desc_tabs_0--0" aria-expanded="false"><span>History</span></a></li><li class="active"><a href="#desc_tabs_0--1" role="tab" id="desc_tabs_0--1-tab" data-toggle="tab" aria-controls="desc_tabs_0--1" aria-expanded="true"><span>Vision</span></a></li><li class=""><a href="#desc_tabs_0--2" role="tab" id="desc_tabs_0--2-tab" data-toggle="tab" aria-controls="desc_tabs_0--2" aria-expanded="false"><span>Targets</span></a></li>
+                    <li class=""><a href="#desc_tabs_0--0" id="desc_tabs_0--0-tab" role="tab" data-toggle="tab" aria-controls="desc_tabs_0--0" aria-expanded="false"><span>Mô tả chung</span></a></li><li class="active"><a href="#desc_tabs_0--1" role="tab" id="desc_tabs_0--1-tab" data-toggle="tab" aria-controls="desc_tabs_0--1" aria-expanded="true"><span>Đánh giá</span></a></li><li class=""><a href="#desc_tabs_0--2" role="tab" id="desc_tabs_0--2-tab" data-toggle="tab" aria-controls="desc_tabs_0--2" aria-expanded="false"><span>Hình ảnh</span></a></li>
                 </ul>
                 <div class="tab-content mt-40" id="myTabContent">
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--0" aria-labelledby="desc_tabs_0--0-tab">
@@ -109,10 +109,12 @@
                                             </div>               
                                         </p>
                                     </div>
+                                    {% if user.username %}
                                     <div class="col-sm-4 text-center">
                                         <h3 class="mt-4 mb-3">Đánh giá và viết bình luận</h3>
                                         <button type="button" name="add_review" id="add_review" class="btn btn-primary">Bình luận</button>
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -121,245 +123,71 @@
                             <div class="modal-dialog" role="document">
                               <div class="modal-content">
                                     <div class="modal-header">
-                                      <h5 class="modal-title">Submit Review</h5>
+                                      <h5 class="modal-title">Thêm bình luận</h5>
                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                       </button>
                                     </div>
+                                    {% if user.username %}
                                     <div class="modal-body">
-                                        <h4 class="text-center mt-2 mb-4">
-                                          <i class="fas fa-star star-light submit_star mr-1" id="submit_star_1" data-rating="1"></i>
-                                          <i class="fas fa-star star-light submit_star mr-1" id="submit_star_2" data-rating="2"></i>
-                                          <i class="fas fa-star star-light submit_star mr-1" id="submit_star_3" data-rating="3"></i>
-                                          <i class="fas fa-star star-light submit_star mr-1" id="submit_star_4" data-rating="4"></i>
-                                          <i class="fas fa-star star-light submit_star mr-1" id="submit_star_5" data-rating="5"></i>
-                                        </h4>
                                         <div class="form-group">
-                                            {% comment %} <input type="text" name="user_name" id="user_name" class="form-control" placeholder="Enter Your Name" /> {% endcomment %}
-                                            {% if user.username %}
-                                                <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST'>
-                                                    {% csrf_token %}
-                                                    <p> <lable>Bình luận </lable></p>
-                                                    {{form.body}}
-                                                    {{form.rating}}
-                                                    <br/>
-                                                    <input type="submit" value="Bình luận"/>
-                                                </form>
-                                            {% endif %}
-                                            
+                                           <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST'>
+                                                {% csrf_token %}
+                                                <div class="rate">
+                                                    <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                                                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                                                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                                                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                                                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                                                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                                                </div>
+                                                <textarea name="body" rows="4" class="form-control"></textarea>
+                                                <button type="submit" id="" class="btn btn-primary mt-3">Xác nhận</button>
+                                            </form>
+                                           
                                         </div>
-                                      {% comment %} <div class="form-group">
-                                          <textarea name="user_review" id="user_review" class="form-control" placeholder="Type Review Here"></textarea>
-                                      </div>
-                                      <div class="form-group text-center mt-4">
-                                          <button type="button" class="btn btn-primary" id="save_review">Submit</button>
-                                      </div> {% endcomment %}
                                     </div>
+                                {% endif %}
                               </div>
                             </div>
-                      </div>
+                        </div>
                       
-                      
-                      <script>
-                      
-                          $(document).ready(function(){
-                      
-                          var rating_data = 0;
-                      
-                          $('#add_review').click(function(){
-                      
-                              $('#review_modal').modal('show');
-                      
-                          });
-                      
-                          $(document).on('mouseenter', '.submit_star', function(){
-                      
-                              var rating = $(this).data('rating');
-                      
-                              reset_background();
-                      
-                              for(var count = 1; count <= rating; count++)
-                              {
-                      
-                                  $('#submit_star_'+count).addClass('text-warning');
-                      
-                              }
-                      
-                          });
-                      
-                          function reset_background()
-                          {
-                              for(var count = 1; count <= 5; count++)
-                              {
-                      
-                                  $('#submit_star_'+count).addClass('star-light');
-                      
-                                  $('#submit_star_'+count).removeClass('text-warning');
-                      
-                              }
-                          }
-                      
-                          $(document).on('mouseleave', '.submit_star', function(){
-                      
-                              reset_background();
-                      
-                              for(var count = 1; count <= rating_data; count++)
-                              {
-                      
-                                  $('#submit_star_'+count).removeClass('star-light');
-                      
-                                  $('#submit_star_'+count).addClass('text-warning');
-                              }
-                      
-                          });
-                      
-                          $(document).on('click', '.submit_star', function(){
-                      
-                              rating_data = $(this).data('rating');
-                      
-                          });
-                      
-                            $('#save_review').click(function(){
-                      
-                                var user_name = $('#user_name').val();
-                        
-                                var user_review = $('#user_review').val();
-                        
-                                if(user_name == '' || user_review == '')
-                                {
-                                    alert("Please Fill Both Field");
-                                    return false;
-                                }
-                                else
-                                {
-                                    $.ajax({
-                                        url:"detaillocation",
-                                        method:"POST",
-                                        data:{rating_data:rating},
-                                        success:function(data)
-                                        {
-                                            $('#review_modal').modal('hide');
-                        
-                                            load_rating_data();
-                        
-                                            alert(data);
-                                        }
-                                    })
-                                }
-                      
-                            });
-                      
-                          load_rating_data();
-                      
-                          function load_rating_data()
-                          {
-                              $.ajax({
-                                  url:"submit_rating.php",
-                                  method:"POST",
-                                  data:{action:'load_data'},    
-                                  dataType:"JSON",
-                                  success:function(data)
-                                  {
-                                      $('#average_rating').text(data.average_rating);
-                                      $('#total_review').text(data.total_review);
-                      
-                                      var count_star = 0;
-                      
-                                      $('.main_star').each(function(){
-                                          count_star++;
-                                          if(Math.ceil(data.average_rating) >= count_star)
-                                          {
-                                              $(this).addClass('text-warning');
-                                              $(this).addClass('star-light');
-                                          }
-                                      });
-                      
-                                      $('#total_five_star_review').text(data.five_star_review);
-                      
-                                      $('#total_four_star_review').text(data.four_star_review);
-                      
-                                      $('#total_three_star_review').text(data.three_star_review);
-                      
-                                      $('#total_two_star_review').text(data.two_star_review);
-                      
-                                      $('#total_one_star_review').text(data.one_star_review);
-                      
-                                      $('#five_star_progress').css('width', (data.five_star_review/data.total_review) * 100 + '%');
-                      
-                                      $('#four_star_progress').css('width', (data.four_star_review/data.total_review) * 100 + '%');
-                      
-                                      $('#three_star_progress').css('width', (data.three_star_review/data.total_review) * 100 + '%');
-                      
-                                      $('#two_star_progress').css('width', (data.two_star_review/data.total_review) * 100 + '%');
-                      
-                                      $('#one_star_progress').css('width', (data.one_star_review/data.total_review) * 100 + '%');
-                      
-                                      if(data.review_data.length > 0)
-                                      {
-                                          var html = '';
-                      
-                                          for(var count = 0; count < data.review_data.length; count++)
-                                          {
-                                              html += '<div class="row mb-3">';
-                      
-                                              html += '<div class="col-sm-1"><div class="rounded-circle bg-danger text-white pt-2 pb-2"><h3 class="text-center">'+data.review_data[count].user_name.charAt(0)+'</h3></div></div>';
-                      
-                                              html += '<div class="col-sm-11">';
-                      
-                                              html += '<div class="card">';
-                      
-                                              html += '<div class="card-header"><b>'+data.review_data[count].user_name+'</b></div>';
-                      
-                                              html += '<div class="card-body">';
-                      
-                                              for(var star = 1; star <= 5; star++)
-                                              {
-                                                  var class_name = '';
-                      
-                                                  if(data.review_data[count].rating >= star)
-                                                  {
-                                                      class_name = 'text-warning';
-                                                  }
-                                                  else
-                                                  {
-                                                      class_name = 'star-light';
-                                                  }
-                      
-                                                  html += '<i class="fas fa-star '+class_name+' mr-1"></i>';
-                                              }
-                      
-                                              html += '<br />';
-                      
-                                              html += data.review_data[count].user_review;
-                      
-                                              html += '</div>';
-                      
-                                              html += '<div class="card-footer text-right">On '+data.review_data[count].datetime+'</div>';
-                      
-                                              html += '</div>';
-                      
-                                              html += '</div>';
-                      
-                                              html += '</div>';
-                                          }
-                      
-                                          $('#review_content').html(html);
-                                      }
-                                  }
-                              })
-                          }
-                      
-                      });
-                      
-                      </script>
                         <div class=""
-                            {% for comment in detaillocation.comments.all%}
-                            <h4 class="mb-30"><strong>{{comment.author}}</strong></h4>
-                            <h6><p>{{comment.date}}</p></h6>
-                            <p>{{comment.body|linebreaks}}</p>
-                            <p>{{comment.rating}}</p>
+                            {% for comment in detaillocation.comments.all %}
+                            <article class="box mb-3">
+                                <div class="icontext w-100">
+            
+                                    <div class="text">
+                                        <span class="date text-muted float-md-right">{{comment.date}} </span>
+                                        <h6 class="mb-1">{{comment.author}} </h6>
+                                        <div class="rating-star">
+                                            <span>
+                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half-o{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half-o{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half-o{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half-o{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half-o{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="mt-3">
+                                    <p>
+                                        {{comment.body|linebreaks}}
+                                    </p>
+                                </div>
+                                {% if request.user == comment.author %}
+                                <a href="{% url 'edit_review' detaillocation.id comment.id %}">Sửa</a>
+                                <a href="{% url 'delete_review' detaillocation.id comment.id %}" onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">Xóa</a>
+                                {% endif %}
+                            </article>
                             {% endfor %}
                         </div>
+                    </div>
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--2" aria-labelledby="desc_tabs_0--2-tab">
                         <h4 class="mb-30">A little bit about our ideas</h4>
                         <p>Of course, this text is just a little thing, one of those smalls that create this product in whole. They are – each of them – are responsible for the fact whether this product would be great or ordinary. It is possible to raise the whole product up only through raising smalls on a new level. So, this is what we are busy now. We spend our time and attention exactly to these things. So, what is the secret of successful template design? First of all, it is its friendliness – both for the template’s owner and for his or her future targeted audience. UX and UI are not just empty phrases for us. It is very important for us that the user could understand correctly the message your project’s trying to say to him or her. But, correct giving of the information is just a half of success. Emotions that causes your project in visitor are no less important ticket to success</p>
@@ -419,5 +247,117 @@
         transition:width .6s ease
     } 
     .text-warning{color:#ffc107!important}a.text-warning:focus,a.text-warning:hover{color:#d39e00!important}
+    /* Hide Radio button */
+    /* Hide Radio button */
+    .rate > input{
+      display: none;
+    }
+    
+    .rate{
+      display: inline-block;;
+      border: 0;
+    }
+    
+    .rate > label{
+      float: right;
+    }
+    
+    /* Showing the stars */
+    .rate > label:before{
+      display: inline-block;
+      font-size: 2.1rem;
+      font-family: FontAwesome;
+      content: "\f005";
+      margin:0;
+      padding:0.3rem .2rem;
+      cursor: pointer;
+    }
+    
+    /* Half star */
+    .rate .half:before{
+      content: "\f089";
+      position: absolute;
+      padding-right: 0;
+    }
+    
+    /* Click and hover */
+    input:checked ~ label, label:hover ~ label{
+      color: #ffb503;
+    }
+    
+    /* hover hightlight */
+    input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
+    label:hover ~ input:checked ~ label{
+      color: #cc9000;
+    }
+    
+    .rating-star i{
+      color: #ffb503 !important;
+    }
+    
   </style>
+<script>
+                    
+    $(document).ready(function(){
+
+    var rating_data = 0;
+
+    $('#add_review').click(function(){
+
+        $('#review_modal').modal('show');
+
+    });
+
+    $(document).on('mouseenter', '.submit_star', function(){
+
+        var rating = $(this).data('rating');
+
+        reset_background();
+
+        for(var count = 1; count <= rating; count++)
+        {
+
+            $('#submit_star_'+count).addClass('text-warning');
+
+        }
+
+    });
+
+    function reset_background()
+    {
+        for(var count = 1; count <= 5; count++)
+        {
+
+            $('#submit_star_'+count).addClass('star-light');
+
+            $('#submit_star_'+count).removeClass('text-warning');
+
+        }
+    }
+
+    $(document).on('mouseleave', '.submit_star', function(){
+
+        reset_background();
+
+        for(var count = 1; count <= rating_data; count++)
+        {
+
+            $('#submit_star_'+count).removeClass('star-light');
+
+            $('#submit_star_'+count).addClass('text-warning');
+        }
+
+    });
+
+    $(document).on('click', '.submit_star', function(){
+
+        rating_data = $(this).data('rating');
+
+    });
+
+
+
+});
+
+</script>
  {% endblock %}

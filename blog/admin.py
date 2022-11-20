@@ -18,3 +18,6 @@ class LocationAdmin(admin.ModelAdmin):
     inlines = [CommentInLine]
 admin.site.register(Location, LocationAdmin)
 
+# class CommentAdmin(admin.ModelAdmin):
+#     list_display = ('detaillocation', 'author', 'body', 'rating')
+# admin.site.register(Comment, CommentAdmin)

@@ -1,9 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.core import serializers
+from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Location, Comment
 from blog.forms import CommentForm
 from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
+from django.contrib import messages
 
 
 # Create your views here.
@@ -24,12 +27,51 @@ class LocationListView(ListView):
 # class LocationDetailView(DetailView):
 #     model = Location
 #     template_name = 'location/detaillocation.html'
+
+
 def detaillocation(request , pk):
-    detaillocation = get_object_or_404(Location, pk=pk)
-    form = CommentForm()
-    if request.method == 'POST':
-        form = CommentForm(request.POST, author=request.user, detaillocation=detaillocation)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(request.path)
-    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})
+    if request.user.is_authenticated:
+        detaillocation = Location.objects.get(pk=pk)
+        # form = CommentForm()
+        if request.method == 'POST':
+            form = CommentForm(request.POST,author = request.user,detaillocation=detaillocation )
+            # form.save()
+            if form.is_valid(): 
+                data = form.save(commit=False) 
+                data.body = request.POST['body']
+                data.rating = request.POST['rating']
+                data.author = request.user
+                data.detaillocation = detaillocation
+                data.save() 
+                return HttpResponseRedirect(request.path)
+                messages.success(request, ' Cảm ơn bạn đã bình luận')
+        else:
+            form = CommentForm()
+        return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})
+
+def edit_review(request, pk, review_id):
+    detaillocation = Location.objects.get(pk=pk)
+    review = Comment.objects.get(detaillocation=detaillocation, id=review_id)
+    if request.user == review.author:
+        if request.method == "POST":
+            form = CommentForm(request.POST,instance=review)
+            if form.is_valid():
+                data = form.save(commit=False)
+                if (float(data.rating) > 5) or (float(data.rating) < 0):
+                    error="Vui lòng chọn từ 1 đến 5"
+                    return render(request, 'location/editreview.html', {"error": error, "form":form})
+                else:
+                    data.save()
+                    return HttpResponseRedirect(request.path)
+        else:
+            form = CommentForm(instance=review)
+            return render(request, 'location/editreview.html', { "form":form})
+    else:
+        return HttpResponseRedirect(request.path)
+    
+def delete_review(request, pk, review_id):
+    detaillocation = Location.objects.get(pk=pk)
+    review = Comment.objects.get(detaillocation=detaillocation, id=review_id)
+    if request.user == review.author:
+        review.delete()
+        return HttpResponseRedirect(request.path)

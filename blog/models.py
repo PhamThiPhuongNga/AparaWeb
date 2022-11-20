@@ -46,12 +46,19 @@ class Location(models.Model):
     def __str__(self):
         return self.name
     
+RATING =(
+    (1, '1'),
+    (2, '2'),
+    (3, '3'),
+    (4, '4'),
+    (5, '5'),
+)
 class Comment(models.Model):
     detaillocation = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     body = models.TextField(null=True)
-    rating = models.IntegerField(null=True,max_length=70)
+    rating = models.CharField(null=True, max_length=70)
+    # ,choices=RATING
     date = models.DateTimeField(null=True,auto_now_add=True)
-    
     
     
