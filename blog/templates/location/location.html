@@ -7,89 +7,48 @@
 <section id="desc-img-text-4col-2" class="pt-125 pb-125 light">
     <div class="container">
         <h4 class="mb-40">Bộ lọc tìm kiếm</h4>
-        <form class="contact_form form-inline form-flex" id="header-center-slogan-form-2-form" novalidate="novalidate">
-            <div class="form-group">
-                <input type="search" class="form-control" placeholder="Search..." name="q" size="10">
-            </div>
-            <div class="form-group select-group">
-                <select class="form-control form-select-sm" name="city" id="city" aria-label=".form-select-sm">
-                    <option value="" selected="" disabled="">Chọn tỉnh thành</option>
-                </select>
-            </div>
-            <div class="form-group select-group" >
-                <select class="form-control" name="district" id="district" aria-label=".form-select-sm">
-                    <option value="" selected="" disabled="">Chọn Quận/Huyện</option>
-                </select>
-            </div>
-            <div class="form-group select-group">
-                <select class="form-control" name="wardcommune" id="ward" aria-label=".form-select-sm">
-                    <option value="wardcommune" selected="" disabled="">Chọn Phường/Xã</option>
-                </select>
-            </div>
+        <nav class="navbar navbar-light bg-light" method = "GET">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
- <script>
- var citis = document.getElementById("city");
-var districts = document.getElementById("district");
-var wards = document.getElementById("ward");
-var Parameter = {
-url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json", 
-method: "GET", 
-responseType: "application/json", 
-};
-var promise = axios(Parameter);
-promise.then(function (result) {
-renderCity(result.data);
-});
-
-function renderCity(data) {
-for (const x of data) {
- citis.options[citis.options.length] = new Option(x.Name, x.Id);
-}
-citis.onchange = function () {
- district.length = 1;
- ward.length = 1;
- if(this.value != ""){
-   const result = data.filter(n => n.Id === this.value);
-
-   for (const k of result[0].Districts) {
-     district.options[district.options.length] = new Option(k.Name, k.Id);
-   }
- }
-};
-district.onchange = function () {
- ward.length = 1;
- const dataCity = data.filter((n) => n.Id === citis.value);
- if (this.value != "") {
-   const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
-
-   for (const w of dataWards) {
-     wards.options[wards.options.length] = new Option(w.Name, w.Id);
-   }
- }
-};
-}
- </script>
-            <div class="form-group select-group">
-                <select class="form-control" name="mincost">
-                    <option value="mincost" selected="" disabled="">Giá từ</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-            </div>
-            <div class="form-group select-group">
-                <select class="form-control" name="maxcost">
-                    <option value="maxcost" selected="" disabled="">đến</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-            </div>
-            <button type="submit"  class="btn btn-primary"data-loading-text="•••" data-complete-text="Completed!" data-reset-text="Try again later..."><span>Tìm</span></button>
-        </form>
-        <h4 class="mb-40">Danh sách sản phẩm</h4>
+            <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
+            <form class="form-inline" action="{% url 'searchlocation'%}">
+                <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
+                <div class="form-group select-group">
+                    <select class="form-control form-select-sm" name="q" id="city" aria-label=".form-select-sm">
+                        <option value="" selected="" disabled="">Chọn tỉnh thành</option>
+                    </select>
+                </div>
+                <div class="form-group select-group" >
+                    <select class="form-control" name="q" id="district" aria-label=".form-select-sm">
+                        <option value="" selected="" disabled="">Chọn Quận/Huyện</option>
+                    </select>
+                </div>
+                <div class="form-group select-group">
+                    <select class="form-control" name="q" id="ward" aria-label=".form-select-sm">
+                        <option value="wardcommune" selected="" disabled="">Chọn Phường/Xã</option>
+                    </select>
+                </div>
+                <div class="form-group select-group">
+                    <select class="form-control" name="q">
+                        <option value="mincost" selected="" disabled="">Giá từ</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <div class="form-group select-group">
+                    <select class="form-control" name="q">
+                        <option value="maxcost" selected="" disabled="">đến</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+              <button class="btn btn-primary my-2 my-sm-0 " type="submit">Tìm kiếm   </button>
+            </form>
+        </nav>
+        <h4 class="mb-40">Danh sách địa điểm</h4>
         <div class="row">
             {% for location in Locations %}
             <div class="col-md-3 col-sm-6">
@@ -105,7 +64,7 @@ district.onchange = function () {
                         <ul class="text-icon-list text-icon-list-sep">
                             <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
                                 <span>Đánh giá</span>
-                                <span class="pull-right">{{location.vote}}</span>
+                                <span class="pull-right">{{location.averageReview}}/ 5</span>
                             </li>
                             <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
                                 <span>Giá</span>
@@ -124,5 +83,47 @@ district.onchange = function () {
     </div>
     <div class="bg"></div>
 </section>
+<script>
+    var citis = document.getElementById("city");
+    var districts = document.getElementById("district");
+    var wards = document.getElementById("ward");
+    var Parameter = {
+    url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json", 
+    method: "GET", 
+    responseType: "application/json", 
+    };
+    var promise = axios(Parameter);
+    promise.then(function (result) {
+    renderCity(result.data);
+    });
+    
+    function renderCity(data) {
+    for (const x of data) {
+     citis.options[citis.options.length] = new Option(x.Name, x.Id);
+    }
+    citis.onchange = function () {
+     district.length = 1;
+     ward.length = 1;
+     if(this.value != ""){
+       const result = data.filter(n => n.Id === this.value);
+    
+       for (const k of result[0].Districts) {
+         district.options[district.options.length] = new Option(k.Name, k.Id);
+       }
+     }
+    };
+    district.onchange = function () {
+     ward.length = 1;
+     const dataCity = data.filter((n) => n.Id === citis.value);
+     if (this.value != "") {
+       const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
+    
+       for (const w of dataWards) {
+         wards.options[wards.options.length] = new Option(w.Name, w.Id);
+       }
+     }
+    };
+    }
+</script>
  {% endblock %}
  

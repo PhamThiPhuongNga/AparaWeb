@@ -18,7 +18,7 @@
                     </li>
                     <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
                         <span>Đánh giá</span>
-                        <span class="pull-right">{{detaillocation.vote}}</span>
+                        <span class="pull-right">{{detaillocation.averageReview}}/5</span>
                     </li>
                     <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
                         <span>Khoảng giá</span>
@@ -51,77 +51,38 @@
                     </div>
                     <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
                         <div class="card">
-                            <div class="card-header">Sample Product</div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-sm-4 text-center">
+                                    <div class="col-sm-6 text-center">
                                         <h1 class="text-warning mt-4 mb-4">
-                                            <b><span id="average_rating">0.0</span> / 5</b>
+                                            <b><span id="average_rating">{{detaillocation.averageReview}}</span> / 5</b>
                                         </h1>
-                                        <div class="mb-3">
-                                            <i class="fas fa-star star-light mr-1 main_star"></i>
-                                            <i class="fas fa-star star-light mr-1 main_star"></i>
-                                            <i class="fas fa-star star-light mr-1 main_star"></i>
-                                            <i class="fas fa-star star-light mr-1 main_star"></i>
-                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                        <div class="mb-2 rating-star">
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 0.5 %}-o{% elif detaillocation.averageReview >= 0.5 and detaillocation.averageReview < 1 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 1.5 %}-o{% elif detaillocation.averageReview >= 1.5 and detaillocation.averageReview < 2 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 2.5 %}-o{% elif detaillocation.averageReview >= 2.5 and detaillocation.averageReview < 3 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 3.5 %}-o{% elif detaillocation.averageReview >= 3.5 and detaillocation.averageReview < 4 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 4.5 %}-o{% elif detaillocation.averageReview >= 4.5 and detaillocation.averageReview < 5 %}-half {% endif %}" aria-hidden="true"></i>
                                         </div>
-                                        <h3><span id="total_review">0</span> Review</h3>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <p>
-                                            <div class="progress-label-left"><b>5</b> <i class="fas fa-star text-warning"></i></div>
-                
-                                            <div class="progress-label-right">(<span id="total_five_star_review">0</span>)</div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="five_star_progress"></div>
-                                            </div>
-                                        </p>
-                                        <p>
-                                            <div class="progress-label-left"><b>4</b> <i class="fas fa-star text-warning"></i></div>
-                                            
-                                            <div class="progress-label-right">(<span id="total_four_star_review">0</span>)</div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="four_star_progress"></div>
-                                            </div>               
-                                        </p>
-                                        <p>
-                                            <div class="progress-label-left"><b>3</b> <i class="fas fa-star text-warning"></i></div>
-                                            
-                                            <div class="progress-label-right">(<span id="total_three_star_review">0</span>)</div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="three_star_progress"></div>
-                                            </div>               
-                                        </p>
-                                        <p>
-                                            <div class="progress-label-left"><b>2</b> <i class="fas fa-star text-warning"></i></div>
-                                            
-                                            <div class="progress-label-right">(<span id="total_two_star_review">0</span>)</div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="two_star_progress"></div>
-                                            </div>               
-                                        </p>
-                                        <p>
-                                            <div class="progress-label-left"><b>1</b> <i class="fas fa-star text-warning"></i></div>
-                                            
-                                            <div class="progress-label-right">(<span id="total_one_star_review">0</span>)</div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="one_star_progress"></div>
-                                            </div>               
-                                        </p>
+                                        <h4><span id="total_review">{{detaillocation.countReview}}</span> đánh giá</h4>
                                     </div>
                                     {% if user.username %}
-                                    <div class="col-sm-4 text-center">
-                                        <h3 class="mt-4 mb-3">Đánh giá và viết bình luận</h3>
+                                    <div class="col-sm-6 text-center">
+                                        <h3 class="pt-4 mb-4">Đánh giá và viết bình luận</h3>
                                         <button type="button" name="add_review" id="add_review" class="btn btn-primary">Bình luận</button>
                                     </div>
-                                    {% endif %}
+                                    {% else %}
+                                    <div class="col-sm-6 text-center">
+                                        <h4 class="mt-4 mb-3">Hãy đăng nhập để gửi đánh giá cho chúng tớ nhé </br><span><a href="{% url 'login' %}" style="color:#00a7ff;">Đăng nhập ngay</a></span></h4>
+                                    </div>
+                                        {% endif %}
                                 </div>
                             </div>
                         </div>
                         <div class="mt-5" id="review_content"></div>
                         <div id="review_modal" class="modal" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
-                              <div class="modal-content">
+                                <div class="modal-content">
                                     <div class="modal-header">
                                       <h5 class="modal-title">Thêm bình luận</h5>
                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -151,39 +112,46 @@
                                            
                                         </div>
                                     </div>
-                                {% endif %}
-                              </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                       
-                        <div class=""
+                        <div class="text-left" style="margin: 0 100px;">
                             {% for comment in detaillocation.comments.all %}
                             <article class="box mb-3">
-                                <div class="icontext w-100">
+                                <div class="icontext w-100 border-box">
             
-                                    <div class="text">
-                                        <span class="date text-muted float-md-right">{{comment.date}} </span>
-                                        <h6 class="mb-1">{{comment.author}} </h6>
+                                    <div class="text" style="margin: 20px;">
+                                        <span class="text-muted float-right">{{comment.author}} </span>-
+                                        <span class="date text-muted float-left">{{comment.date}} </span>
+                                           
                                         <div class="rating-star">
                                             <span>
-                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half-o{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half-o{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half-o{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half-o{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half-o{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                                
+                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
                                             </span>
                                         </div>
+                                    
+                                        <div class="mt-3">
+                                            <p>
+                                                {{comment.body|linebreaks}}
+                                            </p>
+                                        </div>
+                                               
+                                        {% if request.user == comment.author %}
+                                        <div class="text-right box-ac">
+                                        <a href="{% url 'edit_review' detaillocation.id comment.id %}">Sửa</a>
+                                        <a href="{% url 'delete_review' detaillocation.id comment.id %}" onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">Xóa</a>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </div> 
-                                <div class="mt-3">
-                                    <p>
-                                        {{comment.body|linebreaks}}
-                                    </p>
-                                </div>
-                                {% if request.user == comment.author %}
-                                <a href="{% url 'edit_review' detaillocation.id comment.id %}">Sửa</a>
-                                <a href="{% url 'delete_review' detaillocation.id comment.id %}" onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">Xóa</a>
-                                {% endif %}
+                                
                             </article>
                             {% endfor %}
                         </div>
@@ -247,7 +215,7 @@
         transition:width .6s ease
     } 
     .text-warning{color:#ffc107!important}a.text-warning:focus,a.text-warning:hover{color:#d39e00!important}
-    /* Hide Radio button */
+    
     /* Hide Radio button */
     .rate > input{
       display: none;
@@ -294,7 +262,9 @@
     .rating-star i{
       color: #ffb503 !important;
     }
-    
+    .box-ac .a{
+        color: red;
+    }
   </style>
 <script>
                     
