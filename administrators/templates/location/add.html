@@ -5,65 +5,75 @@
 {% block content%}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
-<form class="border-box">
+<button type="button" class="btn btn-primary"><a href="{% url 'get_images_form'%}" style="color: #fff;">Thêm mới hình ảnh</a></button>
+<form class="border-box form-contact" action="{% url 'add_location'%}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
   <h4 class="text-center mt-20">Thêm mới</h4>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputname">Tên địa điểm</label>
-        <input type="text" class="form-control" id="name" placeholder="Tên" required>
-      </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputname">Tên địa điểm</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Tên" required>
+    </div>
     <div class="form-group col-md-6">
       <label for="inputphone">Số điện thoại</label>
-      <input type="number" min="0" required maxlength="10" class="form-control" id="phone" placeholder="Số điện thoại">
+      <input type="number" value="images/" min="0" required maxlength="10" class="form-control" id="phone" name="phone" placeholder="Số điện thoại">
     </div>
   </div>
   <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputemail">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="email">
-      </div>
-      <div class="form-group col-md-6">
-        <label for="inputrepre">Người đại diện</label>
-        <input type="text" required class="form-control" id="representative" placeholder="Người đại diện">
-      </div>
+    <div class="form-group col-md-6">
+      <label for="category">Thể loại</label>
+      <select name="category" required id="category">
+        {% for category in category_list %}
+          <option value="{{category.id}}">{{category.name}}</option> 
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="logo">Logo</label>
+      <input type="file" name="logo" required class="form-control" id="logo">
+    </div>
   </div>
   <div class=" ">
     <div class="form-group select-group col-md-4 mt-10">
-      <select class="form-control form-select-sm" name="q" id="city" aria-label=".form-select-sm">
+      <select class="form-control form-select-sm" name="city" id="city" aria-label=".form-select-sm">
           <option value="" selected="" disabled="">Chọn tỉnh thành</option>
       </select>
     </div>
 
     <div class="form-group select-group col-md-4 mt-10" >
-      <select class="form-control" name="q" id="district" aria-label=".form-select-sm">
+      <select class="form-control" name="district" id="district" aria-label=".form-select-sm">
           <option value="" selected="" disabled="">Chọn Quận/Huyện</option>
       </select>
     </div>
     <div class="form-group select-group col-md-4 mt-10">
-      <select class="form-control" name="q" id="ward" aria-label=".form-select-sm">
-          <option value="wardcommune" selected="" disabled="">Chọn Phường/Xã</option>
+      <select class="form-control" name="ward" id="ward" aria-label=".form-select-sm">
+          <option value="" selected="" disabled="">Chọn Phường/Xã</option>
       </select>
     </div>
   </div>
   <div class="form-group col-md-12">
     <label for="inputaddress">Địa chỉ</label>
-    <input type="text" required class="form-control" id="address" placeholder="Địa chỉ">
+    <input type="text" name="address" required class="form-control" id="address" placeholder="Địa chỉ">
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputcostmin">Giá từ</label>
-      <input type="number" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Tên" required>
+      <input type="number" name="costmin" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Tên" required>
     </div>
     <div class="form-group col-md-6">
       <label for="inputcostmax">đến</label>
-      <input type="number" min="0" required maxlength="10" class="form-control" id="costmax">
+      <input type="number"  name="costmax" min="0" required maxlength="10" class="form-control" id="costmax">
     </div>
   </div>
   <div class="form-group col-md-12">
     <label for="inputdescribe">Mô tả</label>
-    <textarea type="text" rows="4" required class="form-control" id="describe"> </textarea>
+      <textarea type="text" rows="4" name="describe" required class="form-control" id="describe"></textarea>
   </div>
-  <button type="submit" class="btn btn-primary pull-right">Lưu trữ</button>
+  <div class="form-group col-md-12">
+    <label for="image">Hình ảnh</label>
+    <input type="file" name="image"  required class="form-control" id="image" > 
+  </div>
+  <button type="submit" class="btn btn-primary">Lưu trữ</button>
 </form>
   <script>
     var citis = document.getElementById("city");
