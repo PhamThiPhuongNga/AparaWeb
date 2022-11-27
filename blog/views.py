@@ -28,7 +28,7 @@ def search(request):
     if 'q' in request.GET:
         q = request.GET['q']
         if q:
-            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=q) | Q(distric__icontains=q) | Q(wardcommune__icontains=q) | Q(address__icontains=q) | Q(name__icontains=q) ))
+            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=q) | Q(district=q) | Q(wardcommune__icontains=q) | Q(address__icontains=q) | Q(name__icontains=q) ))
             location_count = locations.count()
     context = {
         'locations': locations,

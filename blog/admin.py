@@ -11,12 +11,15 @@ admin.site.register(Images)
 
 class CommentInLine(admin.TabularInline):
     model = Comment 
+class ImagesInLine(admin.TabularInline):
+    model = Images
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['name', 'logo', 'city', 'address']
     list_filter = ['date','costmin', 'costmax']
     search_fields =['name']
-    inlines = [CommentInLine]
+    inlines = [CommentInLine, ImagesInLine]
+    
 admin.site.register(Location, LocationAdmin)
 
 # class CommentAdmin(admin.ModelAdmin):

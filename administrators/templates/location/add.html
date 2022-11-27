@@ -3,12 +3,14 @@
 
 {% block title %}Thêm mới địa điểm{% endblock %}
 {% block content%}
+<div class="well">
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <a href="{% url 'location_list'%}">Danh sách địa điểm</a> / <span>Danh sách hình ảnh</span></h5>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
-<button type="button" class="btn btn-primary"><a href="{% url 'get_images_form'%}" style="color: #fff;">Thêm mới hình ảnh</a></button>
-<form class="border-box form-contact" action="{% url 'add_location'%}" method="POST" enctype="multipart/form-data">
+<form class=" form-contact bg-nav " action="{% url 'add_location'%}" method="POST" enctype="multipart/form-data">
   {% csrf_token %}
-  <h4 class="text-center mt-20">Thêm mới</h4>
+  <h4 class="text-center pt-30">Thêm mới</h4>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputname">Tên địa điểm</label>
@@ -22,7 +24,8 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="category">Thể loại</label>
-      <select name="category" required id="category">
+      <select name="category" required id="category" class="form-control">
+        <option value="">---Chọn---</option> 
         {% for category in category_list %}
           <option value="{{category.id}}">{{category.name}}</option> 
         {% endfor %}
@@ -58,11 +61,11 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputcostmin">Giá từ</label>
-      <input type="number" name="costmin" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Tên" required>
+      <input type="number" name="costmin" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Giá thấp nhất" required>
     </div>
     <div class="form-group col-md-6">
       <label for="inputcostmax">đến</label>
-      <input type="number"  name="costmax" min="0" required maxlength="10" class="form-control" id="costmax">
+      <input type="number"  name="costmax" min="0" required maxlength="10" class="form-control" id="costmax" placeholder="Giá cao nhất">
     </div>
   </div>
   <div class="form-group col-md-12">
@@ -73,8 +76,10 @@
     <label for="image">Hình ảnh</label>
     <input type="file" name="image"  required class="form-control" id="image" > 
   </div>
-  <button type="submit" class="btn btn-primary">Lưu trữ</button>
-</form>
+  <div class="pb-30  text-center">
+    <button type="submit" class="btn btn-primary">Lưu trữ</button>
+  </div>
+  </form>
   <script>
     var citis = document.getElementById("city");
     var districts = document.getElementById("district");

@@ -1,16 +1,16 @@
 {% extends "common/base.html" %}
 {% load static %}
 
-{% block title %}Danh sách địa điểm{% endblock %}
+{% block title %}Danh sách bình luận{% endblock %}
 
 {% block content%}
 <div class="well">
-  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách địa điểm</span></h5>
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách bình luận</span></h5>
 </div>
 <div class="bg-inf">
   <nav class=" navbar-light bg-light justify-content-between">
     <div class="d-flex">
-        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'get_location_form'%}" style="color: #fff;">Thêm mới</a></button>
+        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'get_comment_form'%}" style="color: #fff;">Thêm mới</a></button>
         <form class="form-inline pull-right ">
             <input class="form-control mr-sm-2"  type="search" placeholder="Tìm kiếm" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
@@ -22,23 +22,19 @@
       <tr>
         <th scope="col">STT</th>
         <th scope="col">Tên địa điểm</th>
-        <th scope="col">Logo</th>
-        <th scope="col">Thể loại</th>
-        <th scope="col">Địa chỉ</th>
-        <th scope="col">Lượt bình luận</th>
+        <th scope="col">Người đánh giá</th>
+        <th scope="col">Nội dung</th>
         <th scope="col">Điểm TB</th>
       </tr>
     </thead>
-    {% for location_list in page_obj %}
+    {% for comment_list in page_obj %}
     <tbody>
       <tr>
         <th scope="row">1</th>
-        <td>{{location_list.name}}</td>
-        <td><img src="/media/{{location_list.logo}}" alt="" style="width:80px; height:80px;"></td>
-        <td>{{location_list.category}}</td>
-        <td>{{location_list.address}}</td>
-        <td>{{location_list.countReview}}</td>
-        <td>{{location_list.averageReview}}</td>
+        <td>{{comment_list.detaillocation}}</td>
+        <td>{{comment_list.author}}</td>
+        <td>{{comment_list.body}}</td>
+        <td>{{comment_list.rating}}</td>
       </tr>
     </tbody>
     {% endfor %}
@@ -59,6 +55,6 @@
             <a href="?page={{ page_obj.paginator.num_pages }}" class="bd-pag"> Cuối &raquo;</a>
         {% endif %}
     </span>
-  </div>
+</div>
 </div>
 {% endblock %}

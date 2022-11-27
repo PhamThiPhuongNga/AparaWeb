@@ -25,10 +25,10 @@
                         <span class="pull-right"><strong>{{detaillocation.costmin}}</strong>-<strong>{{detaillocation.costmax}} VND</strong></span>
                     </li>
                 </ul>
-                <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a>
+                {% comment %} <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a> {% endcomment %}
             </div>
             <div class="col-md-8 col-md-pull-4 text-center">
-                <img src="{% static 'images/screen-43.jpg' %}" alt="screen" class="screen">
+                <img src="/media/{{detaillocation.image}}" alt="screen" class="screen">
             </div>
         </div>
     </div>
@@ -46,7 +46,6 @@
                 </ul>
                 <div class="tab-content mt-40" id="myTabContent">
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--0" aria-labelledby="desc_tabs_0--0-tab">
-                        <h4 class="mb-30">Since 1904 till today</h4>
                         <p>{{detaillocation.describe|safe|linebreaks}}</p>
                     </div>
                     <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
@@ -160,11 +159,12 @@
                         <section id="gallery-list-3col" class="pt-80 pb-80 text-center light">
                             <div class="container">
                                 <div class="row gallery">
-                                    <div class="col-md-4">
-                                        <a href="/media/{{detaillocation.image}}" class="gallery-box">
+                                    {% for img in detaillocation.images.all %}
+                                    <div class="col-md-4 mt-20 mb-20 border-box">
+                                        <a href="/media/{{img.image}}" class="gallery-box">
                                             <i class="icon icon-size-m icon-plus"></i>
-                                            <span class="caption">Gallery item with zoom option</span>
-                                            <img src="/media/{{detaillocation.image}}" alt="screen">
+                                            <span class="caption">{{img.location_id}}</span>
+                                            <img src="/media/{{img.image}}" alt="screen">
                                         </a>
                                         {% comment %} <a href="https://vimeo.com/123395658" class="gallery-box mfp-iframe">
                                             <i class="icon icon-size-m icon-ion-ios-play-outline"></i>
@@ -172,6 +172,7 @@
                                             <img src="images/screen-8.jpg" alt="screen">
                                         </a> {% endcomment %}
                                     </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="bg"></div>

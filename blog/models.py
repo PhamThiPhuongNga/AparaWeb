@@ -42,7 +42,7 @@ class Location(models.Model):
     costmin = models.CharField(max_length=10)
     costmax = models.CharField(max_length=10)
     # vote = models.IntegerField(default=0)
-    describe = models.TextField(null=True,max_length=200)
+    describe = models.TextField(null=True,max_length=255)
     
     def __str__(self):
         return self.name
@@ -79,6 +79,6 @@ class Comment(models.Model):
     status = models.BooleanField(null=True,default=True)
     
 class Images(models.Model): 
-    location_id = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
+    location_id = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'images')
     image = models.FileField(upload_to='images',blank=True)
-    
+    date = models.DateTimeField(null=True,auto_now_add=True)

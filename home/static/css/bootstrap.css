@@ -995,8 +995,8 @@ pre code {
 .col-lg-12 {
     position: relative;
     min-height: 1px;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .col-xs-1,
@@ -1763,7 +1763,7 @@ th {
 
 .table>thead>tr>th {
     vertical-align: bottom;
-    border-bottom: 2px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
 }
 
 .table>caption+thead>tr:first-child>th,
