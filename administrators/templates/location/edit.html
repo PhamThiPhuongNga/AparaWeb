@@ -4,77 +4,85 @@
 {% block title %}Thêm mới địa điểm{% endblock %}
 {% block content%}
 <div class="well">
-  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <a href="{% url 'location_list'%}">Danh sách địa điểm</a> / <span>Thêm mới</span></h5>
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <a href="{% url 'location_list'%}">Danh sách địa điểm</a> / <span>Cập nhật</span></h5>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
-<form class=" form-contact bg-nav " action="{% url 'add_location'%}" method="POST" enctype="multipart/form-data">
+<form class=" form-contact bg-nav " method="POST" enctype="multipart/form-data">
   {% csrf_token %}
   <h4 class="text-center pt-30">Thêm mới</h4>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputname">Tên địa điểm</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Tên" required>
+      <input type="text" value="{{loca.name}}"class="form-control" id="name" name="name" placeholder="Tên" required>
     </div>
     <div class="form-group col-md-6">
       <label for="inputphone">Số điện thoại</label>
-      <input type="number" min="0" required maxlength="10" class="form-control" id="phone" name="phone" placeholder="Số điện thoại">
+      <input type="number" value="{{loca.phone}}" min="0" required maxlength="10" class="form-control" id="phone" name="phone" placeholder="Số điện thoại">
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="category">Thể loại</label>
-      <select name="category" required id="category" class="form-control">
-        <option value="">---Chọn---</option> 
-        {% for category in category_list %}
+      <select name="category" default id="category" class="form-control">
+        <option value="{{loca.category_id}}">{{loca.category}}</option> 
+        {% for category in cate %}
           <option value="{{category.id}}">{{category.name}}</option> 
         {% endfor %}
       </select>
     </div>
     <div class="form-group col-md-6">
       <label for="logo">Logo</label>
-      <input type="file" name="logo" required class="form-control" id="logo">
+      <input type="file" name="logo"  class="form-control" id="logo">
+      <br/>
+      {% if loca.image %}
+        <img src="/media/{{loca.logo}}" width="100" height="100" alt="Hình ảnh">
+      {% endif %}
     </div>
   </div>
   <div class=" ">
     <div class="form-group select-group col-md-4 mt-10">
       <select class="form-control form-select-sm" name="city" id="city" aria-label=".form-select-sm">
-          <option value="">Chọn tỉnh thành</option>
+          <option value="{{loca.city}}">{{loca.city}}</option>
       </select>
     </div>
 
     <div class="form-group select-group col-md-4 mt-10" >
       <select class="form-control" name="district" id="district" aria-label=".form-select-sm">
-          <option value="">Chọn Quận/Huyện</option>
+          <option value="{{loca.district}}">{{loca.district}}</option>
       </select>
     </div>
     <div class="form-group select-group col-md-4 mt-10">
       <select class="form-control" name="ward" id="ward" aria-label=".form-select-sm">
-          <option value="" >Chọn Phường/Xã</option>
+          <option value="{{loca.wardcommune}}">{{loca.wardcommune}}</option>
       </select>
     </div>
   </div>
   <div class="form-group col-md-12">
     <label for="inputaddress">Địa chỉ</label>
-    <input type="text" name="address" required class="form-control" id="address" placeholder="Địa chỉ">
+    <input type="text" value="{{loca.address}}" name="address" required class="form-control" id="address" placeholder="Địa chỉ">
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputcostmin">Giá từ</label>
-      <input type="number" name="costmin" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Giá thấp nhất" required>
+      <input type="number" value="{{loca.costmin}}" name="costmin" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Giá thấp nhất" required>
     </div>
     <div class="form-group col-md-6">
       <label for="inputcostmax">đến</label>
-      <input type="number"  name="costmax" min="0" required maxlength="10" class="form-control" id="costmax" placeholder="Giá cao nhất">
+      <input type="number" value="{{loca.costmax}}" name="costmax" min="0" required maxlength="10" class="form-control" id="costmax" placeholder="Giá cao nhất">
     </div>
   </div>
   <div class="form-group col-md-12">
     <label for="inputdescribe">Mô tả</label>
-      <textarea type="text" rows="4" name="describe" required class="form-control" id="describe"></textarea>
+      <textarea type="text" rows="4" name="describe" required class="form-control" id="describe">{{loca.describe}}</textarea>
   </div>
   <div class="form-group col-md-12">
+    {% if loca.image %}
+    <img src="/media/{{loca.image}}" width="100" height="100" alt="Hình ảnh">
+    {% endif %}
+    <br/> 
     <label for="image">Hình ảnh</label>
-    <input type="file" name="image"  required class="form-control" id="image" > 
+    <input type="file" value="/media/{{loca.image}}" name="image" class="form-control" id="image" >
   </div>
   <div class="pb-30  text-center">
     <button type="submit" class="btn btn-primary">Lưu trữ</button>

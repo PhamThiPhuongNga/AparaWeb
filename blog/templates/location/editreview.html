@@ -5,17 +5,44 @@
 
 {% block content %}
 
-<div class="container mt-125">
+<div class="container mt-125 mb-125">
 	<div class="card">
 		<div class="card-body">
 			<h3 class="text-center">Chỉnh sửa bình luận</h3>
 			<form action="" method="POST">
 				{% csrf_token %}
-				{{ form }}
+				<div class="form-row">
+					<div class="form-body col-md-12">
+					  <label for="inputname">Tên địa điểm</label>
+					  <input type="text" class="form-control" id="name" name="name" disabled placeholder="Tên" value="{{review.detaillocation}}">
+					</div>
+					<div class="form-body col-md-12">
+						<label for="body">Bình luận</label>
+						  	<textarea type="text" rows="4" name="body" required class="form-control" id="body">{{review.body}}</textarea>
+					</div>
+					<div class="form-body col-md-12">
+						<label for="category">Đánh giá</label>
+						<select name="rating" default id="rating" class="form-control">
+						  	<option value="{{review.rating}}">{{review.rating}}</option>
+							<option value="0.5">0.5</option>  
+							<option value="1">1</option> 
+							<option value="1.5">1.5</option> 
+							<option value="2">2</option> 
+							<option value="2.5">2.5</option> 
+							<option value="3">3</option> 
+							<option value="3.5">3.5</option> 
+							<option value="4">4</option> 
+							<option value="4.5">4.5</option> 
+							<option value="5">5</option> 
+						</select>
+					  </div>
+				</div>
 				{% if error %}
 					<strong style="color:red;">{{ error }}</strong>
 				{% endif %}
-				<input type="submit" value="Lưu thay đổi" class="btn btn-danger">
+				<div class="pb-30  text-center">
+					<button type="submit" class="btn btn-danger">Lưu thay đổi</button>
+				</div>
 			</form>
 		</div>
 	</div>

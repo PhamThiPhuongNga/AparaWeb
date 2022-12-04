@@ -51,7 +51,7 @@ class Location(models.Model):
         reviews = Comment.objects.filter(detaillocation=self, status=True).aggregate(average=Avg('rating'))
         avg = 0
         if reviews['average'] is not None:
-            avg = float(reviews['average'])
+            avg = round(reviews['average'],1)
         return avg
 
     def countReview(self):

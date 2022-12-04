@@ -1,27 +1,64 @@
 <!DOCTYPE html>
 <html>
     <head>
+        {% load static %}
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Đăng nhập</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/icons.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/contact.css' %}" type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/home.css' %}" type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        {% comment %} <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> {% endcomment %}
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="{% static 'js/register.js' %}"></script>
     </head>
-    <body>
-        <center>
-            <form action="." method="POST">
-                {% csrf_token %}
-                {% for key,value in form.errors.items %}
-                    {{value}}
-                {% endfor %}
-                <p><label>Tài khoản: </label>{{form.username}}</p>
-                <p><label>Mật khẩu: </label>{{form.password}}</p>
-                <input type="hidden" name='next' value="/" />
-                <input type="submit" value="Đăng nhập" />
-                
-            </form>
-        </center>
+    <body class="light-page">
+        <div id="wrap">
+            <a href="{% url 'home' %}">Trang chủ</a>
+            <a href="{% url 'register' %}">Đăng ký</a>
+			<section id="subscribe-field-halfbg" class="pt-150 pb-md-150 text-center light">
+    			<div class="container-fluid">
+        			<div class="row">
+            			<div class="col-md-4 col-md-offset-1" style="">
+                			<h2 class="mb-20" style="">Đăng nhập</h2>
+                			<p class="mb-30 light" style="Chào mừng bạn đến với Apara!">Chào mừng bạn đến với Apara!</p>
+                			<form action="." class="contact_form" method="POST" id="subscribe-field-halfbg-form">
+                    			{% csrf_token %}
+                                {% for key,value in form.errors.item %}
+                                    {{value}}
+                                {% endfor %}
+                                <div class="form-group">
+                                    <label>Tài khoản: </label>
+                                    {{form.username}}
+                                </div>
+                                <div class="form-group">
+                                    <label>Mật khẩu: </label>
+                                    {{form.password}}
+                                </div>
+                                <input type="hidden" name = "next" value="/">
+                                <input type="submit" value="Đăng nhập" class="btn btn-primary">
+                			</form>
+            			</div>
+        			</div>
+    			</div>
+    			<div class="half-container-right"></div>
+    			<div class="bg"></div>
+			</section>
+		</div>
+		<div class="modal-container"></div>
         
         <script src="" async defer></script>
     </body>

@@ -1,11 +1,10 @@
-from urllib import response
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from blog.models import Location, Comment, Category, Images
+from django.contrib import messages
 # from .forms import ResistrationForm
-from django.views.generic import ListView
-from django.http import HttpResponseRedirect
+import os
 # from .forms import uploadMultiForm
 
 # Create your views here.
@@ -26,9 +25,6 @@ def get_location_form(request):
 
 def add_location (request):
     if request.method =="POST":
-        # form_class = uploadMultiForm
-        # forms = self.get_form(form_class)
-        
         category = request.POST['category']
         name = request.POST['name']
         logo = request.FILES['logo']
@@ -42,8 +38,6 @@ def add_location (request):
         describe = request.POST['describe']
         image = request.FILES['image']
         categoryyy = Category.objects.get(id=category)
-        # for f in image:
-            # image = Location(image = f)
         location = Location.objects.create(category=categoryyy,
                                     name = name,
                                     logo = logo,
@@ -57,10 +51,46 @@ def add_location (request):
                                     describe = describe,
                                     image = image)
         location.save()
-        # images = Location.objects.all()
         return redirect('/administrators/location')
     else:
         return render(request, 'common/error.html')
+
+def edit_location (request, id):
+    loca = Location.objects.get(id=id)
+    cate =  Category.objects.filter()
+    if request.method =="POST":
+        if len(request.FILES) !=0:
+            if len(loca.logo) > 0 and len(loca.image) > 0:
+                os.remove(loca.logo.path, loca.image.path)
+            loca.logo = request.FILES['logo']
+            loca.image = request.FILES['image']
+        loca.city = request.POST['city']
+        loca.district = request.POST['district']
+        loca.wardcommune = request.POST['ward']  
+        category = request.POST['category']
+        
+        categoryyy = Category.objects.get(id=category)
+        loca.category = categoryyy
+        
+        loca.name = request.POST['name']
+        loca.phone = request.POST['phone']
+        loca.address = request.POST['address']
+        loca.costmin = request.POST['costmin']
+        loca.costmax = request.POST['costmax']
+        loca.describe = request.POST['describe']
+        print(loca)
+        loca.save()
+        messages.success(request, "Cập nhật thành công!")
+        return redirect('/administrators/location')
+    return render(request, 'location/edit.html',{"loca": loca, "cate": cate})
+
+def delete_location(request, id):
+    loca = Location.objects.get(id=id)
+    if len(loca.logo) > 0 and len(loca.image) > 0:
+        os.remove(loca.logo.path, loca.image.path)
+    loca.delete()
+    messages.success(request, "Xoá thành công!")
+    return redirect('/administrators/location')  
     
 def get_images_form(request):
     location_list = Location.objects.filter()
@@ -77,12 +107,6 @@ def add_images (request):
         return redirect('/administrators/formimages')
     else:
         return render(request, 'common/error.html')    
-        
-# class ImagesListView(ListView):
-#     queryset = Images.objects.all().order_by("-date")
-#     template_name = 'location/formimages.html'
-#     context_object_name = 'i'
-#     paginate_by = 10   
     
 def viewImages(request):
     i = Images.objects.filter().order_by("-date")
@@ -90,6 +114,7 @@ def viewImages(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'location/formimages.html',{'page_obj': page_obj})
+
 
 def viewComment(request):
     comment = Comment.objects.filter().order_by("-date")

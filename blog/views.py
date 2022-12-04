@@ -7,6 +7,11 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
+# import pandas as pd
+# from math import sqrt
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from math import ceil
 
 
 # Create your views here.
@@ -16,14 +21,7 @@ class LocationListView(ListView):
     context_object_name = 'Locations'
     paginate_by = 4
     
-# def search(self):
-#     if 'q' in self.request.GET:
-#         q = self.request.GET.get['q']
-#         multiple_q = Q(Q(city__icontains=q) | Q(district__icontains=q))
-#         locations = Location.objects.filter(multiple_q)
-#     else:
-#         locations = {'locations': Location.objects.all().order_by("-date")}
-#         return locations
+
 def search(request):
     if 'q' in request.GET:
         q = request.GET['q']
@@ -50,8 +48,8 @@ def detaillocation(request , pk):
             data.author = request.user
             data.detaillocation = detaillocation
             data.save() 
-            return HttpResponseRedirect(request.path)
             messages.success(request, ' Cảm ơn bạn đã bình luận')
+            return HttpResponseRedirect(request.path)
     else:
         form = CommentForm()
     return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})
@@ -61,25 +59,21 @@ def edit_review(request, pk, review_id):
     detaillocation = Location.objects.get(pk=pk)
     review = Comment.objects.get(detaillocation=detaillocation, id=review_id)
     if request.user == review.author:
-        if request.method == "POST":
-            form = CommentForm(request.POST,instance=review)
-            if form.is_valid():
-                data = form.save(commit=False)
-                if (float(data.rating) > 5) or (float(data.rating) < 0):
-                    error="Vui lòng chọn từ 1 đến 5"
-                    return render(request, 'location/editreview.html', {"error": error, "form":form})
-                else:
-                    data.save()
-                    return HttpResponseRedirect(request.path)
-        else:
-            form = CommentForm(instance=review)
-            return render(request, 'location/editreview.html', { "form":form})
-    else:
-        return HttpResponseRedirect(request.path)
+        if request.method =="POST":
+            review.body = request.POST['body']
+            review.rating = request.POST['rating']  
+            review.save()
+            messages.success(request, "Cập nhật thành công!")
+            return redirect('/blog/location/' + str(detaillocation.id))
+        return render(request, 'location/editreview.html',{"detaillocation": detaillocation, "review": review})
     
 def delete_review(request, pk, review_id):
     detaillocation = Location.objects.get(pk=pk)
     review = Comment.objects.get(detaillocation=detaillocation, id=review_id)
     if request.user == review.author:
         review.delete()
-        return HttpResponseRedirect(request.path)
+        messages.success(request, "Xoá thành công!")
+        return redirect('/blog/location/' + str(detaillocation.id))
+    
+
+

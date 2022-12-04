@@ -16,7 +16,4 @@ class CommentForm (forms.ModelForm):
         # widgets={
         #     'rating':forms.TextInput(attrs={'type':'range','step':'1','min':'1','max':'5','class':'submit_star'})
 
-class UploadFileForm(forms.Form):
-    image = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
-
     

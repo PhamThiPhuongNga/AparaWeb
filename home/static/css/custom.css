@@ -251,6 +251,7 @@ border-color: #dddddd;
 }
 .dark .light .border-box, .light .border-box {
 border-color: #dddddd;
+border-radius: 10px;
 }
 .dark .light .text-icon-list.text-icon-list-sep li, .light .text-icon-list.text-icon-list-sep li {
 border-color: #dddddd;

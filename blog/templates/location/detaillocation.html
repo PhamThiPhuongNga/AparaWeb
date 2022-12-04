@@ -10,7 +10,7 @@
             <div class="col-md-4 col-md-push-8">
                 <h2 class="mb-10"><a href=""><strong>{{detaillocation.name}}</strong></a></h2>
                 <h4 class="mb-50">{{detaillocation.category}}</h4>
-                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.distric}}, {{detaillocation.city}}</p>
+                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.district}}, {{detaillocation.city}}</p>
                 <ul class="text-icon-list text-icon-list-sep">
                     <li class="clearfix"><i class="icon-phone icon-color icon-size-m icon-position-left"></i>
                         <span>Số điện thoại</span>
@@ -118,7 +118,7 @@
                       
                         <div class="text-left" style="margin: 0 100px;">
                             {% for comment in detaillocation.comments.all %}
-                            <article class="box mb-3">
+                            <article class="box mb-10">
                                 <div class="icontext w-100 border-box">
             
                                     <div class="text" style="margin: 20px;">
@@ -144,8 +144,8 @@
                                                
                                         {% if request.user == comment.author %}
                                         <div class="text-right box-ac">
-                                        <a href="{% url 'edit_review' detaillocation.id comment.id %}">Sửa</a>
-                                        <a href="{% url 'delete_review' detaillocation.id comment.id %}" onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">Xóa</a>
+                                            <a href="{% url 'edit_review' detaillocation.id comment.id %}"><i class="changelink"></i></a>
+                                            <a href="{% url 'delete_review' detaillocation.id comment.id %}" onclick=" return confirm('Bạn có chắc chắn muốn xóa bình luận này?');"><i class="inline-deletelink"></i></a>
                                         </div>
                                         {% endif %}
                                     </div>

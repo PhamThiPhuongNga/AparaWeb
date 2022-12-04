@@ -18,6 +18,7 @@ class ResistrationForm(forms.Form):
         raise forms.ValidationError('Mật khẩu không hợp lệ!')
     def clean_username(self):
         username = self.cleaned_data['username']
+            
         if not re.search(r'^\w+$', username):
             raise forms.ValidationError('Tài khoản chứa ký tự đặc biệt!')
         try:
