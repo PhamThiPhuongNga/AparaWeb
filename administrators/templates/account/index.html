@@ -1,0 +1,58 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block title %}Danh sách tài khoản {% endblock %}
+
+{% block content%}
+<div class="well">
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách tài khoản</span></h5>
+</div>
+<div class="bg-inf">
+  <nav class=" navbar-light bg-light justify-content-between">
+    <div class="d-flex">
+        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'get_location_form'%}" style="color: #fff;">Thêm mới</a></button>
+        <form class="form-inline pull-right ">
+            <input class="form-control mr-sm-2" name="search"  type="search" placeholder="Tìm kiếm" aria-label="Search">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
+        </form>
+    </div>
+  </nav>
+  <table class="table v-middle">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col">Tên nhóm</th>
+        <th scope="col">Thao tác</th>
+      </tr>
+    </thead>
+    {% for account_list in page_obj %}
+    <tbody>
+      <tr>
+        <th scope="row">{{account_list.id}}</th>
+        <td>{{account_list.name}}</td>
+        <td>
+          <a href="accounts/{{account_list.id}}/">Chi tiết</a>
+        </td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+  <div class="pagination text-center mt-30 mb-30">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="bd-pag">&laquo; Đầu</a>
+            <a href="?page={{ page_obj.previous_page_number }} "class="bd-pag">Trước</a>
+        {% endif %}
+
+        <span class="current">
+            <span class="bd-pag actionn">{{ page_obj.number }}</span> ... <a href="?page={{ page_obj.paginator.num_pages }}" class="bd-pag">{{ page_obj.paginator.num_pages }}</a>
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }} "class="bd-pag">Sau</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="bd-pag"> Cuối &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+</div>
+{% endblock %}

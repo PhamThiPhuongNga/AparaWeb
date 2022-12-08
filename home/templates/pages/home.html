@@ -12,25 +12,25 @@
                 <h1 class="mb-50" style="">Rent a paradise on the weekend</h1>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
                     <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
-                <form class="form-inline" action="{% url 'searchlocation'%}" method = "GET">
+                <form class="form-inline" action="{% url 'searchlocation'%}">
                     <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
                     <div class="form-group select-group">
-                        <select class="form-control form-select-sm" name="q" id="city" aria-label=".form-select-sm">
+                        <select class="form-control form-select-sm" name="qcity" id="city" aria-label=".form-select-sm">
                             <option value="" selected="" disabled="">Chọn tỉnh thành</option>
                         </select>
                     </div>
                     <div class="form-group select-group" >
-                        <select class="form-control" name="q" id="district" aria-label=".form-select-sm">
+                        <select class="form-control" name="qdistrict" id="district" aria-label=".form-select-sm">
                             <option value="" selected="" disabled="">Chọn Quận/Huyện</option>
                         </select>
                     </div>
                     <div class="form-group select-group">
-                        <select class="form-control" name="q" id="ward" aria-label=".form-select-sm">
+                        <select class="form-control" name="qward" id="ward" aria-label=".form-select-sm">
                             <option value="wardcommune" selected="" disabled="">Chọn Phường/Xã</option>
                         </select>
                     </div>
                     <div class="form-group select-group">
-                        <select class="form-control" name="q">
+                        <select class="form-control" name="qmincost">
                             <option value="mincost" selected="" disabled="">Giá từ</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -39,7 +39,7 @@
                         </select>
                     </div>
                     <div class="form-group select-group">
-                        <select class="form-control" name="q">
+                        <select class="form-control" name="qmaxcost">
                             <option value="maxcost" selected="" disabled="">đến</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -61,7 +61,7 @@
 <section id="clients-carousel" class="pt-75 pb-50  light">
     <div class="container">
             {% if  recommended%}
-        <h2 class="">Địa điểm được gợi ý cho bạn</h2>
+        <h3 class="">Địa điểm được gợi ý cho bạn</h3>
         <div class="carousel-5item-nav owl-drag">
             {% for item in recommended %}
             <div class="">
@@ -89,7 +89,7 @@
             </div>
             {% endfor %}
         {% else %}
-        <h5 class="my-4 text-light">Không có gợi ý địa điểm</u></h5>
+        <h3 class="my-4 text-light">Không có gợi ý địa điểm</u></h3>
         {% endif %}
         </div>
     </div>
@@ -97,36 +97,64 @@
 </section>
 <section id="clients-carousel" class="pt-50 pb-50 text-center light">
     <div class="container">
-        <h2 class="">Danh mục</h2>
-        <div class="carousel-5item-nav owl-drag">
-            <div class="item border-box">
-                <img src="images/client-1.png" srcset="images/client-1@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">The given template is armed with the number of settings</p>
+        <h3 class="">Danh mục</h3>
+        <div class="carousel-5item-nav owl-drag mt-30">
+            {% for category in category %}
+            <div class="item border-box" >
+                <p class="pt-30 pb-30" style="margin-bottom: 0px">{{category.name}}</p>
             </div>
-            <div class="item border-box">
-                <img src="images/client-2.png" srcset="images/client-2@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">Nothing should lead the visitor away from the main essence</p>
-            </div><div class="item border-box">
-                <img src="images/client-3.png" srcset="images/client-3@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">In our work we try to use only the most modern solutions</p>
-            </div><div class="item border-box">
-                <img src="images/client-4.png" srcset="images/client-4@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">So, what is the secret of successful template design?</p>
-            </div><div class="item">
-                <img src="images/client-5.png" srcset="images/client-5@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">The detailed documentation will help you in adjusting</p>
-            </div><div class="item">
-                <img src="images/client-6.png" srcset="images/client-6@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">Nothing should lead the visitor away from the main essence</p>
-            </div><div class="item">
-                <img src="images/client-7.png" srcset="images/client-7@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">The given template is armed with the number of settings</p>
-            </div><div class="item">
-                <img src="images/client-8.png" srcset="images/client-8@2x.png 2x" alt="logo" class="screen">
-                <p class="mt-20">In our work we try to use only the most modern solutions</p>
-            </div></div>
+            {% endfor %}
+        </div>
     </div>
     <div class="bg"></div>
 </section>
+<section id="clients-carousel" class="pt-50 pb-50 text-center light">
+    <div class="container">
+        <h3 class="mb-40">Địa điểm phổ biến</h3>
+        <div class="carousel-5item-nav owl-drag mt-30">
+            {% for location in locations %}
+                <div class="">
+                    <div class="card" style="border: 0.5px solid #f2f2f2;">
+                        <div style="">
+                            <img src="{{location.image.url}}" alt="Photo" class="card-img">
+                        </div>
+                        <div style="margin: 10px;">
+                            <h4 class="mt-20 mb-0"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
+                            <h4 class="mb-20">{{location.category}}</h4>
+                            <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                                <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
+                            <ul class="text-icon-list text-icon-list-sep">
+                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                                    <span>Đánh giá</span>
+                                    <span class="pull-right">{{location.averageReview}}/ 5</span>
+                                </li>
+                                <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
+                                    <span>Giá</span>
+                                    <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+<section id="clients-carousel" class="pt-50 pb-50 text-center light">
+    <div class="container">
+        <h3 class="">Đối tác</h3>
+        <div class="carousel-5item-nav owl-drag ">
+            {% for location in locations %}
+            <div class="item">
+                <img src="media/{{location.logo}}" alt="logo" class="screen" width="100px" height="100px">
+                {% comment %} <p class="mt-20">{{category.name}}</p> {% endcomment %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+
  {% endblock %}
  

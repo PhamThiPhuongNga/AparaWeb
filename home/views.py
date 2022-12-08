@@ -3,7 +3,7 @@ from django.shortcuts import render,get_object_or_404, redirect
 from django.contrib.auth import authenticate,login, logout
 from django.http import HttpResponse
 from .forms import ResistrationForm
-from blog.models import Location, Comment
+from blog.models import Location, Comment, Category
 from blog.forms import CommentForm
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -12,17 +12,22 @@ from math import sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 from math import ceil
+from django.contrib.auth.models import User, Group
 # Create your views here.
 
 def contact(request):
     return render(request, 'pages/contact.html')
-def register(request):
-    form = ResistrationForm()
+def register(request, *args, **kwargs):
     if request.method == 'POST':
         form = ResistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            user = form.save(commit=False)
+            user.save()
+            user_group = Group.objects.get(name='Khách hàng')
+            user.groups.add(user_group)
+            return redirect('pages/login.html')
+        else:
+            form = ResistrationForm()
     return render(request, 'pages/register.html', {'form': form})
 def error(request):
     return render(request, 'pages/error.html')
@@ -45,9 +50,7 @@ def generateRecommendation(request):
         x=[item.id,item.name,item.category,item.image.url,item.address,item.wardcommune,item.district, item.city,item.costmin, item.costmax] 
         y+=[x]
     location_df = pd.DataFrame(y,columns=['locationId','name','category','image','address','wardcommune','district','city','costmin','costmax'])
-    print("Movies DataFrame")
-    # location_df['averageReview']=location_df['averageReview'].astype(float).astype(np.float)
-    # location_df['countReview']=location_df['countReview'].astype(str).astype(np.int64)
+    print("Locations DataFrame")
     print(location_df)
     print(location_df.dtypes)
     
@@ -64,7 +67,7 @@ def generateRecommendation(request):
     print(rating_df.dtypes)
     if request.user.is_authenticated:
         userid=request.user.id
-        #select related is join statement in django.It looks for foreign key and join the table
+        #chọn liên quan là câu lệnh tham gia trong django. Nó tìm khóa ngoại và tham gia bảng
         userInput=Comment.objects.select_related('detaillocation').filter(author=userid)
         if userInput.count()== 0:
             recommenderQuery=None
@@ -74,7 +77,7 @@ def generateRecommendation(request):
                 C=[item.detaillocation.name,item.rating]
                 D+=[C]
             inputLocations=pd.DataFrame(D,columns=['name','rating'])
-            print("Watched Movies by user dataframe")
+            print("Views Loactions by user dataframe")
             inputLocations['rating']=inputLocations['rating'].astype(str).astype(np.float)
             print(inputLocations.dtypes)
             # Lọc địa điểm theo tên 
@@ -173,6 +176,9 @@ def filterLocationByCategory():
     return params
 
 def index(request):
+    # category = Category.objects.filter()
+    # locations = Location.objects.order_by('-date')
     params=filterLocationByCategory()
-    params['recommended']=generateRecommendation(request)
+    params['recommended'] = generateRecommendation(request)
     return render(request,'pages/home.html',params)
+    # return render(request,'pages/home.html', {'category': category, 'locations': locations})

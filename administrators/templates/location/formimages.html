@@ -23,6 +23,7 @@
             <th scope="col">STT</th>
             <th scope="col">Tên địa điểm</th>
             <th scope="col">Hình ảnh</th>
+            <th scope="col">Thao tác</th>
             </tr>
         </thead>
         {% for im in page_obj %}
@@ -31,6 +32,10 @@
                 <th scope="row">1</th>
                 <td>{{im.location_id}}</td>
                 <td><img src="/media/{{im.image}}" alt="" style="width:80px; height:80px;"></td>
+                <td>
+                    <a href="{% url 'edit_images' im.id %}"><i class="changelink"></i></a>
+                    <a href="{% url 'delete_images' im.id  %}"><i class="inline-deletelink"></i></a>
+                </td>
             </tr>
         </tbody>
         {% endfor %}

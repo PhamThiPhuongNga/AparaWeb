@@ -1,0 +1,36 @@
+
+#header-center-slogan-form-2 {
+    background: #000000;
+}
+
+#header-center-slogan-form-2 .bg {
+    background-image: url('C:\xampp\htdocs\AparaWeb\home\static\images\bg-nature-4.jpg');
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: cover;
+    opacity: 0.85;
+}#footer-list-subscribe-2{
+    background: #222222;
+}
+
+/* -----login/register----- */
+#subscribe-field-halfbg .half-container-right {
+    background-image: url('/media/images/bg-38.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 1;
+}
+
+#id_username, #id_password, #id_email, #id_password1, #id_password2{
+    font-size: inherit;
+    padding: 12px;
+    height: 50px;
+    width: 300px;
+    line-height: 25px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #EEEEEE;
+    border-radius: 10px;
+}
+

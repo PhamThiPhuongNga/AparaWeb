@@ -64,12 +64,38 @@
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="inputcostmin">Giá từ</label>
-      <input type="number" value="{{loca.costmin}}" name="costmin" maxlength="10" min="0" class="form-control" id="costmin" placeholder="Giá thấp nhất" required>
+      <label for="costmin">Giá từ</label>
+      <select class="form-control" name="costmin" id="costmin" aria-label=".form-select-sm">
+        <option value="{{loca.costmin}}">{{loca.costmin}}</option>
+        <option value="25000">25000</option>
+        <option value="50000">50000</option>
+        <option value="100000">100000</option>
+        <option value="150000">150000</option>
+        <option value="200000">200000</option>
+        <option value="250000">250000</option>
+      </select>
     </div>
     <div class="form-group col-md-6">
-      <label for="inputcostmax">đến</label>
-      <input type="number" value="{{loca.costmax}}" name="costmax" min="0" required maxlength="10" class="form-control" id="costmax" placeholder="Giá cao nhất">
+      <label for="costmax">đến</label>
+      <select class="form-control" name="costmax" id="costmax" aria-label=".form-select-sm">
+        <option value="{{loca.costmax}}">{{loca.costmax}}</option>
+        <option value="50000">50000</option>
+        <option value="100000">100000</option>
+        <option value="150000">150000</option>
+        <option value="200000">200000</option>
+        <option value="250000">250000</option>
+        <option value="300000">300000</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="timestart">Hoạt động từ</label>
+      <input type="time" value="{{loca.timestart}}" name="timestart" maxlength="10" min="0" class="form-control" id="timestart" placeholder="Thời gian bắt đầu" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="timeend">đến</label>
+      <input type="time" value="{{loca.timeend}}" name="timeend" min="0" required maxlength="10" class="form-control" id="timeend" placeholder="{{loca.timeend}}">
     </div>
   </div>
   <div class="form-group col-md-12">
@@ -88,46 +114,4 @@
     <button type="submit" class="btn btn-primary">Lưu trữ</button>
   </div>
   </form>
-  <script>
-    var citis = document.getElementById("city");
-    var districts = document.getElementById("district");
-    var wards = document.getElementById("ward");
-    var Parameter = {
-    url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json", 
-    method: "GET", 
-    responseType: "application/json", 
-    };
-    var promise = axios(Parameter);
-    promise.then(function (result) {
-    renderCity(result.data);
-    });
-    
-    function renderCity(data) {
-    for (const x of data) {
-     citis.options[citis.options.length] = new Option(x.Name, x.Name);
-    }
-    citis.onchange = function () {
-     district.length = 1;
-     ward.length = 1;
-     if(this.value != ""){
-       const result = data.filter(n => n.Name === this.value);
-    
-       for (const k of result[0].Districts) {
-         district.options[district.options.length] = new Option(k.Name, k.Name);
-       }
-     }
-    };
-    district.onchange = function () {
-     ward.length = 1;
-     const dataCity = data.filter((n) => n.Name === citis.value);
-     if (this.value != "") {
-       const dataWards = dataCity[0].Districts.filter(n => n.Name === this.value)[0].Wards;
-    
-       for (const w of dataWards) {
-         wards.options[wards.options.length] = new Option(w.Name, w.Name);
-       }
-     }
-    };
-    }
-</script>
 {% endblock %}

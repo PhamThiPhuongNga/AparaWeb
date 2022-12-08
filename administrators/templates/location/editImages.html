@@ -1,0 +1,29 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block title %}Sửa hình ảnh{% endblock %}
+{% block content%}
+<div class="well">
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <a href="{% url 'i'%}">Danh sách hình ảnh</a> / <span>Sửa hình ảnh</span></h5>
+</div>
+<form class="form-contact bg-nav" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <h4 class="text-center pt-30">Thêm mới</h4>
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <label for="location_id">Tên địa điểm</label>
+      <input type="text" name="location_id" value="{{immge.location_id}}"  disabled class="form-control" id="location_id" >
+    </div>
+    <div class="form-group col-md-12">
+        <label for="images">Hình ảnh</label>
+        <input type="file" name="images"  required class="form-control" id="image" multiple > 
+    </br>
+        {% if immge.image %}
+            <img src="/media/{{immge.image}}" width="100" height="100" alt="Hình ảnh">
+        {% endif %}
+    </div>
+    <div class="pb-30  text-center">
+      <button type="submit" class="btn btn-primary">Lưu trữ</button>
+    </div>
+</form>
+{% endblock %}

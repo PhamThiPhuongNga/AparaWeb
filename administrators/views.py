@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from blog.models import Location, Comment, Category, Images
+from django.contrib.auth.models import Group, User
 from django.contrib import messages
 # from .forms import ResistrationForm
 import os
@@ -37,6 +38,8 @@ def add_location (request):
         costmax = request.POST['costmax']
         describe = request.POST['describe']
         image = request.FILES['image']
+        timestart = request.POST['timestart']
+        timeend = request.POST['timeend']
         categoryyy = Category.objects.get(id=category)
         location = Location.objects.create(category=categoryyy,
                                     name = name,
@@ -49,7 +52,9 @@ def add_location (request):
                                     costmin = costmin,
                                     costmax = costmax,
                                     describe = describe,
-                                    image = image)
+                                    image = image,
+                                    timestart = timestart,
+                                    timeend = timeend)
         location.save()
         return redirect('/administrators/location')
     else:
@@ -108,6 +113,27 @@ def add_images (request):
     else:
         return render(request, 'common/error.html')    
     
+def edit_images (request,images_id):
+    im = Location.objects.filter()
+    immge = Images.objects.get( id=images_id)
+    if request.method =="POST":
+        if len(request.FILES) !=0:
+            if len(immge.image) > 0:
+                os.remove( immge.image.path)
+            immge.image = request.FILES['images']
+        immge.save()
+        messages.success(request, "Cập nhật thành công!")
+        return redirect('/administrators/location/formimages.html')
+    return render(request, 'location/editImages.html',{"immge": immge, "im":im})
+
+def delete_images(request, images_id):
+    immge = Images.objects.get(id=images_id)
+    if len(immge.image) > 0:
+        os.remove(immge.image.path)
+    immge.delete()
+    messages.success(request, "Xoá thành công!")
+    return redirect('/administrators/location') 
+      
 def viewImages(request):
     i = Images.objects.filter().order_by("-date")
     paginator = Paginator(i, 10)
@@ -126,3 +152,20 @@ def viewComment(request):
 def get_comment_form(request):
     location_list = Location.objects.filter()
     return render(request, 'comment/add.html',{"location_list": location_list})
+
+
+def viewAccount(request):
+    group = Group.objects.filter().order_by('-id')
+    paginator = Paginator(group, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'account/index.html',{'page_obj': page_obj})
+    
+
+def viewUser(request,id ):
+    # group = Group.objects.get(id=id)
+    user = User.objects.filter(groups=id)
+    paginator = Paginator(user, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'account/indexUserGroup.html',{'page_obj': page_obj})

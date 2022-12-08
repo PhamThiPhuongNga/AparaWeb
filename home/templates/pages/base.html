@@ -82,11 +82,6 @@
                         </li> {% endcomment %}
                         <li><a href="{% url 'location' %}"><span>Địa điểm</span></a></li>  
                         <li><a href="{% url 'contact' %}"><span>Liên hệ</span></a></li>
-                        <li class="">
-                            <p class="navbar-text navbar-right">
-                                <i class="icon-phone-wave icon-size-m icon-color icon-position-left"></i><strong>+1(890)1321312</strong>
-                            </p>
-                        </li>
                         {% if user.username %}
                         <li class=""><a href="#"><span>{{ user.username }}</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
                             <ul class="sub-menu" style="background: #fff;">

@@ -22,12 +22,56 @@ class LocationListView(ListView):
     paginate_by = 4
     
 
-def search(request):
-    if 'q' in request.GET:
+def search(request):    
+    if 'q'  in request.GET:
         q = request.GET['q']
         if q:
-            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=q) | Q(district=q) | Q(wardcommune__icontains=q) | Q(address__icontains=q) | Q(name__icontains=q) ))
+            locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q)))
+            location_count = locations.count() 
+    if 'q' and 'qcity' in request.GET:
+        q = request.GET['q']
+        qcity = request.GET['qcity']
+        if q and qcity:
+            locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity)))
             location_count = locations.count()
+    if 'qcity' and 'qdistrict' and 'qward' in request.GET:
+        # if q and qcity:
+        #     locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity)))
+        #     location_count = locations.count()      
+        # if q and qcity and qdistrict:
+        #     locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity) and Q(district__icontains=qdistrict)))
+        #     location_count = locations.count() 
+        # if q and qcity and qdistrict and qward:
+        #     locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity) and Q(district__icontains=qdistrict) and Q(wardcommune__icontains=qward)))
+        #     location_count = locations.count() 
+        qcity = request.GET['qcity']
+        qdistrict = request.GET['qdistrict']
+        qward = request.GET['qward']
+        if qcity:
+            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity)))
+            location_count = locations.count()
+        if qcity and qdistrict:
+            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity) and Q(district__icontains=qdistrict)))
+            location_count = locations.count()
+        if qcity and qdistrict and qward:
+            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity) and Q(district__icontains=qdistrict) and Q(wardcommune__icontains=qward)))
+            location_count = locations.count()
+    if 'qmincost'  in request.GET:
+        qmincost = request.GET['qmincost']
+        if qmincost:
+            locations = Location.objects.order_by('-date').filter(Q(mincost__icontains=qmincost))
+            location_count = locations.count()
+    if 'qmaxcost'  in request.GET:       
+        qmaxcost = request.GET['qmaxcost']
+        if qmaxcost:
+            locations = Location.objects.order_by('-date').filter(Q(maxcost__icontains=qmaxcost))
+            location_count = locations.count()   
+    if 'qmincost' and 'qmaxcost'  in request.GET: 
+        qmincost = request.GET['qmincost']
+        qmaxcost = request.GET['qmaxcost']
+        if qmaxcost:
+            locations = Location.objects.order_by('-date').filter(Q(Q(qmincost__icontains=qmincost) and Q(maxcost__icontains=qmaxcost)))
+            location_count = locations.count()    
     context = {
         'locations': locations,
         'location_count': location_count,

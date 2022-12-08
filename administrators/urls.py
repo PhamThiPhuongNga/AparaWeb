@@ -17,10 +17,15 @@ urlpatterns = [
     
     path('addImages', views.get_images_form, name='get_images_form'),
     path('ImagesList', views.add_images, name='add_images'),
+    path('location/editImages/<int:images_id>', views.edit_images, name='edit_images'),
+    path('location/deleteImages/<int:images_id>', views.delete_images, name='delete_images'),
     path('formimages', views.viewImages, name = 'i'),
     
     path('comment', views.viewComment, name='comment_list'),
     path('addCommentForm', views.get_comment_form, name='get_comment_form'),
+    
+    path('accounts', views.viewAccount, name = 'account_list'),
+    path('accounts/<int:id>/', views.viewUser, name = 'account_user_list'),
     
     # path('login/', auth_views.LoginView.as_view(template_name ='pages/login.html'), name='login' ),
     # path('logoutt/', auth_views.LogoutView.as_view(), {'next_page':' '}, name='logout' )

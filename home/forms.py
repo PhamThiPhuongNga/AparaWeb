@@ -1,7 +1,7 @@
 from socket import fromshare
 from django import forms
 import re 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 class ResistrationForm(forms.Form):
     username = forms.CharField(label = 'Họ tên', max_length=30)
@@ -28,6 +28,3 @@ class ResistrationForm(forms.Form):
         raise forms.ValidationError('Tài khoản đã tồn tại')
     def save(self):
         User.objects.create_user(username=self.cleaned_data['username'], email=self.cleaned_data['email'], password=self.cleaned_data['password1'])
-        
-
-            
