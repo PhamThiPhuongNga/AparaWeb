@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from blog.models import Location, Comment, Category, Images
 from django.contrib.auth.models import Group, User
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import View
 # from .forms import ResistrationForm
 import os
 # from .forms import uploadMultiForm
@@ -24,41 +26,47 @@ def get_location_form(request):
     category_list = Category.objects.filter()
     return render(request, 'location/add.html',{"category_list": category_list})
 
-def add_location (request):
-    if request.method =="POST":
-        category = request.POST['category']
-        name = request.POST['name']
-        logo = request.FILES['logo']
-        phone = request.POST['phone']
-        wardcommune = request.POST['ward']
-        district = request.POST['district']
-        city = request.POST['city']
-        address = request.POST['address']
-        costmin = request.POST['costmin']
-        costmax = request.POST['costmax']
-        describe = request.POST['describe']
-        image = request.FILES['image']
-        timestart = request.POST['timestart']
-        timeend = request.POST['timeend']
-        categoryyy = Category.objects.get(id=category)
-        location = Location.objects.create(category=categoryyy,
-                                    name = name,
-                                    logo = logo,
-                                    phone = phone,
-                                    wardcommune = wardcommune,
-                                    district = district,
-                                    city = city,
-                                    address = address,
-                                    costmin = costmin,
-                                    costmax = costmax,
-                                    describe = describe,
-                                    image = image,
-                                    timestart = timestart,
-                                    timeend = timeend)
-        location.save()
-        return redirect('/administrators/location')
-    else:
-        return render(request, 'common/error.html')
+class add_location (LoginRequiredMixin, View):
+    login_url = '/login/'      
+    def post(self, request):   
+        if request.method =="POST":
+            category = request.POST['category']
+            name = request.POST['name']
+            logo = request.FILES['logo']
+            phone = request.POST['phone']
+            wardcommune = request.POST['ward']
+            district = request.POST['district']
+            city = request.POST['city']
+            address = request.POST['address']
+            costmin = request.POST['costmin']
+            costmax = request.POST['costmax']
+            describe = request.POST['describe']
+            image = request.FILES['image']
+            timestart = request.POST['timestart']
+            timeend = request.POST['timeend']
+            categoryyy = Category.objects.get(id=category)
+            location = Location.objects.create(category=categoryyy,
+                                        name = name,
+                                        logo = logo,
+                                        phone = phone,
+                                        wardcommune = wardcommune,
+                                        district = district,
+                                        city = city,
+                                        address = address,
+                                        costmin = costmin,
+                                        costmax = costmax,
+                                        describe = describe,
+                                        image = image,
+                                        timestart = timestart,
+                                        timeend = timeend)
+            location.save()
+            # if request.user.has_perm('Login.add_location'):
+            #     location.save()
+            #     return redirect('/administrators/location')
+            # else:
+            #     return render(request, 'common/error.html')
+        else:
+            return render(request, 'common/error.html')
 
 def edit_location (request, id):
     loca = Location.objects.get(id=id)

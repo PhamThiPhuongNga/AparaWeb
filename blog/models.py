@@ -2,6 +2,7 @@ from email.policy import default
 from django.db import models
 from django.conf import settings
 from django.db.models import Avg, Count
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 # Create your models here.
 # class Account(models.Model):
 #     name = models.CharField(max_length=200)
@@ -19,6 +20,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+        
 COSTMIN =(
     (25000, '25000'),
     (50000, '50000'),
@@ -36,6 +38,17 @@ COSTMAX =(
     (200000, '200000'),
     (250000, '250000'),
     (300000, '300000'),
+)
+RATING =(
+    (1, '1'),
+    (1.5, '1.5'),
+    (2, '2'),
+    (2.5, '2.5'),
+    (3, '3'),
+    (3.5, '3.5'),
+    (4, '4'),
+    (4.5, '4.5'),
+    (5, '5'),
 ) 
 class Location(models.Model):
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
@@ -56,12 +69,13 @@ class Location(models.Model):
     describe = models.TextField(null=True,max_length=255)
     timestart = models.TimeField(null=True)
     timeend = models.TimeField(null=True)
+    views = models.IntegerField(null=True,default=0)
     
     def __str__(self):
         return self.name
     
     def averageReview(self):
-        reviews = Comment.objects.filter(detaillocation=self, status=True).aggregate(average=Avg('rating'))
+        reviews = Rating.objects.filter(detaillocation=self, status=True).aggregate(average=Avg('rating'))
         avg = 0
         if reviews['average'] is not None:
             avg = round(reviews['average'],1)
@@ -73,27 +87,34 @@ class Location(models.Model):
         if reviews['count'] is not None:
             count = int(reviews['count'])
         return count
+     # You can have
+    def get_absolute_url(self):
+         return reverse('detaillocaton', kwargs={"id": self.id})
+
+    # An alternative to use to update the view count 
+    def update_views(self, *args, **kwargs):
+        self.views = self.views + 1
+        super(Location, self).save(*args, **kwargs)
     
-RATING =(
-    (1, '1'),
-    (1.5, '1.5'),
-    (2, '2'),
-    (2.5, '2.5'),
-    (3, '3'),
-    (3.5, '3.5'),
-    (4, '4'),
-    (4.5, '4.5'),
-    (5, '5'),
-)
+
 class Comment(models.Model):
     detaillocation = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     body = models.TextField(null=True)
-    rating = models.FloatField(null=True, choices=RATING)
+    # rating = models.FloatField(null=True, choices=RATING)
     # ,choices=RATING
     date = models.DateTimeField(null=True,auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.BooleanField(null=True,default=True)
+    def __str__(self):
+        return str(self.detaillocation)
+    
+class Rating(models.Model):
+    detaillocation = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'ratings')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.FloatField(null=True, choices=RATING)
+    status = models.BooleanField(null=True,default=True)
+    date = models.DateTimeField(null=True,auto_now_add=True)
     def __str__(self):
         return str(self.detaillocation)
     
@@ -103,3 +124,4 @@ class Images(models.Model):
     date = models.DateTimeField(null=True,auto_now_add=True)
     def __str__(self):
         return str(self.location_id)
+    

@@ -49,15 +49,17 @@
             </form>
         </nav>
         <h4 class="mb-40">Danh sách địa điểm</h4>
-        <div class="row">
+        <div class="row ">
             {% for location in Locations %}
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-3 col-sm-6 mb-30">
                 <div class="card" style="border: 0.5px solid #f2f2f2;">
                     <div style="">
                         <img src="{{location.image.url}}" alt="Photo" class="card-img">
                     </div>
                     <div style="margin: 10px;">
-                        <h4 class="mt-20 mb-0"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
+                            <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong>
+                                <a href="/blog/location/{{location.id }}">{{location.name}}</a></strong></h4>
+                        {% comment %} /blog/location/{{location.id}} {% endcomment %}
                         <h4 class="mb-20">{{location.category}}</h4>
                         <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
                             <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
@@ -83,6 +85,10 @@
     </div>
     <div class="bg"></div>
 </section>
-
+<style>
+    .card img{
+        height: 200px!important;
+    }
+</style>
  {% endblock %}
  

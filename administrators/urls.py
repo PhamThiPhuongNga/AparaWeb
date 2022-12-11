@@ -10,7 +10,7 @@ urlpatterns = [
     path('', views.index_admin, name='home_admin'),
     path('location', views.viewLocation, name='location_list'),
     
-    path('addlocation', views.add_location, name='add_location'),
+    path('addlocation', views.add_location.as_view(), name='add_location'),
     path('location/add', views.get_location_form, name='get_location_form'),
     path('location/edit/<int:id>/', views.edit_location, name="edit_location"),
     path('location/delete/<int:id>', views.delete_location, name='delete_location'),

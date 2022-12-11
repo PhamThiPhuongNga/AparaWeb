@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import Location, Category, Comment, Images
+from .models import Location, Category, Comment, Images, Rating
 # Register your models here.
 
 # admin.site.register(Account)
 admin.site.register(Category)
+admin.site.register(Rating)
 
 class CommentInLine(admin.TabularInline):
     model = Comment 
@@ -18,9 +19,9 @@ class LocationAdmin(admin.ModelAdmin):
 admin.site.register(Location, LocationAdmin)
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['detaillocation', 'author', 'body', 'rating']
-    list_filter = ['date','detaillocation', 'author','rating']
-    search_fields =['detaillocation', 'author','rating']
+    list_display = ['detaillocation', 'author', 'body']
+    list_filter = ['date','detaillocation', 'author']
+    search_fields =['detaillocation', 'author']
 admin.site.register(Comment, CommentAdmin)
 
 class ImagesAdmin(admin.ModelAdmin):

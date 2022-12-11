@@ -24,6 +24,10 @@
                         <span>Khoảng giá</span>
                         <span class="pull-right"><strong>{{detaillocation.costmin}}</strong>-<strong>{{detaillocation.costmax}} VND</strong></span>
                     </li>
+                    <li> 
+                        <span>Lượt xem</span>
+                        <span class="pull-right">{{detaillocation.views}}</span>
+                    </li>
                 </ul>
                 {% comment %} <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a> {% endcomment %}
             </div>
@@ -34,10 +38,39 @@
     </div>
     <div class="bg"></div>
 </section>
-
-<section id="desc-tabs" class="pt-100 pb-125 text-center light">
+{% comment %} <section id="desc-tabs" class="pt-100 pb-125 text-center light">
     <div class="container">
-        {% comment %} <h2 class="mb-50">About us</h2> {% endcomment %}
+        <div class="row">
+            {% for location in location %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card" style="border: 0.5px solid #f2f2f2;">
+                    <div style="">
+                        <img src="{{location.image.url}}" alt="Photo" class="card-img">
+                    </div>
+                    <div style="margin: 10px;">
+                        <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
+                        <h4 class="mb-20">{{location.category}}</h4>
+                        <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                            <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
+                        <ul class="text-icon-list text-icon-list-sep">
+                            <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                                <span>Đánh giá</span>
+                                <span class="pull-right">{{location.averageReview}}/ 5</span>
+                            </li>
+                            <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
+                                <span>Giá</span>
+                                <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section> {% endcomment %}
+<section id="desc-tabs" class="pt-50 pb-125 text-center light">
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
 
@@ -63,7 +96,7 @@
                                             <i class="fa fa-star{% if detaillocation.averageReview < 3.5 %}-o{% elif detaillocation.averageReview >= 3.5 and detaillocation.averageReview < 4 %}-half {% endif %}" aria-hidden="true"></i>
                                             <i class="fa fa-star{% if detaillocation.averageReview < 4.5 %}-o{% elif detaillocation.averageReview >= 4.5 and detaillocation.averageReview < 5 %}-half {% endif %}" aria-hidden="true"></i>
                                         </div>
-                                        <h4><span id="total_review">{{detaillocation.countReview}}</span> đánh giá</h4>
+                                        <h4><span id="total_review">{{detaillocation.countReview}}</span> bình luận</h4>
                                     </div>
                                     {% if user.username %}
                                     <div class="col-sm-6 text-center">
@@ -93,18 +126,6 @@
                                         <div class="form-group">
                                            <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST'>
                                                 {% csrf_token %}
-                                                <div class="rate">
-                                                    <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
-                                                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
-                                                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
-                                                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
-                                                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
-                                                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
-                                                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
-                                                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
-                                                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
-                                                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
-                                                </div>
                                                 <textarea name="body" rows="4" class="form-control"></textarea>
                                                 <button type="submit" id="" class="btn btn-primary mt-3">Xác nhận</button>
                                             </form>
@@ -115,8 +136,62 @@
                                 </div>
                             </div>
                         </div>
-                      
+                        {% if user.username %}
+                        <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST' class="float-left">
+                            {% csrf_token %}
+                            <div class="rate">
+                                <input type="submit" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                                <input type="submit" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                                <input type="submit" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                                <input type="submit" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                                <input type="submit" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                                <input type="submit" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                <input type="submit" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                                <input type="submit" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                                <input type="submit" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                                <input type="submit" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                            </div>
+                        </form>
+                        {% endif %}
+                        {% for rating in detaillocation.ratings.all %}
+                            {% if request.user == rating.author %}
+                                {% if rating.rating %}
+                                    {% comment %} {% if rating.rating %} {% endcomment %}
+                                    
+                                    <div class="rating-star mb-30">Đánh giá của tôi
+                                        <span>
+                                            <i class="fa fa-star{% if rating.rating == 0.5 %}-half{% elif rating.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if rating.rating == 1.5 %}-half{% elif rating.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if rating.rating == 2.5 %}-half{% elif rating.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if rating.rating == 3.5 %}-half{% elif rating.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if rating.rating == 4.5 %}-half{% elif rating.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                         <div class="text-left" style="margin: 0 100px;">
+                            {% for rating in detaillocation.ratings.all %}
+                            <article class="box mb-10">
+                                <div class="icontext w-100 border-box">
+            
+                                    <div class="text" style="margin: 20px;">
+                                        <span class="text-muted float-right">{{rating.author}} </span>-
+                                        <span class="date text-muted float-left">{{rating.date}} </span>                                      
+                                        <div class="rating-star">
+                                            <span>
+                                                <i class="fa fa-star{% if rating.rating == 0.5 %}-half{% elif rating.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if rating.rating == 1.5 %}-half{% elif rating.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if rating.rating == 2.5 %}-half{% elif rating.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if rating.rating == 3.5 %}-half{% elif rating.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if rating.rating == 4.5 %}-half{% elif rating.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                            </article>
+                            {% endfor %}
                             {% for comment in detaillocation.comments.all %}
                             <article class="box mb-10">
                                 <div class="icontext w-100 border-box">
@@ -124,18 +199,6 @@
                                     <div class="text" style="margin: 20px;">
                                         <span class="text-muted float-right">{{comment.author}} </span>-
                                         <span class="date text-muted float-left">{{comment.date}} </span>
-                                           
-                                        <div class="rating-star">
-                                            <span>
-                                                
-                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
-                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
-                                            </span>
-                                        </div>
-                                    
                                         <div class="mt-3">
                                             <p>
                                                 {{comment.body|linebreaks}}
@@ -155,6 +218,7 @@
                             {% endfor %}
                         </div>
                     </div>
+               
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--2" aria-labelledby="desc_tabs_0--2-tab">
                         <section id="gallery-list-3col" class="pt-80 pb-80 text-center light">
                             <div class="container">

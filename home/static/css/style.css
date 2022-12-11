@@ -3339,3 +3339,7 @@ footer {
     padding-left: 16px;
     background: url(/media/control/icon-changelink.svg) 0 1px no-repeat;
 }
+
+.card img{
+    height: 200px!important;
+}

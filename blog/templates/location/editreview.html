@@ -20,7 +20,7 @@
 						<label for="body">Bình luận</label>
 						  	<textarea type="text" rows="4" name="body" required class="form-control" id="body">{{review.body}}</textarea>
 					</div>
-					<div class="form-body col-md-12">
+					{% comment %} <div class="form-body col-md-12">
 						<label for="category">Đánh giá</label>
 						<select name="rating" default id="rating" class="form-control">
 						  	<option value="{{review.rating}}">{{review.rating}}</option>
@@ -35,7 +35,7 @@
 							<option value="4.5">4.5</option> 
 							<option value="5">5</option> 
 						</select>
-					  </div>
+					</div> {% endcomment %}
 				</div>
 				{% if error %}
 					<strong style="color:red;">{{ error }}</strong>

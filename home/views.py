@@ -3,7 +3,7 @@ from django.shortcuts import render,get_object_or_404, redirect
 from django.contrib.auth import authenticate,login, logout
 from django.http import HttpResponse
 from .forms import ResistrationForm
-from blog.models import Location, Comment, Category
+from blog.models import Location, Comment, Category, Rating
 from blog.forms import CommentForm
 from django.http import HttpResponseRedirect
 from django.contrib import messages
@@ -13,19 +13,33 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import ceil
 from django.contrib.auth.models import User, Group
+from sklearn.metrics.pairwise import linear_kernel
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas
+from django.forms.models import model_to_dict
+import pickle
+from django.template import loader
+
+# from pandas import isnull, notnul
 # Create your views here.
 
 def contact(request):
     return render(request, 'pages/contact.html')
 def register(request, *args, **kwargs):
+    form = ResistrationForm()
     if request.method == 'POST':
         form = ResistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-            user_group = Group.objects.get(name='Khách hàng')
-            user.groups.add(user_group)
-            return redirect('pages/login.html')
+            form.save()
+            # user = form.save()
+            # group = form.cleaned_data['group']        
+            # group.user_set.add(user)
+            # # user = form.save()
+            # # # user.save()
+            # # user_group = Group.objects.get(name='Khách hàng')
+            # # print(user_group)
+            # # user_group.user_set.add(user)
+            return redirect('/login')
         else:
             form = ResistrationForm()
     return render(request, 'pages/register.html', {'form': form})
@@ -39,21 +53,34 @@ def user_logout(request):
     
 def generateRecommendation(request):
     location =  Location.objects.all()
-    rating = Comment.objects.all()
+    rating = Rating.objects.all()
+    userrr= User.objects.all()
+    print (userrr)
     x=[] 
     y=[]
+    z=[] 
+    k=[]
     A=[]
     B=[]
     C=[]
     D=[]
+    
+    for item in userrr:
+        z=[item.id,item.username,item.email,item.password,item.groups,item.user_permissions, item.is_staff] 
+        k+=[z]
+    user_df = pd.DataFrame(y,columns=['userId','username','email','password','groups','user_permissions','is_staff'])
+    print("user DataFrame")
+    print(user_df)
+    print(user_df.dtypes)
+    
     for item in location:
         x=[item.id,item.name,item.category,item.image.url,item.address,item.wardcommune,item.district, item.city,item.costmin, item.costmax] 
         y+=[x]
+    # xây dựng dữ liệu hai chiều và các nhãn tương ứng của nó
     location_df = pd.DataFrame(y,columns=['locationId','name','category','image','address','wardcommune','district','city','costmin','costmax'])
     print("Locations DataFrame")
     print(location_df)
     print(location_df.dtypes)
-    
     print(rating)
     for item in rating:
         A=[item.author.id,item.detaillocation.id,item.rating]
@@ -68,7 +95,7 @@ def generateRecommendation(request):
     if request.user.is_authenticated:
         userid=request.user.id
         #chọn liên quan là câu lệnh tham gia trong django. Nó tìm khóa ngoại và tham gia bảng
-        userInput=Comment.objects.select_related('detaillocation').filter(author=userid)
+        userInput= Rating.objects.select_related('detaillocation').filter(author=userid)
         if userInput.count()== 0:
             recommenderQuery=None
             userInput=None
@@ -86,8 +113,6 @@ def generateRecommendation(request):
             inputLocations = pd.merge(inputId, inputLocations)
             # Loại bỏ thông tin mà chúng tôi sẽ không sử dụng từ khung dữ liệu đầu vào
             #Khung dữ liệu đầu vào cuối cùng
-            #Nếu phim bạn đã thêm ở trên không có ở đây, thì phim đó có thể không có trong bản gốc
-            #dataframe hoặc nó có thể được đánh vần khác, vui lòng kiểm tra cách viết hoa.
             print(inputLocations)
             #Lọc người dùng đã xem địa điểm mà đầu vào đã xem và lưu trữ địa điểm đó
             userSubset = rating_df[rating_df['locationId'].isin(inputLocations['locationId'].tolist())]
@@ -109,7 +134,7 @@ def generateRecommendation(request):
                 inputLocations = inputLocations.sort_values(by='locationId')
                 #Lấy N cho công thức
                 nRatings = len(group)
-                #Nhận điểm đánh giá cho những đại điểm mà cả hai đều có điểm chung
+                #Nhận điểm đánh giá cho những địa điểm mà cả hai đều có điểm chung
                 temp_df = inputLocations[inputLocations['locationId'].isin(group['locationId'].tolist())]
                 #Và sau đó lưu trữ chúng trong một biến bộ đệm tạm thời ở định dạng danh sách để tạo điều kiện cho các tính toán trong tương lai
                 tempRatingList = temp_df['rating'].tolist()
@@ -175,10 +200,131 @@ def filterLocationByCategory():
     params={'allLocations':allLocations }
     return params
 
+def get_dataframe_location(text):
+    location =  Location.objects.all()
+    # category = Category.objects.all()
+    x=[] 
+    y=[]
+    A=[]
+    B=[]
+    C=[]
+    D=[]
+    for item in location:
+        x=[item.id,item.name,item.category] 
+        y+=[x]
+    location_df = pd.DataFrame(y,columns=['locationId','name','category'])
+    print("Locations DataFrame")
+    print(location_df)
+    print(location_df.dtypes)
+    return location_df
+def tfidf_matrix(location_df):
+    """
+    Dùng hàm "TfidfVectorizer" để chuẩn hóa "genres" với:
+    + analyzer='word': chọn đơn vị trích xuất là word
+    + ngram_range=(1, 1): mỗi lần trích xuất 1 word
+    + min_df=0: tỉ lệ word không đọc được là 0
+    Lúc này ma trận trả về với số dòng tương ứng với số lượng film và số cột tương ứng với số từ được tách ra từ "genres"
+"""
+    tf = TfidfVectorizer(analyzer='word', ngram_range=(1, 1), min_df=0)
+    new_tfidf_matrix = tf.fit_transform(location_df['category'])
+    print(new_tfidf_matrix)
+    return new_tfidf_matrix
+def cosine_sim(matrix):
+    """
+            Dùng hàm "linear_kernel" để tạo thành ma trận hình vuông với số hàng và số cột là số lượng film
+             để tính toán điểm tương đồng giữa từng bộ phim với nhau
+    """
+    new_cosine_sim = linear_kernel(matrix, matrix)
+    print(new_cosine_sim)
+    return new_cosine_sim
+
+class CB(object):
+    """
+        Khởi tại dataframe "movies" với hàm "get_dataframe_movies_csv"
+    """
+    def __init__(self, movies_csv):
+        self.location_df = get_dataframe_location(movies_csv)
+        self.tfidf_matrix = None
+        self.cosine_sim = None
+
+    def build_model(self):
+        """
+            Tách các giá trị của thể loại ở từng địa điểm đang được ngăn cách bởi '|'
+        """
+        self.location_df['category'] = self.location_df['category'].fillna("").astype('str')
+        self.tfidf_matrix = tfidf_matrix(self.location_df)
+        self.cosine_sim = cosine_sim(self.tfidf_matrix)
+
+    def refresh(self):
+        """
+             Chuẩn hóa dữ liệu và tính toán lại ma trận
+        """
+        self.build_model()
+
+    def fit(self):
+        self.refresh()
+
+    def genre_recommendations(self, name, top_x):
+        """
+            Xây dựng hàm trả về danh sách top film tương đồng theo tên film truyền vào:
+            + Tham số truyền vào gồm "title" là tên film và "topX" là top film tương đồng cần lấy
+            + Tạo ra list "sim_score" là danh sách điểm tương đồng với film truyền vào
+            + Sắp xếp điểm tương đồng từ cao đến thấp
+            + Trả về top danh sách tương đồng cao nhất theo giá trị "topX" truyền vào
+        """
+        name = self.location_df['name']
+        indices = pd.Series(self.location_df.index, index=self.location_df['name'])
+        idx = indices[name]
+        sim_scores = list(enumerate(self.cosine_sim[idx]))
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        sim_scores = sim_scores[1:top_x + 1]
+        location_indices = [i[0] for i in sim_scores]
+        print(sim_scores)
+        return sim_scores, name.iloc[location_indices].values
+
+    
 def index(request):
     # category = Category.objects.filter()
     # locations = Location.objects.order_by('-date')
     params=filterLocationByCategory()
     params['recommended'] = generateRecommendation(request)
+    # params['CB_recommended'] = CB(request)
     return render(request,'pages/home.html',params)
     # return render(request,'pages/home.html', {'category': category, 'locations': locations})
+
+
+# def related(request, location_id):
+#     template = loader.get_template('pages/related.html')
+# 	# new_obj = Movie.objects.all().filter(top_movie=False)[:20]
+#     new_obj = return_related_movies(location_id)
+# 	# return HttpResponse("Related!")
+#     return HttpResponse(template.render({"locations":new_obj},request))
+
+
+# def return_related_movies(location_id):
+# 	# with open("modelfile.sav","rb") as f:
+# 	# 	cosine_sim = pickle.load(f)
+#     # cosine_sim = linear_kernel(matrix)
+#     new_obj = Location.objects.all()
+#     movie_list = []
+#     index_list = []
+    
+#     for index,location in enumerate(new_obj):
+#         movie_list.append(location.id)
+#         index_list.append(index)
+
+#     indices = pd.Series(index_list,index=movie_list)
+#     print(indices.head(n=20))
+#     idx = indices[location_id]
+#     sim_scores = list(enumerate(cosine_sim[idx]))
+#     sim_scores = sorted(sim_scores,key=lambda x: x[1],reverse=True)[1:25]
+#     match_index = [i[0] for i in sim_scores]
+#     print(match_index)
+#     locations = []
+    
+#     for index,location in enumerate(new_obj):
+#         if index in match_index:
+#             locations.append(location)
+#     return locations
+
+

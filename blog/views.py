@@ -1,12 +1,14 @@
 from django.http import JsonResponse
 from django.core import serializers
 from django.shortcuts import render, get_object_or_404, redirect
-from blog.models import Location, Comment
-from blog.forms import CommentForm
+from blog.models import Location, Comment, Rating
+from blog.forms import CommentForm, RatingForm
 from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.detail import SingleObjectMixin
 # import pandas as pd
 # from math import sqrt
 # import numpy as np
@@ -19,7 +21,7 @@ class LocationListView(ListView):
     queryset = Location.objects.all().order_by("-date")
     template_name = 'location/location.html'
     context_object_name = 'Locations'
-    paginate_by = 4
+    paginate_by = 8
     
 
 def search(request):    
@@ -33,6 +35,11 @@ def search(request):
         qcity = request.GET['qcity']
         if q and qcity:
             locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity)))
+            location_count = locations.count()
+    if 'qcity' in request.GET:
+        qcity = request.GET['qcity']
+        if qcity:
+            locations = Location.objects.order_by('-date').filter (Q(city__icontains=qcity))
             location_count = locations.count()
     if 'qcity' and 'qdistrict' and 'qward' in request.GET:
         # if q and qcity:
@@ -71,24 +78,27 @@ def search(request):
         qmaxcost = request.GET['qmaxcost']
         if qmaxcost:
             locations = Location.objects.order_by('-date').filter(Q(Q(qmincost__icontains=qmincost) and Q(maxcost__icontains=qmaxcost)))
-            location_count = locations.count()    
+            location_count = locations.count()   
+             
     context = {
         'locations': locations,
         'location_count': location_count,
     }
     return render(request, 'location/searchlocation.html', context)
 
-
 def detaillocation(request , pk):
     detaillocation = Location.objects.get(pk=pk)
-    # form = CommentForm()
+    if detaillocation:
+        detaillocation.views = detaillocation.views + 1
+        detaillocation.save()
+
     if request.method == 'POST':
         form = CommentForm(request.POST,author = request.user,detaillocation=detaillocation )
         # form.save()
         if form.is_valid(): 
             data = form.save(commit=False) 
             data.body = request.POST['body']
-            data.rating = request.POST['rating']
+            # data.rating = request.POST['rating']
             data.author = request.user
             data.detaillocation = detaillocation
             data.save() 
@@ -96,6 +106,19 @@ def detaillocation(request , pk):
             return HttpResponseRedirect(request.path)
     else:
         form = CommentForm()
+    if request.method == 'POST':
+        form = RatingForm(request.POST,author = request.user,detaillocation=detaillocation )
+        # form.save()
+        if form.is_valid(): 
+            data = form.save(commit=False) 
+            data.rating = request.POST['rating']
+            data.author = request.user
+            data.detaillocation = detaillocation
+            data.save() 
+            messages.success(request, ' Cảm ơn bạn đã đánh giá')
+            return HttpResponseRedirect(request.path)
+    else:
+        form = RatingForm()
     return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})
 
 
@@ -105,7 +128,7 @@ def edit_review(request, pk, review_id):
     if request.user == review.author:
         if request.method =="POST":
             review.body = request.POST['body']
-            review.rating = request.POST['rating']  
+            # review.rating = request.POST['rating']  
             review.save()
             messages.success(request, "Cập nhật thành công!")
             return redirect('/blog/location/' + str(detaillocation.id))
@@ -119,5 +142,3 @@ def delete_review(request, pk, review_id):
         messages.success(request, "Xoá thành công!")
         return redirect('/blog/location/' + str(detaillocation.id))
     
-
-

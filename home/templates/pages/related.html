@@ -1,0 +1,286 @@
+{% extends "pages/base.html" %}
+{% load static %}
+
+{% block title %}{{detaillocation.name}}{% endblock %}
+
+{% block content %}
+<section id="desc-img-text-list" class="pt-150 pb-100 light">
+    <div class="container">
+        <div class="row">
+            {% for location in locations %}
+            <div class="col-md-4 col-md-push-8">
+                <h2 class="mb-10"><a href=""><strong>{% url 'related' location.id %}</strong></a></h2>
+                <h4 class="mb-50">{{detaillocation.category}}</h4>
+                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.district}}, {{detaillocation.city}}</p>
+                <ul class="text-icon-list text-icon-list-sep">
+                    <li class="clearfix"><i class="icon-phone icon-color icon-size-m icon-position-left"></i>
+                        <span>Số điện thoại</span>
+                        <span class="pull-right">{{detaillocation.phone}}</span>
+                    </li>
+                    <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                        <span>Đánh giá</span>
+                        <span class="pull-right">{{detaillocation.averageReview}}/5</span>
+                    </li>
+                    <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
+                        <span>Khoảng giá</span>
+                        <span class="pull-right"><strong>{{detaillocation.costmin}}</strong>-<strong>{{detaillocation.costmax}} VND</strong></span>
+                    </li>
+                    <li> {{detaillocation.views}}</li>
+                </ul>
+                {% comment %} <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a> {% endcomment %}
+            </div>
+            {% endfor %}
+            <div class="col-md-8 col-md-pull-4 text-center">
+                <img src="/media/{{detaillocation.image}}" alt="screen" class="screen">
+            </div>
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+
+<section id="desc-tabs" class="pt-100 pb-125 text-center light">
+    <div class="container">
+        {% comment %} <h2 class="mb-50">About us</h2> {% endcomment %}
+        <div class="row">
+            <div class="col-md-12">
+
+                <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                    <li class=""><a href="#desc_tabs_0--0" id="desc_tabs_0--0-tab" role="tab" data-toggle="tab" aria-controls="desc_tabs_0--0" aria-expanded="false"><span>Mô tả chung</span></a></li><li class="active"><a href="#desc_tabs_0--1" role="tab" id="desc_tabs_0--1-tab" data-toggle="tab" aria-controls="desc_tabs_0--1" aria-expanded="true"><span>Đánh giá</span></a></li><li class=""><a href="#desc_tabs_0--2" role="tab" id="desc_tabs_0--2-tab" data-toggle="tab" aria-controls="desc_tabs_0--2" aria-expanded="false"><span>Hình ảnh</span></a></li>
+                </ul>
+                <div class="tab-content mt-40" id="myTabContent">
+                    <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--0" aria-labelledby="desc_tabs_0--0-tab">
+                        <p>{{detaillocation.describe|safe|linebreaks}}</p>
+                    </div>
+                    <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6 text-center">
+                                        <h1 class="text-warning mt-4 mb-4">
+                                            <b><span id="average_rating">{{detaillocation.averageReview}}</span> / 5</b>
+                                        </h1>
+                                        <div class="mb-2 rating-star">
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 0.5 %}-o{% elif detaillocation.averageReview >= 0.5 and detaillocation.averageReview < 1 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 1.5 %}-o{% elif detaillocation.averageReview >= 1.5 and detaillocation.averageReview < 2 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 2.5 %}-o{% elif detaillocation.averageReview >= 2.5 and detaillocation.averageReview < 3 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 3.5 %}-o{% elif detaillocation.averageReview >= 3.5 and detaillocation.averageReview < 4 %}-half {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if detaillocation.averageReview < 4.5 %}-o{% elif detaillocation.averageReview >= 4.5 and detaillocation.averageReview < 5 %}-half {% endif %}" aria-hidden="true"></i>
+                                        </div>
+                                        <h4><span id="total_review">{{detaillocation.countReview}}</span> đánh giá</h4>
+                                    </div>
+                                    {% if user.username %}
+                                    <div class="col-sm-6 text-center">
+                                        <h3 class="pt-4 mb-4">Đánh giá và viết bình luận</h3>
+                                        <button type="button" name="add_review" id="add_review" class="btn btn-primary">Bình luận</button>
+                                    </div>
+                                    {% else %}
+                                    <div class="col-sm-6 text-center">
+                                        <h4 class="mt-4 mb-3">Hãy đăng nhập để gửi đánh giá cho chúng tớ nhé </br><span><a href="{% url 'login' %}" style="color:#00a7ff;">Đăng nhập ngay</a></span></h4>
+                                    </div>
+                                        {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5" id="review_content"></div>
+                        <div id="review_modal" class="modal" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Thêm bình luận</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    {% if user.username %}
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                           <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST'>
+                                                {% csrf_token %}
+                                                <div class="rate">
+                                                    <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                                                    <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                                                    <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                                                    <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                                                    <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                                                    <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                                                    <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                                                </div>
+                                                <textarea name="body" rows="4" class="form-control"></textarea>
+                                                <button type="submit" id="" class="btn btn-primary mt-3">Xác nhận</button>
+                                            </form>
+                                           
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                      
+                        <div class="text-left" style="margin: 0 100px;">
+                            {% for comment in detaillocation.comments.all %}
+                            <article class="box mb-10">
+                                <div class="icontext w-100 border-box">
+            
+                                    <div class="text" style="margin: 20px;">
+                                        <span class="text-muted float-right">{{comment.author}} </span>-
+                                        <span class="date text-muted float-left">{{comment.date}} </span>
+                                           
+                                        <div class="rating-star">
+                                            <span>
+                                                
+                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                    
+                                        <div class="mt-3">
+                                            <p>
+                                                {{comment.body|linebreaks}}
+                                            </p>
+                                        </div>
+                                               
+                                        {% if request.user == comment.author %}
+                                        <div class="text-right box-ac">
+                                            <a href="{% url 'edit_review' detaillocation.id comment.id %}"><i class="changelink"></i></a>
+                                            <a href="{% url 'delete_review' detaillocation.id comment.id %}" onclick=" return confirm('Bạn có chắc chắn muốn xóa bình luận này?');"><i class="inline-deletelink"></i></a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div> 
+                                
+                            </article>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--2" aria-labelledby="desc_tabs_0--2-tab">
+                        <section id="gallery-list-3col" class="pt-80 pb-80 text-center light">
+                            <div class="container">
+                                <div class="row gallery">
+                                    {% for img in detaillocation.images.all %}
+                                    <div class="col-md-4 mt-20 mb-20 border-box">
+                                        <a href="/media/{{img.image}}" class="gallery-box">
+                                            <i class="icon icon-size-m icon-plus"></i>
+                                            <span class="caption">{{img.location_id}}</span>
+                                            <img src="/media/{{img.image}}" alt="screen">
+                                        </a>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="bg"></div>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+<style>
+    .progress-label-left
+    {
+        float: left;
+        margin-right: 0.5em;
+        line-height: 1em;
+    }
+    .progress-label-right
+    {
+        float: right;
+        margin-left: 0.3em;
+        line-height: 1em;
+    }
+    .star-light
+    {
+        color:#e9ecef;
+    }
+    .progress {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        height: 1rem;
+        overflow: hidden;
+        font-size: .75rem;
+        background-color: #e9ecef;
+        border-radius: .25rem;
+    }
+    .bg-warning{
+        background-color:#ffc107!important
+    }
+
+    a.bg-warning:focus,a.bg-warning:hover,button.bg-warning:focus,button.bg-warning:hover
+    {background-color:#d39e00!important}
+    .progress-bar
+    {display:-webkit-box;display:-ms-flexbox;
+        display:flex;
+        -webkit-box-orient:vertical;
+        -webkit-box-direction:normal;
+        -ms-flex-direction:column;
+        flex-direction:column;
+        -webkit-box-pack:center;
+        -ms-flex-pack:center;
+        justify-content:center;
+        color:#fff;text-align:center;
+        background-color:#007bff;
+        transition:width .6s ease
+    } 
+    .text-warning{color:#ffc107!important}a.text-warning:focus,a.text-warning:hover{color:#d39e00!important}
+    
+    /* Hide Radio button */
+    .rate > input{
+      display: none;
+    }
+    
+    .rate{
+      display: inline-block;;
+      border: 0;
+    }
+    
+    .rate > label{
+      float: right;
+    }
+    
+    /* Showing the stars */
+    .rate > label:before{
+      display: inline-block;
+      font-size: 2.1rem;
+      font-family: FontAwesome;
+      content: "\f005";
+      margin:0;
+      padding:0.3rem .2rem;
+      cursor: pointer;
+    }
+    
+    /* Half star */
+    .rate .half:before{
+      content: "\f089";
+      position: absolute;
+      padding-right: 0;
+    }
+    
+    /* Click and hover */
+    input:checked ~ label, label:hover ~ label{
+      color: #ffb503;
+    }
+    
+    /* hover hightlight */
+    input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
+    label:hover ~ input:checked ~ label{
+      color: #cc9000;
+    }
+    
+    .rating-star i{
+      color: #ffb503 !important;
+    }
+    .box-ac .a{
+        color: red;
+    }
+  </style>
+
+ {% endblock %}
