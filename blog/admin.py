@@ -4,7 +4,6 @@ from .models import Location, Category, Comment, Images, Rating
 
 # admin.site.register(Account)
 admin.site.register(Category)
-admin.site.register(Rating)
 
 class CommentInLine(admin.TabularInline):
     model = Comment 
@@ -29,3 +28,9 @@ class ImagesAdmin(admin.ModelAdmin):
     list_filter = ['date', 'location_id']
     search_fields =['location_id']
 admin.site.register(Images, ImagesAdmin)
+
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ['detaillocation', 'author', 'rating']
+    list_filter = ['detaillocation', 'author', 'rating']
+    search_fields =['detaillocation', 'author']
+admin.site.register(Rating, RatingAdmin)

@@ -6,7 +6,8 @@ from django.contrib.auth.models import Group, User
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
-# from .forms import ResistrationForm
+from .forms import AddUserForm
+
 import os
 # from .forms import uploadMultiForm
 
@@ -60,6 +61,7 @@ class add_location (LoginRequiredMixin, View):
                                         timestart = timestart,
                                         timeend = timeend)
             location.save()
+            return redirect('/administrators/location')
             # if request.user.has_perm('Login.add_location'):
             #     location.save()
             #     return redirect('/administrators/location')
@@ -177,3 +179,40 @@ def viewUser(request,id ):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'account/indexUserGroup.html',{'page_obj': page_obj})
+
+def get_group_list(request):
+    group = Group.objects.all()
+    return render(request, 'account/add.html',{'group': group})
+
+# class add_account(LoginRequiredMixin, View):
+#     login_url = '/login/'      
+#     def post(self, request):   
+#         if request.method =="POST":
+#             group = request.POST['group']
+#             username = request.POST['username']
+#             email = request.POST['email']
+#             password = request.POST['password']
+          
+#             group = Group.objects.get(id=group)
+#             account = User.objects.create(groups=group,
+#                                         username = username,
+#                                         email = email,
+#                                         password = password)
+#             account.save()
+#             return redirect('account/index.html')
+#         else:
+#             return render(request, 'common/error.html')
+
+def add_account(request, *args, **kwargs):
+    form = AddUserForm()
+    if request.method == 'POST':
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # user = form.save()
+            # group = form.cleaned_data['group']        
+            # group.user_set.add(user)
+            return redirect('/account/index.html')
+        else:
+            form = AddUserForm()
+    return render(request, 'account/add.html', {'form': form})

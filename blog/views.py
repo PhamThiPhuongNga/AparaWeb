@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.core import serializers
 from django.shortcuts import render, get_object_or_404, redirect
-from blog.models import Location, Comment, Rating
+from blog.models import Location, Comment, Rating, Images, Category
 from blog.forms import CommentForm, RatingForm
 from django.http import HttpResponseRedirect
 from django.db.models import Q
@@ -41,25 +41,16 @@ def search(request):
         if qcity:
             locations = Location.objects.order_by('-date').filter (Q(city__icontains=qcity))
             location_count = locations.count()
-    if 'qcity' and 'qdistrict' and 'qward' in request.GET:
-        # if q and qcity:
-        #     locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity)))
-        #     location_count = locations.count()      
-        # if q and qcity and qdistrict:
-        #     locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity) and Q(district__icontains=qdistrict)))
-        #     location_count = locations.count() 
-        # if q and qcity and qdistrict and qward:
-        #     locations = Location.objects.order_by('-date').filter (Q(Q(name__icontains=q) and Q(city__icontains=qcity) and Q(district__icontains=qdistrict) and Q(wardcommune__icontains=qward)))
-        #     location_count = locations.count() 
+    if 'qcity' and 'qdistrict' in request.GET:
         qcity = request.GET['qcity']
         qdistrict = request.GET['qdistrict']
-        qward = request.GET['qward']
-        if qcity:
-            locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity)))
-            location_count = locations.count()
         if qcity and qdistrict:
             locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity) and Q(district__icontains=qdistrict)))
             location_count = locations.count()
+    if 'qcity' and 'qdistrict' and 'qward' in request.GET:
+        qcity = request.GET['qcity']
+        qdistrict = request.GET['qdistrict']
+        qward = request.GET['qward']
         if qcity and qdistrict and qward:
             locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity) and Q(district__icontains=qdistrict) and Q(wardcommune__icontains=qward)))
             location_count = locations.count()
@@ -88,6 +79,12 @@ def search(request):
 
 def detaillocation(request , pk):
     detaillocation = Location.objects.get(pk=pk)
+    category = Category.objects.get(location=pk)
+    similarLoca = Location.objects.filter(category=category).order_by('-view')
+    ratings = Rating.objects.filter(detaillocation=detaillocation)
+    image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
+    print(category)
+    print(image)
     if detaillocation:
         detaillocation.views = detaillocation.views + 1
         detaillocation.save()
@@ -119,7 +116,7 @@ def detaillocation(request , pk):
             return HttpResponseRedirect(request.path)
     else:
         form = RatingForm()
-    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form})
+    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form, "ratings":ratings, "image":image, "similarLoca":similarLoca})
 
 
 def edit_review(request, pk, review_id):

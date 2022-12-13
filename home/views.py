@@ -4,7 +4,6 @@ from django.contrib.auth import authenticate,login, logout
 from django.http import HttpResponse
 from .forms import ResistrationForm
 from blog.models import Location, Comment, Category, Rating
-from blog.forms import CommentForm
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 import pandas as pd
@@ -284,13 +283,14 @@ class CB(object):
 
     
 def index(request):
-    # category = Category.objects.filter()
-    # locations = Location.objects.order_by('-date')
-    params=filterLocationByCategory()
-    params['recommended'] = generateRecommendation(request)
-    # params['CB_recommended'] = CB(request)
-    return render(request,'pages/home.html',params)
-    # return render(request,'pages/home.html', {'category': category, 'locations': locations})
+    category = Category.objects.filter()
+    locations = Location.objects.order_by('-views')
+    locationnew = Location.objects.order_by('-date')
+    if (generateRecommendation(request)):
+        params=filterLocationByCategory()
+        params['recommended'] = generateRecommendation(request)
+        return render(request,'pages/home.html',params)
+    return render(request,'pages/home.html', {'category': category, 'locations': locations, 'locationnew': locationnew})
 
 
 # def related(request, location_id):

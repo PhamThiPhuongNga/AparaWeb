@@ -58,6 +58,8 @@
 }
 .icon-star-fill:before {
   content: "\e9f7";
+  color: #ffb503 !important;
+  border-color: #ffb503 !important;
 }
 .icon-chevron-left-small:before {
   content: "\e9f3";
@@ -517,6 +519,8 @@
 }
 .icon-star:before {
   content: "\e68d";
+  color: #ffb503 !important;
+  border-color: #ffb503 !important;
 }
 .icon-star-half:before {
   content: "\e68e";

@@ -57,14 +57,19 @@
                         <img src="{{location.image.url}}" alt="Photo" class="card-img">
                     </div>
                     <div style="margin: 10px;">
-                            <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong>
-                                <a href="/blog/location/{{location.id }}">{{location.name}}</a></strong></h4>
+                        <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong>
+                            <a href="/blog/location/{{location.id }}">{{location.name}}</a></strong></h4>
                         {% comment %} /blog/location/{{location.id}} {% endcomment %}
-                        <h4 class="mb-20">{{location.category}}</h4>
+                        <h5 class="mb-20 ">{{location.category}}</h5>
                         <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
                             <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
                         <ul class="text-icon-list text-icon-list-sep">
-                            <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                            <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
+                                <span>Thời gian</span>
+                                <span class="pull-right">{{location.timestart}}-{{location.timeend}}</span>
+                            </li>
+                            <li class="clearfix"><i class="icon-star-fill icon-color icon-size-m icon-position-left" style=" color: #ffb503 !important;
+                                border-color: #ffb503 !important;"></i>
                                 <span>Đánh giá</span>
                                 <span class="pull-right">{{location.averageReview}}/ 5</span>
                             </li>
@@ -73,6 +78,8 @@
                                 <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
                             </li>
                         </ul>
+
+                        <button type="submit" id="" class="btn btn-primary mt-3" style="width:100%;"><a href="/blog/location/{{location.id }}"style="color:#ffffff;">Xem thêm</a ></button>
                     </div>
                 </div>
             </div>

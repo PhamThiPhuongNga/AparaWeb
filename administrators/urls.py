@@ -26,6 +26,8 @@ urlpatterns = [
     
     path('accounts', views.viewAccount, name = 'account_list'),
     path('accounts/<int:id>/', views.viewUser, name = 'account_user_list'),
+    # path('accounts/add/', views.get_group_list, name = 'get_group_list'),
+    path('addAccount', views.add_account, name = 'add_account'),
     
     # path('login/', auth_views.LoginView.as_view(template_name ='pages/login.html'), name='login' ),
     # path('logoutt/', auth_views.LogoutView.as_view(), {'next_page':' '}, name='logout' )
