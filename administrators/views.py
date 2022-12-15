@@ -21,7 +21,10 @@ def viewLocation(request):
     return render(request, 'location/index.html',{'page_obj': page_obj})
 
 def index_admin(request):
-    return render(request, 'home_admin.html')
+    return render(request, 'common/home_admin.html')
+
+def index(request):
+    return render(request,'pages/home.html')
 
 def get_location_form(request):
     category_list = Category.objects.filter()

@@ -143,24 +143,7 @@
                                 <div class="text-left" style="margin: 0 100px;">
                                     <p>{{ratings.author}}</p>
                                     {% if user.username %}
-                                        <strong class="text-left"> Đánh giá:</strong>
-                                        <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST' class="float-left">
-                                            {% csrf_token %}
-                                            <div class="rate">
-                                                <input type="submit" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
-                                                <input type="submit" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
-                                                <input type="submit" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
-                                                <input type="submit" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
-                                                <input type="submit" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
-                                                <input type="submit" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
-                                                <input type="submit" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
-                                                <input type="submit" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
-                                                <input type="submit" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
-                                                <input type="submit" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
-                                            </div>
-                                        </form>
-                                        {% for ratings in ratings %}
-                                            {% if request.user == ratings.author and ratings.rating%}
+                                        {% if rateUser %}
                                                 <div class="rating-star mb-30">Đánh giá của tôi
                                                     <span>
                                                         <i class="{% if ratings.rating < 0.5 %}far fa-star{% endif %}fa fa-star{% if ratings.rating >= 0.5 and ratings.rating < 1 %}-half-alt {% endif %}" aria-hidden="true"></i>
@@ -170,8 +153,23 @@
                                                         <i class="{% if ratings.rating < 4.5 %}far fa-star{% endif %}fa fa-star{% if ratings.rating >= 4.5 and ratings.rating < 5 %}-half-alt {% endif %}" aria-hidden="true"></i>
                                                     </span>
                                                 </div>
+                                            {% else %}
+                                            <form action="{% url 'detaillocation' detaillocation.id %}" method = 'POST' class="float-left">
+                                                {% csrf_token %}
+                                                <div class="rate">
+                                                    <input type="submit" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                                                    <input type="submit" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                                                    <input type="submit" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                                                    <input type="submit" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                                                    <input type="submit" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                                                    <input type="submit" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                                    <input type="submit" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                                                    <input type="submit" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                                                    <input type="submit" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                                                    <input type="submit" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                                                </div>
+                                            </form>
                                             {% endif %}
-                                        {% endfor %}
                                     {% endif %}
                                 </div>
                                 <div class=""></div>

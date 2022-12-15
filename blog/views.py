@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.core import serializers
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Location, Comment, Rating, Images, Category
 from blog.forms import CommentForm, RatingForm
@@ -9,6 +10,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import SingleObjectMixin
+# from history.mixins import ObjectViewMixin
 # import pandas as pd
 # from math import sqrt
 # import numpy as np
@@ -17,12 +19,19 @@ from django.views.generic.detail import SingleObjectMixin
 
 
 # Create your views here.
-class LocationListView(ListView):
-    queryset = Location.objects.all().order_by("-date")
-    template_name = 'location/location.html'
-    context_object_name = 'Locations'
-    paginate_by = 8
-    
+# class LocationListView(ListView):
+#     queryset = Location.objects.all().order_by("-date")
+#     template_name = 'location/location.html'
+#     context_object_name = 'Locations'
+#     paginate_by = 8
+
+
+def locationList(request):
+    comment = Location.objects.filter().order_by("-date")
+    paginator = Paginator(comment, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'location/location.html',{'page_obj': page_obj})
 
 def search(request):    
     if 'q'  in request.GET:
@@ -54,21 +63,23 @@ def search(request):
         if qcity and qdistrict and qward:
             locations = Location.objects.order_by('-date').filter(Q(Q(city__icontains=qcity) and Q(district__icontains=qdistrict) and Q(wardcommune__icontains=qward)))
             location_count = locations.count()
-    if 'qmincost'  in request.GET:
-        qmincost = request.GET['qmincost']
-        if qmincost:
-            locations = Location.objects.order_by('-date').filter(Q(mincost__icontains=qmincost))
-            location_count = locations.count()
-    if 'qmaxcost'  in request.GET:       
-        qmaxcost = request.GET['qmaxcost']
-        if qmaxcost:
-            locations = Location.objects.order_by('-date').filter(Q(maxcost__icontains=qmaxcost))
-            location_count = locations.count()   
+    # if 'qmincost' and   in request.GET and :
+    #     qmincost = request.GET['qmincost']
+    #     if qmincost:
+    #         locations = Location.objects.order_by('-date').filter(Q(mincost__icontains=qmincost))
+    #         location_count = locations.count()
+    # locationsp = Location.objects.all()
+    # if 'qmaxcost'  in request.GET:       
+    #     qmaxcost = request.GET['qmaxcost']
+    #     if qmaxcost:
+    #         locations = Location.objects.order_by('-date').filter(Q(maxcost__icontains=qmaxcost))
+    #         location_count = locations.count()  
+    # locationsp = Location.objects.all() 
     if 'qmincost' and 'qmaxcost'  in request.GET: 
         qmincost = request.GET['qmincost']
         qmaxcost = request.GET['qmaxcost']
-        if qmaxcost:
-            locations = Location.objects.order_by('-date').filter(Q(Q(qmincost__icontains=qmincost) and Q(maxcost__icontains=qmaxcost)))
+        if qmaxcost and qmincost:
+            locations = Location.objects.order_by('-date').filter(Q(Q(costmin__icontains = qmincost) and Q(costmax__icontains = qmaxcost)))
             location_count = locations.count()   
              
     context = {
@@ -76,12 +87,20 @@ def search(request):
         'location_count': location_count,
     }
     return render(request, 'location/searchlocation.html', context)
-
+# class detaillocation(ObjectViewMixin, DetailView):  
+    # model = Location
 def detaillocation(request , pk):
+    rateUsers = []
     detaillocation = Location.objects.get(pk=pk)
     category = Category.objects.get(location=pk)
-    similarLoca = Location.objects.filter(category=category).order_by('-view')
+    similarLoca = Location.objects.filter(category=category).order_by('-views')
+    # ratings = Rating.objects.filter(detaillocation=detaillocation)
     ratings = Rating.objects.filter(detaillocation=detaillocation)
+    print("type  la : ",type(ratings))
+    print("data  la : ",ratings.values())
+    for i in ratings:
+        rateUsers.append(i.author)
+    rateUser = request.user in rateUsers
     image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
     print(category)
     print(image)
@@ -116,7 +135,7 @@ def detaillocation(request , pk):
             return HttpResponseRedirect(request.path)
     else:
         form = RatingForm()
-    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form, "ratings":ratings, "image":image, "similarLoca":similarLoca})
+    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser})
 
 
 def edit_review(request, pk, review_id):

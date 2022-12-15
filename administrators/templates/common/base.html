@@ -39,7 +39,7 @@
         
                 <div id="navbar" class="navbar-collapse collapse" >
                     <ul class="nav navbar-nav navbar-right mt-20">
-                        <li class="mega-menu-item"><a href=" /"><span>Trang Website</span></a>
+                        <li class="mega-menu-item"><a href="{% url 'home'%}"><span>Trang Website</span></a>
                         </li>
                         {% if user.username %}
                         <li class=""><a href="#"><span>{{ user.username }}</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>

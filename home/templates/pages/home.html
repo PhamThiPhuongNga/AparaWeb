@@ -5,6 +5,7 @@
 
 {% block banner %}
 <header id="header-center-slogan-form-2" class="pt-150 pb-200 text-center dark">
+   
     <div class="container">
         <div class="row">
             <div class="col-md-12" style="">
@@ -62,6 +63,10 @@
     <div class="container">
             {% if  recommended%}
         <h3 class="">Địa điểm được gợi ý cho bạn</h3>
+        {{request.role}}
+        {{request.role}}
+        {{request.role}}
+        {{request.role}}
         <div class="carousel-5item-nav owl-drag">
             {% for item in recommended %}
             <div class="">
@@ -90,6 +95,8 @@
             {% endfor %}
         {% else %}
         <h3 class="my-4 text-light">Không có gợi ý địa điểm</u></h3>
+        {{request.groups}}
+        {{request.user}}
         {% endif %}
         </div>
     </div>
