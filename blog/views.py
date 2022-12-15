@@ -6,11 +6,11 @@ from blog.models import Location, Comment, Rating, Images, Category
 from blog.forms import CommentForm, RatingForm
 from django.http import HttpResponseRedirect
 from django.db.models import Q
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import SingleObjectMixin
-# from history.mixins import ObjectViewMixin
+from history.mixins import ObjectViewMixin
 # import pandas as pd
 # from math import sqrt
 # import numpy as np
@@ -87,55 +87,62 @@ def search(request):
         'location_count': location_count,
     }
     return render(request, 'location/searchlocation.html', context)
-# class detaillocation(ObjectViewMixin, DetailView):  
-    # model = Location
-def detaillocation(request , pk):
-    rateUsers = []
-    detaillocation = Location.objects.get(pk=pk)
-    category = Category.objects.get(location=pk)
-    similarLoca = Location.objects.filter(category=category).order_by('-views')
-    # ratings = Rating.objects.filter(detaillocation=detaillocation)
-    ratings = Rating.objects.filter(detaillocation=detaillocation)
-    print("type  la : ",type(ratings))
-    print("data  la : ",ratings.values())
-    for i in ratings:
-        rateUsers.append(i.author)
-    rateUser = request.user in rateUsers
-    image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
-    print(category)
-    print(image)
-    if detaillocation:
-        detaillocation.views = detaillocation.views + 1
-        detaillocation.save()
+class detaillocation(ObjectViewMixin, DetailView):  
+    model = Location
+    template_name = 'location/detaillocation.html'
+    context_object_name = 'detaillocation'
+    def post(self,request, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        # context[""] = 
+        # return context
+        rateUsers = []
+        detaillocation = Location.objects.get(pk=self.kwargs.get('pk'))
+        print(detaillocation)
+        category = Category.objects.get(location=self.kwargs.get('pk'))
+        print(category)
+        similarLoca = Location.objects.filter(category=category).order_by('-views')
+        print(similarLoca)
+        ratings = Rating.objects.filter(detaillocation=self.kwargs.get('pk'))
+        print("type  la : ",type(ratings))
+        print("data  la : ",ratings.values())
+        for i in ratings:
+            rateUsers.append(i.author)
+        rateUser = self.request.user in rateUsers
+        image = Images.objects.filter(location_id=self.kwargs.get('pk')).order_by('-id')[:5]
+        # print(category)
+        # print(image)
+        if detaillocation:
+            detaillocation.views = detaillocation.views + 1
+            detaillocation.save()
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST,author = request.user,detaillocation=detaillocation )
-        # form.save()
-        if form.is_valid(): 
-            data = form.save(commit=False) 
-            data.body = request.POST['body']
-            # data.rating = request.POST['rating']
-            data.author = request.user
-            data.detaillocation = detaillocation
-            data.save() 
-            messages.success(request, ' Cảm ơn bạn đã bình luận')
-            return HttpResponseRedirect(request.path)
-    else:
-        form = CommentForm()
-    if request.method == 'POST':
-        form = RatingForm(request.POST,author = request.user,detaillocation=detaillocation )
-        # form.save()
-        if form.is_valid(): 
-            data = form.save(commit=False) 
-            data.rating = request.POST['rating']
-            data.author = request.user
-            data.detaillocation = detaillocation
-            data.save() 
-            messages.success(request, ' Cảm ơn bạn đã đánh giá')
-            return HttpResponseRedirect(request.path)
-    else:
-        form = RatingForm()
-    return render(request, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser})
+        if self.request.method == 'POST':
+            form = CommentForm(self.request.POST,author = self.request.user,detaillocation=detaillocation )
+            # form.save()
+            if form.is_valid(): 
+                data = form.save(commit=False) 
+                data.body = self.request.POST['body']
+                # data.rating = request.POST['rating']
+                data.author = self.request.user
+                data.detaillocation = detaillocation
+                data.save() 
+                messages.success(self.request, ' Cảm ơn bạn đã bình luận')
+                return HttpResponseRedirect(self.request.path)
+        else:
+            form = CommentForm()
+        if self.request.method == 'POST':
+            form = RatingForm(self.request.POST,author = self.request.user,detaillocation=detaillocation )
+            # form.save()
+            if form.is_valid(): 
+                data = form.save(commit=False) 
+                data.rating = self.request.POST['rating']
+                data.author = self.request.user
+                data.detaillocation = detaillocation
+                data.save() 
+                messages.success(self.request, ' Cảm ơn bạn đã đánh giá')
+                return HttpResponseRedirect(self.request.path)
+        else:
+            form = RatingForm()
+        return render(self, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser})
 
 
 def edit_review(request, pk, review_id):

@@ -283,6 +283,10 @@ class CB(object):
 
     
 def index(request):
+    if (generateRecommendation(request)):
+        params=filterLocationByCategory()
+        params['recommended'] = generateRecommendation(request)
+        return render(request,'pages/home.html',params)
     listManager = []
     users_in_group = Group.objects.get(name="Manager").user_set.all()
     for i in users_in_group:
@@ -291,10 +295,6 @@ def index(request):
     category = Category.objects.filter()
     locations = Location.objects.order_by('-views')
     locationnew = Location.objects.order_by('-date')
-    if (generateRecommendation(request)):
-        params=filterLocationByCategory()
-        params['recommended'] = generateRecommendation(request)
-        return render(request,'pages/home.html',params)
     if manager:
         return redirect('home_admin')
     else:

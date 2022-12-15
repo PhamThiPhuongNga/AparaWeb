@@ -1,43 +1,43 @@
 {% extends "pages/base.html" %}
 {% load static %}
 
-{% block title %}{{detaillocation.name}}{% endblock %}
+{% block title %}{{object.name}}{% endblock %}
 
 {% block content %}
 <section id="desc-img-text-list" class="pt-150 pb-100 light">
     <div class="container">
         <div class="row" >
             <div class="col-md-4 col-md-push-8">
-                <h2 class="mb-10"><a href=""><strong>{{detaillocation.name}}</strong></a></h2>
-                <h4 class="mb-50">{{detaillocation.category}}</h4>
-                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{detaillocation.address}}, {{detaillocation.wardcommune}}, {{detaillocation.district}}, {{detaillocation.city}}</p>
+                <h2 class="mb-10"><a href=""><strong>{{object.name}}</strong></a></h2>
+                <h4 class="mb-50">{{object.category}}</h4>
+                <p class="mb-20"><i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{object.address}}, {{object.wardcommune}}, {{object.district}}, {{object.city}}</p>
                 <ul class="text-icon-list text-icon-list-sep">
                     <li class="clearfix"><i class="icon-phone icon-color icon-size-m icon-position-left"></i>
                         <span>Số điện thoại</span>
-                        <span class="pull-right">{{detaillocation.phone}}</span>
+                        <span class="pull-right">{{object.phone}}</span>
                     </li>
                     <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
                         <span>Thời gian</span>
-                        <span class="pull-right">{{detaillocation.timestart}}~{{detaillocation.timeend}}</span>
+                        <span class="pull-right">{{object.timestart}}~{{object.timeend}}</span>
                     </li>
                     <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
                         <span>Đánh giá</span>
-                        <span class="pull-right">{{detaillocation.averageReview}}/5</span>
+                        <span class="pull-right">{{object.averageReview}}/5</span>
                     </li>
                     <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
                         <span>Khoảng giá</span>
-                        <span class="pull-right"><strong>{{detaillocation.costmin}}</strong>-<strong>{{detaillocation.costmax}} VND</strong></span>
+                        <span class="pull-right"><strong>{{object.costmin}}</strong>-<strong>{{object.costmax}} VND</strong></span>
                     </li>
                     <li> 
                         <span>Lượt xem</span>
-                        <span class="pull-right">{{detaillocation.views}}</span>
+                        <span class="pull-right">{{object.views}}</span>
                     </li>
                 </ul>
                 {% comment %} <a href="#" class="btn btn-default mt-60"><span>Rent now</span><i class="icon-arrow-right icon-position-right"></i></a> {% endcomment %}
             </div>
             <div class="col-md-8 col-md-pull-4 text-center gallery-img">
                 <div class="mySlides">
-                    <img src="/media/{{detaillocation.image}}" alt="screen" class="screen" height="350px;">
+                    <img src="/media/{{object.image}}" alt="screen" class="screen" height="350px;">
                 </div>
                 {% for img in image %}
                 <div class="mySlides">
@@ -116,7 +116,7 @@
                 </ul>
                 <div class="tab-content mt-40" id="myTabContent">
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--0" aria-labelledby="desc_tabs_0--0-tab">
-                        <p>{{detaillocation.describe|safe|linebreaks}}</p>
+                        <p>{{object.describe|safe|linebreaks}}</p>
                     </div>
                     <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
                         <div class="card">
@@ -154,7 +154,8 @@
                                                     </span>
                                                 </div>
                                             {% else %}
-                                            <form action="{% url 'detaillocation' detaillocation.id %}" method = 'POST' class="float-left">
+                                            <form action="" method = 'POST' class="float-left">
+                                                {% comment %} {% url 'detaillocation' detaillocation.id %} {% endcomment %}
                                                 {% csrf_token %}
                                                 <div class="rate">
                                                     <input type="submit" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
@@ -178,7 +179,8 @@
                                 {% if user.username %}
                                 <div class=" "style="margin: 0 100px;">
                                     <p class="text-left"><strong>Bình luận:</strong></p>
-                                    <form action=" {% url 'detaillocation' detaillocation.id %}" method = 'POST'>
+                                    <form action=" " method = 'POST'>
+                                        {% comment %} {% url 'detaillocation' detaillocation.id %} {% endcomment %}
                                         {% csrf_token %}
                                         <div class= "row" style="margin-left: -15px;margin-right: -0px;">
                                             <div class="custom-file col-sm-11" style="padding-right:0px;">
