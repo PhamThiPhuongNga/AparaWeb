@@ -110,7 +110,7 @@ class detaillocation(ObjectViewMixin, DetailView):
         rateUser = self.request.user in rateUsers
         image = Images.objects.filter(location_id=self.kwargs.get('pk')).order_by('-id')[:5]
         # print(category)
-        # print(image)
+        print(image)
         if detaillocation:
             detaillocation.views = detaillocation.views + 1
             detaillocation.save()

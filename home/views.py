@@ -14,10 +14,15 @@ from math import ceil
 from django.contrib.auth.models import User, Group
 from sklearn.metrics.pairwise import linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
+import requests
 import pandas
 from django.forms.models import model_to_dict
 import pickle
 from django.template import loader
+import re
+import json
+from urllib.request import urlopen
+from django.views.generic import ListView, View
 
 # from pandas import isnull, notnul
 # Create your views here.
@@ -283,11 +288,12 @@ class CB(object):
 
     
 def index(request):
-    if (generateRecommendation(request)):
-        params=filterLocationByCategory()
-        params['recommended'] = generateRecommendation(request)
-        return render(request,'pages/home.html',params)
+    # if (generateRecommendation(request)):
+    #     params=filterLocationByCategory()
+    #     params['recommended'] = generateRecommendation(request)
+    #     return render(request,'pages/home.html',params)
     listManager = []
+    
     users_in_group = Group.objects.get(name="Manager").user_set.all()
     for i in users_in_group:
         listManager.append(i)
@@ -335,4 +341,20 @@ def index(request):
 #             locations.append(location)
 #     return locations
 
-
+# class IpAddressMiddleware(object):
+#     def __init__(self, get_response=None):
+#         self.get_response = get_response
+        
+#     def get_location(self, ip_address):
+#         url = 'http://checkip.dyndns.com/'
+#         loc_url = 'https://ip-api.io/json/{}'
+#         data = requests.get(url)
+#         if not ip_address:
+#             ip_address = re.compile(r'Address:(\d+\.\d+\.\d+\.\d+').search(data.text).group(1)
+#         location = requests.get(loc_url.format(ip_address))
+#         city = location.json()['city']
+#         country = location.json()['country_name']
+#         lat = location.json()['latitude']
+#         log = location.json()['longitude']
+        
+#         return country, city, ip_address, lat, log
