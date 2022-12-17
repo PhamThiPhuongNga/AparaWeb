@@ -79,7 +79,7 @@ def search(request):
         qmincost = request.GET['qmincost']
         qmaxcost = request.GET['qmaxcost']
         if qmaxcost and qmincost:
-            locations = Location.objects.order_by('-date').filter(Q(Q(costmin__icontains = qmincost) and Q(costmax__icontains = qmaxcost)))
+            locations = Location.objects.order_by('-date').filter(Q(Q(costmin__in = [qmincost,qmaxcost])))
             location_count = locations.count()   
              
     context = {
@@ -91,10 +91,8 @@ class detaillocation(ObjectViewMixin, DetailView):
     model = Location
     template_name = 'location/detaillocation.html'
     context_object_name = 'detaillocation'
-    def post(self,request, **kwargs):
-        # context = super().get_context_data(**kwargs)
-        # context[""] = 
-        # return context
+    
+    def get(self,request, **kwargs):
         rateUsers = []
         detaillocation = Location.objects.get(pk=self.kwargs.get('pk'))
         print(detaillocation)
@@ -102,15 +100,35 @@ class detaillocation(ObjectViewMixin, DetailView):
         print(category)
         similarLoca = Location.objects.filter(category=category).order_by('-views')
         print(similarLoca)
-        ratings = Rating.objects.filter(detaillocation=self.kwargs.get('pk'))
+        ratings = Rating.objects.filter(detaillocation=detaillocation)
         print("type  la : ",type(ratings))
         print("data  la : ",ratings.values())
         for i in ratings:
             rateUsers.append(i.author)
-        rateUser = self.request.user in rateUsers
-        image = Images.objects.filter(location_id=self.kwargs.get('pk')).order_by('-id')[:5]
+        rateUser = request.user in rateUsers
+        image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
         # print(category)
         print(image)
+        return render(self.request, 'location/detaillocation.html', {"detaillocation": detaillocation, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser})
+        
+    def post(self,request, **kwargs):
+        rateUsers = []
+        detaillocation = Location.objects.get(pk=self.kwargs.get('pk'))
+        print(detaillocation)
+        category = Category.objects.get(location=self.kwargs.get('pk'))
+        print(category)
+        similarLoca = Location.objects.filter(category=category).order_by('-views')
+        print(similarLoca)
+        ratings = Rating.objects.filter(detaillocation=detaillocation)
+        print("type  la : ",type(ratings))
+        print("data  la : ",ratings.values())
+        for i in ratings:
+            rateUsers.append(i.author)
+        rateUser = request.user in rateUsers
+        image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
+        # print(category)
+        print(image)
+        
         if detaillocation:
             detaillocation.views = detaillocation.views + 1
             detaillocation.save()

@@ -34,19 +34,17 @@ def register(request, *args, **kwargs):
     if request.method == 'POST':
         form = ResistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            # user = form.save()
-            # group = form.cleaned_data['group']        
-            # group.user_set.add(user)
-            # # user = form.save()
-            # # # user.save()
-            # # user_group = Group.objects.get(name='Khách hàng')
-            # # print(user_group)
-            # # user_group.user_set.add(user)
+            # form.save()
+            user = form.save()
+            group = Group.objects.get(name='Customer')
+            group.user_set.add(user)
+            messages.success(request,'Account Created Successfully!!!')
             return redirect('/login')
         else:
-            form = ResistrationForm()
+            if not request.user.is_authenticated:
+                form = ResistrationForm()   
     return render(request, 'pages/register.html', {'form': form})
+    
 def error(request):
     return render(request, 'pages/error.html')
 
@@ -151,7 +149,7 @@ def generateRecommendation(request):
                 
                 #Nếu mẫu số khác 0, thì chia, nếu không, 0 tương quan.
                 if Sxx != 0 and Syy != 0:
-                    pearsonCorrelationDict[name] = Sxy/sqrt(Sxx*Syy)
+                    pearsonCorrelationDict[name] = Sxy/(sqrt(Sxx*Syy))
                 else:
                     pearsonCorrelationDict[name] = 0
             print(pearsonCorrelationDict.items()) 
@@ -191,7 +189,7 @@ def generateRecommendation(request):
             return recommender.to_dict('records')
     # return render(request, 'pages/home.html')
 def filterLocationByCategory():
-     #filtering by category
+    #filtering by category
     allLocations=[]
     categoryLocation = Location.objects.values('category', 'id')
     categories= {item["category"] for item in categoryLocation}
@@ -203,6 +201,8 @@ def filterLocationByCategory():
         allLocations.append([location, range(1, nSlides), nSlides])
     params={'allLocations':allLocations }
     return params
+
+
 
 def get_dataframe_location(text):
     location =  Location.objects.all()
@@ -289,9 +289,10 @@ class CB(object):
     
 def index(request):
     # if (generateRecommendation(request)):
-    #     params=filterLocationByCategory()
-    #     params['recommended'] = generateRecommendation(request)
-    #     return render(request,'pages/home.html',params)
+    params=filterLocationByCategory()
+    params['recommended'] = generateRecommendation(request)
+    print("----------------------------------------------",params)
+    # return render(request,'pages/home.html',params)
     listManager = []
     
     users_in_group = Group.objects.get(name="Manager").user_set.all()
@@ -304,7 +305,7 @@ def index(request):
     if manager:
         return redirect('home_admin')
     else:
-        return render(request,'pages/home.html', {'category': category, 'locations': locations, 'locationnew': locationnew})
+        return render(request,'pages/home.html', {'params':params ,'category': category, 'locations': locations, 'locationnew': locationnew})
 
 
 # def related(request, location_id):
