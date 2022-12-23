@@ -1,0 +1,22 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block title %}Thêm thể loại{% endblock %}
+{% block content%}
+<div class="well">
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <a href="{% url 'category_list'%}">Danh sách thể loại</a> / <span>Thêm mới</span></h5>
+</div>
+<form class="form-contact bg-nav" method="POST">
+  {% csrf_token %}
+  <h4 class="text-center pt-30">Thêm mới</h4>
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <label for="inputname">Tên thể loại</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{category.name}}" required>
+    </div>
+    <div class="pb-30  text-center">
+      <button type="submit" class="btn btn-primary">Lưu trữ</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

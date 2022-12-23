@@ -63,27 +63,22 @@
     </div>
     <div class="bg"></div>
 </section>
-<section id="clients-carousel" class="pt-10 pb-50 light">
+{% comment %} <section id="clients-carousel" class="pt-10 pb-50 light">
     <div class="container">
         <h3 class="mb-40">Địa điểm tương tự</h3>
         <div class="carousel-5item-nav owl-drag mt-30">
             {% for location in similarLoca %}
                 <div class="">
                     <div class="card" style="border: 0.5px solid #f2f2f2;">
-                        <div style="">
+                        <div class="zoom">
                             <img src="{{location.image.url}}" alt="Photo" class="card-img">
                         </div>
                         <div style="margin: 10px;">
-                            <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
-                            <h5 class="mb-20">{{location.category}}</h5>
-                            <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                            <h4 class="mt-10 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
+                            <h5 class="mb-10">{{location.category}}</h5>
+                            <p class="mb-10 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
                                 <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
                             <ul class="text-icon-list text-icon-list-sep">
-                                
-                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
-                                    <span>Đánh giá</span>
-                                    <span class="pull-right">{{location.averageReview}}/ 5</span>
-                                </li>
                                 <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
                                     <span>Thời gian: </span>
                                     <span class="pull-right">{{location.timestart}}~{{location.timeend}}</span>
@@ -105,7 +100,7 @@
         </div>
     </div>
     <div class="bg"></div>
-</section>
+</section> {% endcomment %}
 <section id="desc-tabs" class="pt-50 pb-125 text-center light">
     <div class="container">
         <div class="row">
@@ -119,7 +114,7 @@
                         <p>{{object.describe|safe|linebreaks}}</p>
                     </div>
                     <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
-                        <div class="card">
+                        <div class="">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-12 text-center">
@@ -158,16 +153,17 @@
                                                 {% endif %} 
                                             {% endfor %}   
                                             {% else %}
+                                            <p> Đánh giá:</p>
                                             <form action="" method = 'POST' class="float-left">
                                                 {% comment %} {% url 'detaillocation' detaillocation.id %} {% endcomment %}
                                                 {% csrf_token %}
                                                 <div class="rate">
-                                                    <input type="submit" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
-                                                    <input type="submit" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
-                                                    <input type="submit" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
-                                                    <input type="submit" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
-                                                    <input type="submit" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
-                                                    <input type="submit" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                                    <input type="submit" name="rating" id="rating10" value="5" required /><label for="rating10" title="5" ></label>
+                                                    <input type="submit" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half" ></label>
+                                                    <input type="submit" name="rating" id="rating8" value="4" required /><label for="rating8" title="4" ></label>
+                                                    <input type="submit" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half" ></label>
+                                                    <input type="submit" name="rating" id="rating6" value="3" required /><label for="rating6" title="3" ></label>
+                                                    <input type="submit" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half" ></label>
                                                     <input type="submit" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
                                                     <input type="submit" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
                                                     <input type="submit" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
@@ -204,7 +200,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class=" card text-left" style="margin: 0 100px;">
+                        <div class=" text-left" style="margin: 0 100px;">
                             {% for rating in detaillocation.ratings.all %}
                             <article class="box mb-10">
                                 

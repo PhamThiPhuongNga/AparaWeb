@@ -3,6 +3,9 @@ from django import forms
 import re 
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+
+
 class ResistrationForm(forms.Form):
     username = forms.CharField(label = 'Họ tên', max_length=30)
     email = forms.EmailField(label = 'Email')

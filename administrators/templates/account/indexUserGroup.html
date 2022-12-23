@@ -9,15 +9,16 @@
 </div>
 <div class="bg-inf">
   <nav class=" navbar-light bg-light justify-content-between">
-    <div class="d-flex">
+    {% comment %} <div class="d-flex">
         <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'add_account'%}" style="color: #fff;">Thêm mới</a></button>
         <form class="form-inline pull-right ">
             <input class="form-control mr-sm-2" name="search"  type="search" placeholder="Tìm kiếm" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
         </form>
-    </div>
+    </div> {% endcomment %}
+    <h4>Danh sách tài khoản</h4>
   </nav>
-  <table class="table v-middle">
+  <table class="table mt-30 v-middle">
     <thead class="thead-dark">
       <tr>
         <th scope="col">STT</th>

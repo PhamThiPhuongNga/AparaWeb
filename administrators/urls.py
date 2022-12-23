@@ -18,12 +18,13 @@ urlpatterns = [
     
     path('addImages', views.get_images_form, name='get_images_form'),
     path('ImagesList', views.add_images, name='add_images'),
-    path('location/editImages/<int:images_id>', views.edit_images, name='edit_images'),
     path('location/deleteImages/<int:images_id>', views.delete_images, name='delete_images'),
     path('formimages', views.viewImages, name = 'i'),
     
-    path('comment', views.viewComment, name='comment_list'),
-    path('addCommentForm', views.get_comment_form, name='get_comment_form'),
+    path('category', views.viewCategory, name='category_list'),
+    path('addCategoryForm', views.add_category, name='add_category'),
+    path('category/edit/<int:id>/', views.edit_category, name="edit_category"),
+    path('category/delete/<int:id>', views.delete_category, name='delete_category'),
     
     path('accounts', views.viewAccount, name = 'account_list'),
     path('accounts/<int:id>/', views.viewUser, name = 'account_user_list'),

@@ -42,7 +42,7 @@
         <td>{{location_list.averageReview}}</td>
         <td>
           <a href="{% url 'edit_location' location_list.id %}"><i class="changelink"></i></a>
-          <a href="{% url 'delete_location' location_list.id %}"><i class="inline-deletelink"></i></a>
+          <a href="{% url 'delete_location' location_list.id %}"onclick=" return confirm('Bạn có chắc chắn muốn xóa địa điểm này?');"><i class="inline-deletelink"></i></a>
         </td>
       </tr>
     </tbody>

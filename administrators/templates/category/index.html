@@ -1,16 +1,16 @@
 {% extends "common/base.html" %}
 {% load static %}
 
-{% block title %}Danh sách bình luận{% endblock %}
+{% block title %}Danh sách thể loại{% endblock %}
 
 {% block content%}
 <div class="well">
-  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách bình luận</span></h5>
+  <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách thể loại</span></h5>
 </div>
 <div class="bg-inf">
   <nav class=" navbar-light bg-light justify-content-between">
     <div class="d-flex">
-        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'get_comment_form'%}" style="color: #fff;">Thêm mới</a></button>
+        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'add_category'%}" style="color: #fff;">Thêm mới</a></button>
         <form class="form-inline pull-right ">
             <input class="form-control mr-sm-2"  type="search" placeholder="Tìm kiếm" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
@@ -20,21 +20,20 @@
   <table class="table v-middle">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">STT</th>
-        <th scope="col">Tên địa điểm</th>
-        <th scope="col">Người đánh giá</th>
-        <th scope="col">Nội dung</th>
-        <th scope="col">Điểm TB</th>
+        <th scope="col">ID</th>
+        <th scope="col">Tên thể loại</th>
+        <th scope="col">Thao tác</th>
       </tr>
     </thead>
-    {% for comment_list in page_obj %}
+    {% for category_list in page_obj %}
     <tbody>
       <tr>
-        <th scope="row">1</th>
-        <td>{{comment_list.detaillocation}}</td>
-        <td>{{comment_list.author}}</td>
-        <td>{{comment_list.body}}</td>
-        <td>{{comment_list.rating}}</td>
+        <th scope="row">{{category_list.id}}</th>
+        <td>{{category_list.name}}</td>
+        <td>
+          <a href="{% url 'edit_category' category_list.id %}"><i class="changelink"></i></a>
+          <a href="{% url 'delete_category' category_list.id %}"onclick=" return confirm('Bạn có chắc chắn muốn xóa thể loại này?');"><i class="inline-deletelink"></i></a>
+        </td>
       </tr>
     </tbody>
     {% endfor %}

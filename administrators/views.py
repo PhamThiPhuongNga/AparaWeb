@@ -5,7 +5,7 @@ from blog.models import Location, Comment, Category, Images
 from django.contrib.auth.models import Group, User
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import View
+from django.views.generic import View, DetailView
 from .forms import AddUserForm
 
 import os
@@ -24,7 +24,7 @@ def index_admin(request):
     return render(request, 'common/home_admin.html')
 
 def index(request):
-    return render(request,'pages/home.html')
+    return render(request, 'pages/home.html')
 
 def get_location_form(request):
     category_list = Category.objects.filter()
@@ -36,7 +36,9 @@ class add_location (LoginRequiredMixin, View):
         if request.method =="POST":
             category = request.POST['category']
             name = request.POST['name']
-            logo = request.FILES['logo']
+            if len(request.FILES) != 0:
+                logo = request.FILES['logo']
+                image = request.FILES['image']
             phone = request.POST['phone']
             wardcommune = request.POST['ward']
             district = request.POST['district']
@@ -45,7 +47,6 @@ class add_location (LoginRequiredMixin, View):
             costmin = request.POST['costmin']
             costmax = request.POST['costmax']
             describe = request.POST['describe']
-            image = request.FILES['image']
             timestart = request.POST['timestart']
             timeend = request.POST['timeend']
             categoryyy = Category.objects.get(id=category)
@@ -73,15 +74,22 @@ class add_location (LoginRequiredMixin, View):
         else:
             return render(request, 'common/error.html')
 
+
 def edit_location (request, id):
     loca = Location.objects.get(id=id)
     cate =  Category.objects.filter()
     if request.method =="POST":
-        if len(request.FILES) !=0:
-            if len(loca.logo) > 0 and len(loca.image) > 0:
-                os.remove(loca.logo.path, loca.image.path)
-            loca.logo = request.FILES['logo']
-            loca.image = request.FILES['image']
+        # if len(request.FILES) !=0:
+        #     if len(loca.logo) > 0 and len(loca.image) > 0 :
+        #         os.remove(loca.logo.path)
+        #         os.remove(loca.image.path)  
+        #     if len(loca.logo) > 0 :
+        #         os.remove(loca.logo.path)
+        #     elif len(loca.image) > 0:
+        #         os.remove(loca.image.path)
+                
+        loca.logo = request.FILES['logo']
+        loca.image = request.FILES['image']
         loca.city = request.POST['city']
         loca.district = request.POST['district']
         loca.wardcommune = request.POST['ward']  
@@ -105,11 +113,17 @@ def edit_location (request, id):
 def delete_location(request, id):
     loca = Location.objects.get(id=id)
     if len(loca.logo) > 0 and len(loca.image) > 0:
-        os.remove(loca.logo.path, loca.image.path)
+        os.remove(loca.logo.path)
+        os.remove(loca.image.path)
+    if len(loca.logo) > 0 and len(loca.image) == 0:
+        os.remove(loca.logo.path)
+    if len(loca.logo) == 0 and len(loca.image) > 0:
+        os.remove(loca.image.path)
     loca.delete()
     messages.success(request, "Xoá thành công!")
     return redirect('/administrators/location')  
     
+# =============================IMAGES=========================
 def get_images_form(request):
     location_list = Location.objects.filter()
     return render(request, 'location/addImages.html',{"location_list": location_list})
@@ -125,19 +139,6 @@ def add_images (request):
         return redirect('/administrators/formimages')
     else:
         return render(request, 'common/error.html')    
-    
-def edit_images (request,images_id):
-    im = Location.objects.filter()
-    immge = Images.objects.get( id=images_id)
-    if request.method =="POST":
-        if len(request.FILES) !=0:
-            if len(immge.image) > 0:
-                os.remove( immge.image.path)
-            immge.image = request.FILES['images']
-        immge.save()
-        messages.success(request, "Cập nhật thành công!")
-        return redirect('/administrators/location/formimages.html')
-    return render(request, 'location/editImages.html',{"immge": immge, "im":im})
 
 def delete_images(request, images_id):
     immge = Images.objects.get(id=images_id)
@@ -145,7 +146,7 @@ def delete_images(request, images_id):
         os.remove(immge.image.path)
     immge.delete()
     messages.success(request, "Xoá thành công!")
-    return redirect('/administrators/location') 
+    return redirect('/administrators/formimages') 
       
 def viewImages(request):
     i = Images.objects.filter().order_by("-date")
@@ -153,20 +154,43 @@ def viewImages(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'location/formimages.html',{'page_obj': page_obj})
+# ==============================================
 
-
-def viewComment(request):
-    comment = Comment.objects.filter().order_by("-date")
+# ================================CATEGORY==========================
+def viewCategory(request):
+    comment = Category.objects.filter().order_by("-id")
     paginator = Paginator(comment, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'comment/index.html',{'page_obj': page_obj})
+    return render(request, 'category/index.html',{'page_obj': page_obj})
 
-def get_comment_form(request):
-    location_list = Location.objects.filter()
-    return render(request, 'comment/add.html',{"location_list": location_list})
+def add_category(request):
+    if request.method =="POST":
+        name = request.POST['name']
+        cate = Category.objects.create(name = name)
+        cate.save()
+        return redirect('/administrators/category')
+    return render(request, 'category/add.html')
+
+def edit_category (request, id):
+    category = Category.objects.get(id=id)
+    if request.method =="POST":
+        category.name = request.POST['names']
+        category.save()
+        messages.success(request, "Cập nhật thành công!")
+        return redirect('/administrators/category')
+    return render(request, 'category/edit.html',{"category": category})
+
+def delete_category(request, id):
+    category = Category.objects.get(id=id)
+    category.delete()
+    messages.success(request, "Xoá thành công!")
+    return redirect('/administrators/category')  
 
 
+# ===================================================
+
+# =================ACCOUNT===========================
 def viewAccount(request):
     group = Group.objects.filter().order_by('-id')
     paginator = Paginator(group, 10)
@@ -206,16 +230,16 @@ def get_group_list(request):
 #         else:
 #             return render(request, 'common/error.html')
 
-def add_account(request, *args, **kwargs):
+def add_account(request):
     form = AddUserForm()
     if request.method == 'POST':
         form = AddUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            # user = form.save()
-            # group = form.cleaned_data['group']        
-            # group.user_set.add(user)
-            return redirect('/account/index.html')
+            # form.save()
+            user = form.save()
+            group = Group.objects.get(name='Manager')
+            group.user_set.add(user)
+            return redirect('account_list')
         else:
             form = AddUserForm()
     return render(request, 'account/add.html', {'form': form})

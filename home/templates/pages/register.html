@@ -35,9 +35,19 @@
                             <p><a href="{% url 'home' %}">Trang chủ</a> / <a href="{% url 'login' %}">Đăng nhập</a></p>
                 			<h2 class="mb-20" style="">Đăng ký</h2>
                 			<p class="mb-30 light" style="Chào mừng bạn đến với Apara!">Chào mừng bạn đến với Apara!</p>
-                			<form action="." method="POST" class="contact_form" id="subscribe-field-halfbg-form">
+                			<form action="." method="POST" novalidate class="contact_form" id="subscribe-field-halfbg-form">
                     			{% csrf_token %}
-                                {{form.as_p}}
+                                {% comment %} {{form.as_p}} {% endcomment %}
+                                {% for fm in form %}
+                                <span class="text-light">{{fm.label_tag}}</span>
+                                <div class="form-group">
+                                {{fm}}
+                                </div>
+                                {% if fm.errors %}
+                                <div class="alert alert-danger lert-dismissible fade show">
+                                {{fm.errors|striptags}}
+                                {% endif %}
+                                {% endfor %}
                                 <input type="submit" value="Đăng ký" class="btn btn-primary">
                 			</form>
             			</div>

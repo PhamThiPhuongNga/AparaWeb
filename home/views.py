@@ -6,6 +6,7 @@ from .forms import ResistrationForm
 from blog.models import Location, Comment, Category, Rating
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.core.paginator import Paginator
 import pandas as pd
 from math import sqrt
 import numpy as np
@@ -15,7 +16,6 @@ from django.contrib.auth.models import User, Group
 from sklearn.metrics.pairwise import linear_kernel
 from sklearn.feature_extraction.text import TfidfVectorizer
 import requests
-import pandas
 from django.forms.models import model_to_dict
 import pickle
 from django.template import loader
@@ -23,6 +23,8 @@ import re
 import json
 from urllib.request import urlopen
 from django.views.generic import ListView, View
+from sklearn.metrics.pairwise import cosine_similarity
+from scipy import sparse
 
 # from pandas import isnull, notnul
 # Create your views here.
@@ -38,11 +40,9 @@ def register(request, *args, **kwargs):
             user = form.save()
             group = Group.objects.get(name='Customer')
             group.user_set.add(user)
-            messages.success(request,'Account Created Successfully!!!')
             return redirect('/login')
         else:
-            if not request.user.is_authenticated:
-                form = ResistrationForm()   
+            form = ResistrationForm()   
     return render(request, 'pages/register.html', {'form': form})
     
 def error(request):
@@ -53,36 +53,185 @@ def user_logout(request):
         logout(request)
         return HttpResponseRedirect('/')
     
-def generateRecommendation(request):
-    location =  Location.objects.all()
+
+def get_location_category(request, id):
+    category = Category.objects.all()
+    cate = Category.objects.get(id=id)
+    loca = Location.objects.filter(category=cate) 
+    paginator = Paginator(loca, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'pages/listlocation.html', {'page_obj':page_obj, 'category':category})
+
+
+class CF(object):
+    """
+    class Collaborative Filtering, hệ thống đề xuất dựa trên sự tương đồng
+    giữa các users với nhau, giữa các items với nhau
+    """
+    def __init__(self, data_matrix, k, dist_func=cosine_similarity, uuCF=1):
+        """
+        Khởi tạo CF với các tham số đầu vào:
+            data_matrix: ma trận Utility, gồm 3 cột, mỗi cột gồm 3 số liệu: user_id, item_id, rating.
+            k: số lượng láng giềng lựa chọn để dự đoán rating.
+            uuCF: Nếu sử dụng uuCF thì uuCF = 1 , ngược lại uuCF = 0. Tham số nhận giá trị mặc định là 1.
+            dist_f: Hàm khoảng cách, ở đây sử dụng hàm cosine_similarity của klearn.
+            limit: Số lượng items gợi ý cho mỗi user. Mặc định bằng 10.
+        """
+        self.uuCF = uuCF  # user-user (1) or item-item (0) CF
+        self.Y_data = data_matrix if uuCF else data_matrix[:, [1, 0, 2]]
+        self.k = k
+        self.dist_func = dist_func
+        self.Ybar_data = None
+        # số lượng user và item, +1 vì mảng bắt đầu từ 0
+        self.n_users = int(np.max(self.Y_data[:, 0])) + 1
+        self.n_items = int(np.max(self.Y_data[:, 1])) + 1
+
+    def add(self, new_data):
+        """
+        Cập nhật Y_data khi có lượt rating mới.
+        """
+        self.Y_data = np.concatenate((self.Y_data, new_data), axis=0)
+
+    def normalize_matrix(self):
+        """
+        Tính similarity giữa các items bằng cách tính trung bình cộng ratings giữa các items.
+        Sau đó thực hiện chuẩn hóa bằng cách trừ các ratings đã biết của item cho trung bình cộng
+        ratings tương ứng của item đó, đồng thời thay các ratings chưa biết bằng 0.
+        """
+        users = self.Y_data[:, 0]
+        self.Ybar_data = self.Y_data.copy()
+        self.mu = np.zeros((self.n_users,))
+        for n in range(self.n_users):
+            ids = np.where(users == n)[0].astype(np.int32)
+            item_ids = self.Y_data[ids, 1]
+            ratings = self.Y_data[ids, 2]
+            # take mean
+            m = np.mean(ratings)
+            if np.isnan(m):
+                m = 0  # để tránh mảng trống và nan value
+            self.mu[n] = m
+            # chuẩn hóa
+            self.Ybar_data[ids, 2] = ratings - self.mu[n]
+        self.Ybar = sparse.coo_matrix((self.Ybar_data[:, 2],
+                                       (self.Ybar_data[:, 1], self.Ybar_data[:, 0])), (self.n_items, self.n_users))
+        self.Ybar = self.Ybar.tocsr()
+
+    def similarity(self):
+        """
+        Tính độ tương đồng giữa các user và các item
+        """
+        eps = 1e-6
+        self.S = self.dist_func(self.Ybar.T, self.Ybar.T)
+
+    def refresh(self):
+        """
+        Chuẩn hóa dữ liệu và tính toán lại ma trận similarity. (sau khi một số xếp hạng được thêm vào).
+        """
+        self.normalize_matrix()
+        self.similarity()
+
+    def fit(self):
+        self.refresh()
+
+    def __pred(self, u, i, normalized=1):
+        """
+        Dự đoán ra ratings của các users với mỗi items.
+        """
+        # tìm tất cả user đã rate item i
+        ids = np.where(self.Y_data[:, 1] == i)[0].astype(np.int32)
+        users_rated_i = (self.Y_data[ids, 0]).astype(np.int32)
+        sim = self.S[u, users_rated_i]
+        a = np.argsort(sim)[-self.k:]
+        nearest_s = sim[a]
+        r = self.Ybar[i, users_rated_i[a]]
+        if normalized:
+            # cộng với 1e-8, để tránh chia cho 0
+            return (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8)
+
+        return (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8) + self.mu[u]
+
+    def pred(self, u, i, normalized=1):
+        """
+        Xét xem phương pháp cần áp dùng là uuCF hay iiCF
+        """
+        if self.uuCF: return self.__pred(u, i, normalized)
+        return self.__pred(i, u, normalized)
+
+    def print_list_item(self):
+        for i in range(self.n_items):
+            print(i)
+
+    def recommend(self, u):
+        """
+        Determine all items should be recommended for user u.
+        The decision is made based on all i such that:
+        self.pred(u, i) > 0. Suppose we are considering items which
+        have not been rated by u yet.
+        """
+        ids = np.where(self.Y_data[:, 0] == u)[0]
+        items_rated_by_u = self.Y_data[ids, 1].tolist()
+        recommended_items = []
+        for i in range(self.n_items):
+            if i not in items_rated_by_u:
+                rating = self.__pred(u, i)
+                if rating > 0:
+                    recommended_items.append(i)
+
+        return recommended_items
+
+    def recommend_top(self, u, top_x):
+        """
+        Determine top 10 items should be recommended for user u.
+        . Suppose we are considering items which
+        have not been rated by u yet.
+        """
+        ids = np.where(self.Y_data[:, 0] == u)[0]
+        items_rated_by_u = self.Y_data[ids, 1].tolist()
+        item = {'id': None, 'similar': None}
+        list_items = []
+
+        def take_similar(elem):
+            return elem['similar']
+
+        for i in range(self.n_items):
+            if i not in items_rated_by_u:
+                rating = self.__pred(u, i)
+                item['id'] = i
+                item['similar'] = rating
+                list_items.append(item.copy())
+
+        sorted_items = sorted(list_items, key=take_similar, reverse=True)
+        sorted_items.pop(top_x)
+        return sorted_items
+
+    def print_recommendation(self,idUser):
+        print('---------------------------------------------------------',idUser)
+        """
+        print all items which should be recommended for each user
+        """
+        print('Recommendation: ')
+        for u in range(self.n_users):
+            # if u == urem:
+            recommended_items = self.recommend(u)
+            if self.uuCF:
+                # print(recommended_items)
+                if(idUser == u):
+                    return recommended_items
+                    #print('Recommend item(s):', recommended_items, 'for user', u)
+            else:
+                if(idUser == u):
+                    return recommended_items
+                # print('Recommend item', u, 'for user(s) : ', recommended_items)
+                # print(u)
+                
+def index(self):
+    x = []
+    y = []
+    A = []
+    B = []
+ 
     rating = Rating.objects.all()
-    userrr= User.objects.all()
-    print (userrr)
-    x=[] 
-    y=[]
-    z=[] 
-    k=[]
-    A=[]
-    B=[]
-    C=[]
-    D=[]
-    
-    for item in userrr:
-        z=[item.id,item.username,item.email,item.password,item.groups,item.user_permissions, item.is_staff] 
-        k+=[z]
-    user_df = pd.DataFrame(y,columns=['userId','username','email','password','groups','user_permissions','is_staff'])
-    print("user DataFrame")
-    print(user_df)
-    print(user_df.dtypes)
-    
-    for item in location:
-        x=[item.id,item.name,item.category,item.image.url,item.address,item.wardcommune,item.district, item.city,item.costmin, item.costmax] 
-        y+=[x]
-    # xây dựng dữ liệu hai chiều và các nhãn tương ứng của nó
-    location_df = pd.DataFrame(y,columns=['locationId','name','category','image','address','wardcommune','district','city','costmin','costmax'])
-    print("Locations DataFrame")
-    print(location_df)
-    print(location_df.dtypes)
     print(rating)
     for item in rating:
         A=[item.author.id,item.detaillocation.id,item.rating]
@@ -93,117 +242,43 @@ def generateRecommendation(request):
     rating_df['locationId']=rating_df['locationId'].astype(str).astype(np.int64)
     rating_df['rating']=rating_df['rating'].astype(str).astype(np.float)
     print(rating_df)
-    print(rating_df.dtypes)
-    if request.user.is_authenticated:
-        userid=request.user.id
-        #chọn liên quan là câu lệnh tham gia trong django. Nó tìm khóa ngoại và tham gia bảng
-        userInput= Rating.objects.select_related('detaillocation').filter(author=userid)
-        if userInput.count()== 0:
-            recommenderQuery=None
-            userInput=None
-        else:
-            for item in userInput:
-                C=[item.detaillocation.name,item.rating]
-                D+=[C]
-            inputLocations=pd.DataFrame(D,columns=['name','rating'])
-            print("Views Loactions by user dataframe")
-            inputLocations['rating']=inputLocations['rating'].astype(str).astype(np.float)
-            print(inputLocations.dtypes)
-            # Lọc địa điểm theo tên 
-            inputId = location_df[location_df['name'].isin(inputLocations['name'].tolist())]
-            #Sau đó hợp nhất nó để chúng ta có thể lấy locationId. Nó hoàn toàn hợp nhất nó theo tiêu đề.
-            inputLocations = pd.merge(inputId, inputLocations)
-            # Loại bỏ thông tin mà chúng tôi sẽ không sử dụng từ khung dữ liệu đầu vào
-            #Khung dữ liệu đầu vào cuối cùng
-            print(inputLocations)
-            #Lọc người dùng đã xem địa điểm mà đầu vào đã xem và lưu trữ địa điểm đó
-            userSubset = rating_df[rating_df['locationId'].isin(inputLocations['locationId'].tolist())]
-            print(userSubset.head())
-            # Groupby tạo một số khung dữ liệu phụ trong đó tất cả chúng đều có cùng giá trị trong cột được chỉ định làm tham số
-            userSubsetGroup = userSubset.groupby(['authorId'])
-            #Sắp xếp để người dùng có địa điểm giống nhất với đầu vào sẽ được ưu tiên
-            userSubsetGroup = sorted(userSubsetGroup,  key=lambda x: len(x[1]), reverse=True)
-
-            print(userSubsetGroup[0:])
-            userSubsetGroup = userSubsetGroup[0:]
-           #Lưu trữ Tương quan Pearson trong từ điển, trong đó khóa là Id người dùng và giá trị là hệ số
-            pearsonCorrelationDict = {}
-            
-        #Đối với mọi nhóm người dùng trong tập hợp con của chúng tôi
-            for name, group in userSubsetGroup:
-               #Hãy bắt đầu bằng cách sắp xếp đầu vào và nhóm người dùng hiện tại để các giá trị không bị lẫn lộn sau này
-                group = group.sort_values(by='locationId')
-                inputLocations = inputLocations.sort_values(by='locationId')
-                #Lấy N cho công thức
-                nRatings = len(group)
-                #Nhận điểm đánh giá cho những địa điểm mà cả hai đều có điểm chung
-                temp_df = inputLocations[inputLocations['locationId'].isin(group['locationId'].tolist())]
-                #Và sau đó lưu trữ chúng trong một biến bộ đệm tạm thời ở định dạng danh sách để tạo điều kiện cho các tính toán trong tương lai
-                tempRatingList = temp_df['rating'].tolist()
-                #Chúng ta cũng hãy đặt các bài đánh giá của nhóm người dùng hiện tại ở định dạng danh sách
-                tempGroupList = group['rating'].tolist()
-                #Bây giờ, hãy tính tương quan người giữa hai người dùng, được gọi là x và y
-                Sxx = sum([i**2 for i in tempRatingList]) - pow(sum(tempRatingList),2)/float(nRatings)
-                Syy = sum([i**2 for i in tempGroupList]) - pow(sum(tempGroupList),2)/float(nRatings)
-                Sxy = sum( i*j for i, j in zip(tempRatingList, tempGroupList)) - sum(tempRatingList)*sum(tempGroupList)/float(nRatings)
-                
-                #Nếu mẫu số khác 0, thì chia, nếu không, 0 tương quan.
-                if Sxx != 0 and Syy != 0:
-                    pearsonCorrelationDict[name] = Sxy/(sqrt(Sxx*Syy))
-                else:
-                    pearsonCorrelationDict[name] = 0
-            print(pearsonCorrelationDict.items()) 
-            
-            pearsonDF = pd.DataFrame.from_dict(pearsonCorrelationDict, orient='index')
-            pearsonDF.columns = ['similarityIndex']
-            pearsonDF['authorId'] = pearsonDF.index
-            pearsonDF.index = range(len(pearsonDF))
-            print(pearsonDF.head())
-
-            topUsers=pearsonDF.sort_values(by='similarityIndex', ascending=False)[0:]
-            print(topUsers.head())
-            
-            topUsersRating=topUsers.merge(rating_df, left_on='authorId', right_on='authorId', how='inner')
-            topUsersRating.head()
-            
-            #Nhân sự tương đồng với xếp hạng của người dùng
-            topUsersRating['weightedRating'] = topUsersRating['similarityIndex']*topUsersRating['rating']
-            topUsersRating.head()
-
-
-            #Áp dụng một khoản tiền cho topUsers sau khi nhóm nó theo authorId
-            tempTopUsersRating = topUsersRating.groupby('locationId').sum()[['similarityIndex','weightedRating']]
-            tempTopUsersRating.columns = ['sum_similarityIndex','sum_weightedRating']
-            tempTopUsersRating.head()
-
-            #Tạo một khung dữ liệu trống
-            recommendation_df = pd.DataFrame()
-            #Bây giờ chúng tôi lấy trung bình có trọng số
-            recommendation_df['weighted average recommendation score'] = tempTopUsersRating['sum_weightedRating']/tempTopUsersRating['sum_similarityIndex']
-            recommendation_df['locationId'] = tempTopUsersRating.index
-            recommendation_df.head()
-
-            recommendation_df = recommendation_df.sort_values(by='weighted average recommendation score', ascending=False)
-            recommender=location_df.loc[location_df['locationId'].isin(recommendation_df.head(5)['locationId'].tolist())]
-            print(recommender)
-            return recommender.to_dict('records')
-    # return render(request, 'pages/home.html')
-def filterLocationByCategory():
-    #filtering by category
-    allLocations=[]
-    categoryLocation = Location.objects.values('category', 'id')
-    categories= {item["category"] for item in categoryLocation}
-    for cate in categories:
-        location=Location.objects.filter(category=cate)
-        print(location)
-        n = len(location)
-        nSlides = n // 4 + ceil((n / 4) - (n // 4))
-        allLocations.append([location, range(1, nSlides), nSlides])
-    params={'allLocations':allLocations }
-    return params
-
-
-
+    
+    location =  Location.objects.all()
+    for item in location:
+        x=[item.id,item.name,item.category,item.image.url,item.address,item.wardcommune,item.district, item.city,item.costmin, item.costmax, item.timestart, item.timeend] 
+        y+=[x]
+    # xây dựng dữ liệu hai chiều và các nhãn tương ứng của nó
+    location_df = pd.DataFrame(y,columns=['locationId','name','category','image','address','wardcommune','district','city','costmin','costmax','timestart', 'timeend'])
+    print("Locations DataFrame")
+    print(location_df)
+    
+    listManager = [] 
+    users_in_group = Group.objects.get(name="Manager").user_set.all()
+    for i in users_in_group:
+        listManager.append(i)
+    manager = self.user in users_in_group
+    category = Category.objects.filter()
+    locations = Location.objects.order_by('-views')
+    locationnew = Location.objects.order_by('-date')
+    Y_data = rating_df.values
+    rs = CF(Y_data, k = 2, uuCF = 1)
+    rs.fit()
+    # recommen_CF = rs.print_recommendation(urem = userid)
+    recommen_CF = rs.print_recommendation(self.user.id)
+    locationData = []
+    for i in recommen_CF:
+        locationData.append(Location.objects.filter(id=i)[0])
+    print("--------------------------------------------------",locationData)
+    if manager:
+        return redirect('home_admin')
+    else:
+        return render(self,'pages/home.html',{'locationData':locationData ,'category': category, 'locations': locations, 'locationnew': locationnew})
+       
+       
+       
+       
+       
+# =======================================================================CB 
 def get_dataframe_location(text):
     location =  Location.objects.all()
     # category = Category.objects.all()
@@ -284,78 +359,4 @@ class CB(object):
         sim_scores = sim_scores[1:top_x + 1]
         location_indices = [i[0] for i in sim_scores]
         print(sim_scores)
-        return sim_scores, name.iloc[location_indices].values
-
-    
-def index(request):
-    # if (generateRecommendation(request)):
-    params=filterLocationByCategory()
-    params['recommended'] = generateRecommendation(request)
-    print("----------------------------------------------",params)
-    # return render(request,'pages/home.html',params)
-    listManager = []
-    
-    users_in_group = Group.objects.get(name="Manager").user_set.all()
-    for i in users_in_group:
-        listManager.append(i)
-    manager = request.user in users_in_group
-    category = Category.objects.filter()
-    locations = Location.objects.order_by('-views')
-    locationnew = Location.objects.order_by('-date')
-    if manager:
-        return redirect('home_admin')
-    else:
-        return render(request,'pages/home.html', {'params':params ,'category': category, 'locations': locations, 'locationnew': locationnew})
-
-
-# def related(request, location_id):
-#     template = loader.get_template('pages/related.html')
-# 	# new_obj = Movie.objects.all().filter(top_movie=False)[:20]
-#     new_obj = return_related_movies(location_id)
-# 	# return HttpResponse("Related!")
-#     return HttpResponse(template.render({"locations":new_obj},request))
-
-
-# def return_related_movies(location_id):
-# 	# with open("modelfile.sav","rb") as f:
-# 	# 	cosine_sim = pickle.load(f)
-#     # cosine_sim = linear_kernel(matrix)
-#     new_obj = Location.objects.all()
-#     movie_list = []
-#     index_list = []
-    
-#     for index,location in enumerate(new_obj):
-#         movie_list.append(location.id)
-#         index_list.append(index)
-
-#     indices = pd.Series(index_list,index=movie_list)
-#     print(indices.head(n=20))
-#     idx = indices[location_id]
-#     sim_scores = list(enumerate(cosine_sim[idx]))
-#     sim_scores = sorted(sim_scores,key=lambda x: x[1],reverse=True)[1:25]
-#     match_index = [i[0] for i in sim_scores]
-#     print(match_index)
-#     locations = []
-    
-#     for index,location in enumerate(new_obj):
-#         if index in match_index:
-#             locations.append(location)
-#     return locations
-
-# class IpAddressMiddleware(object):
-#     def __init__(self, get_response=None):
-#         self.get_response = get_response
-        
-#     def get_location(self, ip_address):
-#         url = 'http://checkip.dyndns.com/'
-#         loc_url = 'https://ip-api.io/json/{}'
-#         data = requests.get(url)
-#         if not ip_address:
-#             ip_address = re.compile(r'Address:(\d+\.\d+\.\d+\.\d+').search(data.text).group(1)
-#         location = requests.get(loc_url.format(ip_address))
-#         city = location.json()['city']
-#         country = location.json()['country_name']
-#         lat = location.json()['latitude']
-#         log = location.json()['longitude']
-        
-#         return country, city, ip_address, lat, log
+        return sim_scores, name.iloc[location_indices].values 

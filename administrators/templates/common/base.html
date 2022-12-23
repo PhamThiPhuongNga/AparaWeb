@@ -9,6 +9,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
 		<script src="{% static 'js/fonts.js' %}"></script>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
         {% comment %} <link rel="stylesheet" href="/templates/assets/fonts/fontawesome-free-6.1.1-web/css/fontawesome.min.css">  {% endcomment %}
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type='text/css'>
         <link rel="stylesheet" href="{% static 'css/icons.css' %}" type='text/css'>
@@ -39,7 +41,7 @@
         
                 <div id="navbar" class="navbar-collapse collapse" >
                     <ul class="nav navbar-nav navbar-right mt-20">
-                        <li class="mega-menu-item"><a href="{% url 'home'%}"><span>Trang Website</span></a>
+                        <li class="mega-menu-item"><a href="{% url 'home' %}"><span>Trang Website</span></a>
                         </li>
                         {% if user.username %}
                         <li class=""><a href="#"><span>{{ user.username }}</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
@@ -59,27 +61,22 @@
         </nav>
         <section class="pt-125  bg-ad">
             <div class="row content bd-content" >
-                <div class="col-sm-3 sidenav hidden-xs bg-nav ">
-                    <ul class="nav nav-pills nav-stacked pt-30">Danh mục
+                <div class="col-sm-3 sidenav bg-nav "style="height: 73vh;">
+                    <ul class="nav nav-pills nav-stacked pt-30 active"> DANH MỤC
                         <li class="active"><a href="{% url 'home_admin' %}">Dashboard</a></li>
                         <li><a href="{% url 'location_list'%}">Địa điểm</a></li>
-                        <li><a href="{% url 'location_list'%}">Địa điểm của tôi</a></li>
                         <li><a href="{% url 'i'%}">Hình ảnh</a></li>
-                        <li><a href="{% url 'comment_list'%}">Bình luận</a></li>
-                        <li><a href="{% url 'comment_list'%}">Thể loại</a></li>
+                        <li><a href="{% url 'category_list'%}">Thể loại</a></li>
                         <li><a href="{% url 'account_list'%}">Tài khoản</a></li>
-                        <li><a href="{% url 'history'%}">Lịch sử</a></li>
+                        {% comment %} <li><a href="{% url 'history'%}">Lịch sử</a></li> {% endcomment %}
                     </ul>
                 </div>
-                <div class="col-sm-9 sidenav pt-30 pb-125" >
+                <div class="col-sm-9 sidenav pt-30" >
                     {% block content %}
                     {% endblock %}
                 </div>
             </div>
         </section>
-        <footer class="footer text-center" style="background: #222;">
-            <p>Footer Text</p>
-        </footer>
            
         <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -98,4 +95,20 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
         <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
     </body>
+    <footer class="footer text-center" style="background: #222;">
+        <p>@Apara.vn</p>
+    </footer>
+<style>
+    .sidenav ul li a:hover{
+        color: #ffffff;
+        background-color: #337ab7;
+    }
+    .sidenav ul li a:focus{
+        color: #ffffff;
+        background-color: #337ab7;
+    }
+</style>
+<script>
+    AOS.init();
+</script>
 </html>

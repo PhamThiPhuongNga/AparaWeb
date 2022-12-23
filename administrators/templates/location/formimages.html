@@ -32,9 +32,8 @@
                 <th scope="row">1</th>
                 <td>{{im.location_id}}</td>
                 <td><img src="/media/{{im.image}}" alt="" style="width:80px; height:80px;"></td>
-                <td>
-                    <a href="{% url 'edit_images' im.id %}"><i class="changelink"></i></a>
-                    <a href="{% url 'delete_images' im.id  %}"><i class="inline-deletelink"></i></a>
+                <td>    
+                    <a href="{% url 'delete_images' im.id  %}"onclick=" return confirm('Bạn có chắc chắn muốn xóa hình ảnh này?');"><i class="inline-deletelink" style="float: left;"></i></a>
                 </td>
             </tr>
         </tbody>

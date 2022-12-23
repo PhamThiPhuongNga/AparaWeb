@@ -8,7 +8,7 @@ class AddUserForm(forms.Form):
     email = forms.EmailField(label = 'Email')
     password1 = forms.CharField(label = 'Mật khẩu', widget=forms.PasswordInput())
     password2 = forms.CharField(label = 'Nhập lại mật khẩu', widget=forms.PasswordInput())
-    group = forms.ModelChoiceField(label = 'Nhóm', queryset=Group.objects.all(), required=True)
+    # group = forms.ModelChoiceField(label = 'Nhóm', queryset=Group.objects.filter(name='Manager'), required=True)
 
     def clean_password2(self):
         if 'password1' in self.cleaned_data:

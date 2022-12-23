@@ -41,9 +41,6 @@ INSTALLED_APPS = [
     'blog',
     'administrators',
     'history',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [

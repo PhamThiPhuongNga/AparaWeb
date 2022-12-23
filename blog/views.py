@@ -28,10 +28,11 @@ from history.mixins import ObjectViewMixin
 
 def locationList(request):
     comment = Location.objects.filter().order_by("-date")
+    category = Category.objects.all()
     paginator = Paginator(comment, 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'location/location.html',{'page_obj': page_obj})
+    return render(request, 'location/location.html',{'page_obj': page_obj, 'category':category})
 
 def search(request):    
     if 'q'  in request.GET:
@@ -79,7 +80,7 @@ def search(request):
         qmincost = request.GET['qmincost']
         qmaxcost = request.GET['qmaxcost']
         if qmaxcost and qmincost:
-            locations = Location.objects.order_by('-date').filter(Q(Q(costmin__in = [qmincost,qmaxcost])))
+            locations = Location.objects.order_by('-date').filter(Q(Q(costmin__gte = qmincost) and Q(costmin__lte = qmaxcost) and Q(costmax__lte = qmaxcost)))
             location_count = locations.count()   
              
     context = {
@@ -95,11 +96,9 @@ class detaillocation(ObjectViewMixin, DetailView):
     def get(self,request, **kwargs):
         rateUsers = []
         detaillocation = Location.objects.get(pk=self.kwargs.get('pk'))
-        print(detaillocation)
-        category = Category.objects.get(location=self.kwargs.get('pk'))
-        print(category)
-        similarLoca = Location.objects.filter(category=category).order_by('-views')
-        print(similarLoca)
+        categoryy = Category.objects.get(location=self.kwargs.get('pk'))
+        category = Category.objects.all()
+        similarLoca = Location.objects.filter(category=categoryy).order_by('-views')
         ratings = Rating.objects.filter(detaillocation=detaillocation)
         print("type  la : ",type(ratings))
         print("data  la : ",ratings.values())
@@ -107,9 +106,7 @@ class detaillocation(ObjectViewMixin, DetailView):
             rateUsers.append(i.author)
         rateUser = request.user in rateUsers
         image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
-        # print(category)
-        print(image)
-        return render(self.request, 'location/detaillocation.html', {"detaillocation": detaillocation, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser})
+        return render(self.request, 'location/detaillocation.html', {"detaillocation": detaillocation, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser, "category":category})
         
     def post(self,request, **kwargs):
         rateUsers = []
@@ -139,7 +136,6 @@ class detaillocation(ObjectViewMixin, DetailView):
             if form.is_valid(): 
                 data = form.save(commit=False) 
                 data.body = self.request.POST['body']
-                # data.rating = request.POST['rating']
                 data.author = self.request.user
                 data.detaillocation = detaillocation
                 data.save() 
@@ -162,6 +158,16 @@ class detaillocation(ObjectViewMixin, DetailView):
             form = RatingForm()
         return render(self, 'location/detaillocation.html', {"detaillocation": detaillocation, "form":form, "ratings":ratings, "image":image, "similarLoca":similarLoca,"rateUser":rateUser})
 
+# def edit_rating(request, pk, rating_id):
+#     detaillocation = Location.objects.get(pk=pk)
+#     rate = Rating.objects.get(detaillocation=detaillocation, id=rating_id)
+#     if request.user == rate.author:
+#         if request.method =="POST":
+#             rate.rating = request.POST['rating']
+#             rate.save()
+#             messages.success(request, "Cập nhật thành công!")
+#             return redirect('/blog/location/' + str(detaillocation.id))
+#         return render(request, 'location/editreview.html',{"detaillocation": detaillocation, "review": rate})
 
 def edit_review(request, pk, review_id):
     detaillocation = Location.objects.get(pk=pk)

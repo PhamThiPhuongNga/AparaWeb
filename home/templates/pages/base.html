@@ -9,6 +9,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js"></script>
 		<script src="{% static 'js/fonts.js' %}"></script>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/> {% endcomment %}
         {% comment %} <link rel="stylesheet" href="/templates/assets/fonts/fontawesome-free-6.1.1-web/css/fontawesome.min.css">  {% endcomment %}
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type='text/css'>
         <link rel="stylesheet" href="{% static 'css/icons.css' %}" type='text/css'>
@@ -38,38 +41,21 @@
                 </div> 
         
                 <div id="navbar" class="navbar-collapse collapse" >
-                    <ul class="nav navbar-nav navbar-right mt-20">
-                        <li class="mega-menu-item"><a href=" /"><span>Trang chủ</span></a>
+                    <ul class="nav navbar-nav navbar-right mt-20 ho-nav">
+                        {% comment %} <li class="mega-menu-item"><a href="{% url 'get_recommend'%}"><span class="bo">test</span></a> {% endcomment %}
+                        <li class="mega-menu-item"><a href=" /"><span class="bo">Trang chủ</span></a>
                         </li>
                         
                         <li class="mega-menu-item"><a href="#"><span>Danh mục</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
                             <div class="mega-menu-container dark" style="background: #444444;">
                                 <div class="container-fluid">
                                     <div class="row">
+                                        {% for category in category%}
                                         <div class="col-md-2">
-                                            <a href="http://multifour.com/projects/gum/templates/agency3/index.html" target="_blank"><img src="images/agency3-screen.jpg" alt="Templates" class="screen mb-20"></a>
-                                            <h4 class="mb-0">Quán cafe</h4>
+                                            <h4 class="mb-0"><a href="{% url 'get_location_category' category.id %}">{{category.name}}</a></h4>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a href="http://multifour.com/projects/gum/templates/comingsoon2/index.html" target="_blank"><img src="images/comingsoon2-screen.jpg" alt="Templates" class="screen mb-20"></a>
-                                            <h4 class="mb-0">Nhà hàng</h4>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <a href="http://multifour.com/projects/gum/templates/rentcar/index.html" target="_blank"><img src="images/rentcar-screen.jpg" alt="Templates" class="screen mb-20"></a>
-                                            <h4 class="mb-0">Khu vui chơi/chụp ảnh</h4>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <a href="http://multifour.com/projects/gum/templates/product2/index.html" target="_blank"><img src="images/product2-screen.jpg" alt="Templates" class="screen mb-20"></a>
-                                            <h4 class="mb-0">Trung tâm thương mại</h4>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <a href="http://multifour.com/projects/gum/templates/app7/index.html" target="_blank"><img src="images/app7-screen.jpg" alt="Templates" class="screen mb-20"></a>
-                                            <h4 class="mb-0">Danh lam thắng cảnh</h4>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <a href="http://multifour.com/projects/gum/templates/courses/index.html" target="_blank"><img src="images/courses-screen.jpg" alt="Templates" class="screen mb-20"></a>
-                                            <h4 class="mb-0">Courses page</h4>
-                                        </div>
+                                        {% endfor%}
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -102,35 +88,34 @@
          {% endblock %}
         {% block content %}
          {% endblock %}
-        <footer id="footer-list-subscribe-2" class="dark pt-100 pb-100">
+        <footer id="footer-list-subscribe-2" class="dark pt-100 pb-50">
             <div class="container">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-sm-4">
-                                <h4><strong>Learn more</strong></h4>
+                                <h4><strong>Liên hệ</strong></h4>
                                 <ul class="text-list">
                                     <li>
-                                        <a href="#">Pricing and Plans</a>
+                                        <i class="flaticon-telephone"></i>
+                                        <p class="text-color">Hotline:<br><a href="tel:0942874647">0942.874.647</a></p>
                                     </li>
                                     <li>
-                                        <a href="#">Customers care association</a>
+                                        <i class="flaticon-email"></i>
+                                        <p class="text-color">Email:<br><a href="congtypcccthienminh@gmail.com">aparahn@gmail.com</a></p>
                                     </li>
                                     <li>
-                                        <a href="#">New features &amp; benefits</a>
+                                        <i class="flaticon-pin"></i>
+                                        <p class="text-color">Địa chỉ:</p><p>số 20/C43 Khu đô thị mới hai bên đường Lê Trọng Tấn, P Dương Nội, Q.Hà Đông,TP.Hà Nội.</p>
                                     </li>
-                                    <li>
-                                        <a href="#">Company education</a>
-                                    </li>
-    
                                 </ul>
                             </div>
                             <div class="col-sm-5">
-                                <h4><strong>About</strong></h4>
-                                <p class="">The given template is armed with the number of settings, so you can easily adapt it according to you requirements. Plenty of additional elements guarantee that you will get the project you exactly wanted in the end, saving you time and money.</p>
+                                <h4><strong>Về chúng tôi</strong></h4>
+                                <p class="">Apara một thiên đường các địa điểm cho bạn tìm kiếm để tìm ra các địa điểm phù hợp và tối ưu nhất đến cho Khách hàng</p>
                             </div>
                             <div class="col-sm-3">
-                                <h4><strong>Social</strong></h4>
+                                <h4><strong>Mạng xã hội</strong></h4>
                                 <ul class="text-list">
                                     <li>
                                         <i class="icon-facebook icon-position-left"></i><span><a href="#">Facebook</a></span>
@@ -155,14 +140,14 @@
                                 <input type="email" class="form-control" placeholder="Enter your email" name="EMAIL">
                             </div><button type="submit" data-loading-text="•••" data-complete-text="Completed!" data-reset-text="Try again later..." class="btn btn-link"><span>GO</span></button>
                         </form>
-                        <small class="desc-text small">Follow us in social networks. You can also subscribe for our news. We are going to provide you with actual and important for you information without spam or fluff.</small>
+                        <small class="desc-text small">Follow chúng tôi trong các mạng xã hội. Bạn cũng có thể đăng ký nhận tin tức của chúng tôi. Chúng tôi sẽ cung cấp cho bạn thông tin thực tế và quan trọng đối với bạn mà không có thư rác hoặc thông tin sai lệch.</small>
                     </div>
                 </div>
                 <hr class="mt-50 mb-50">
                 <div class="row">
                     <div class="col-md-6">
-                        <p>© Slim.vn.
-                            <br>All rights reserved.</p>
+                        <p>© Apara.vn.
+                            <br>All rights Apara.</p>
                     </div>
                     <div class="col-md-6 text-md-right">
                         <img src="{% static 'images/Apara_den.png' %}" width="120" height="120"alt="logo Apara" class="screen">
@@ -185,6 +170,68 @@
         <script src="{% static 'js/information.js' %}"></script>
         <script src="{% static 'js/contact.js' %}"></script>
         <script src="{% static 'js/city.js' %}"></script>
-       
+        <script>
+            AOS.init();
+        </script>
+        <style>
+            .owl-theme .owl-nav .owl-next {
+                right: -10px;
+            }
+            
+            .owl-theme .owl-nav .owl-prev {
+                left: -10px;
+            }
+            .card-img:hover{
+                transform: scale(1.5);
+            }
+            .card .zoom{
+                height: 200px;
+                width: auto;
+                overflow: hidden;
+            }
+            .card img{
+                -webkit-transition: all 2s ease;
+                -moz-transition: all 2s ease;
+                -ms-transition: all 2s ease;
+                transition: all 2s ease;
+            }
+            .card{
+                box-shadow: 6px 2px 6px 2px #f2f2f2;
+            }
+            .card:hover{
+                box-shadow: 2px 2px 6px 2px gray;
+            }
+            .ho-nav li a span:hover {
+                color: #07bcf7;
+            }
+            li a span,li a span:visited,li a span:hover,li a span:active{
+                -webkit-backface-visibility:hidden;
+                backface-visibility:hidden;
+                position:relative;
+                transition:0.5s color ease;
+                text-decoration:none;
+            }
+            li a span:after{
+                content: "";
+                transition:0.5s all ease;
+                -webkit-backface-visibility:hidden;
+                backface-visibility:hidden;
+                position:absolute;
+            }
+            li a span.bo:after{
+            bottom:-0.25em;
+            }
+            li a span.bo:after{
+            height:5px;
+            height:0.35rem;
+            width:0;
+            background:#d73444;
+            }
+            li a span.bo:after{
+                left:50%;
+                -webkit-transform:translateX(-50%);
+                transform:translateX(-50%);
+            }
+        </style>
     </body>
 </html>

@@ -4,17 +4,18 @@
 {% block title %}Trang chủ{% endblock %}
 
 {% block banner %}
-<header id="header-center-slogan-form-2" class="pt-150 pb-200 text-center dark">
+<header id="header-center-slogan-form-2" class="pt-200 pb-200 text-center dark">
    
     <div class="container">
         <div class="row">
             <div class="col-md-12" style="">
-                <img class="screen mb-100" src="{% static 'images/Apara_den.png' %}" alt="logo" width="170" height="170">
-                <h1 class="mb-50" style="">Rent a paradise on the weekend</h1>
+                {% comment %} <img class="screen mb-100" src="{% static 'images/Apara_den.png' %}" alt="logo" width="170" height="170"> {% endcomment %}
+                <h1 data-aos="zoom-in" data-aos-duration="2000" > Apara</h1>
+                <h2 class="mb-50 " data-aos="fade-up" data-aos-duration="2000" style="">Rent a paradise on the weekend</h2>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
                     <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
                     <form class="form-inline" action="{% url 'searchlocation'%}">
-                        <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
+                        <input class="form-control mr-sm-2" name="q" type="search" placeholder="Tên địa điểm..." aria-label="Search">
                         <div class="form-group select-group">
                             <select class="form-control form-select-sm" name="qcity" id="city" aria-label=".form-select-sm">
                                 <option value="" selected="" disabled="">Chọn tỉnh thành</option>
@@ -57,7 +58,7 @@
                         </div>
                       <button class="btn btn-primary my-2 my-sm-0 " type="submit">Tìm kiếm</button>
                     </form>
-                <p class="">Bạn rất quan trọng với chúng tôi, mọi thông tin nhận được sẽ luôn được bảo mật.</p>
+                <p class="animate__animated animate__fadeInRight "  data-aos="fade-left" data-aos-duration="2000">Bạn rất quan trọng với chúng tôi, mọi thông tin nhận được sẽ luôn được bảo mật.</p>
             </div>
         </div>
     </div>
@@ -66,54 +67,49 @@
 {% endblock %}
 
 {% block content %}
+{% if locationData%}
 <section id="clients-carousel" class="pt-75 pb-50  light">
     <div class="container">
-            {% if recommend%}
-        <h3 class="">Địa điểm được gợi ý cho bạn</h3>
-        <div class="carousel-5item-nav owl-drag">
-            {% for item in recommend %}
+        <h3 class="mb-40 text-center" data-aos="fade-right" data-aos-duration="2000">Địa điểm có thể bạn sẽ thích</h3>
+        <div class="carousel-5item-nav owl-drag"  data-aos="fade-up"data-aos-duration="2000">
+            {% for itemmmm in locationData%}
             <div class="">
                 <div class="card" style="border: 0.5px solid #f2f2f2;">
-                    <div style="">
-                        <img src="{{item.image}}" alt="Photo" class="card-img">
+                    <div class="zoom">
+                        <img src="{{itemmmm.image.url}}" alt="Photo" class="card-img">
                     </div>
                     <div style="margin: 10px;">
-                        <h4 class="mt-20 mb-0"><strong><a href="/blog/location/{{item.locationId}}">{{item.name}}</a></strong></h4>
-                        <h4 class="mb-20">{{item.category}}</h4>
+                        <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong><a href="/blog/location/{{itemmmm.id}}">{{itemmmm.name}}</a></strong></h4>
+                        <h4 class="mb-20">{{itemmmm.category}}</h4>
                         <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
-                            <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{item.address}}, {{item.wardcommune}}, {{item.district}}, {{item.city}}</p>
+                            <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{itemmmm.address}}, {{itemmmm.wardcommune}}, {{itemmmm.district}}, {{itemmmm.city}}</p>
                         <ul class="text-icon-list text-icon-list-sep">
-                            <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
-                                <span>Đánh giá</span>
-                                <span class="pull-right">{{location.averageReview}}/ 5</span>
+                            <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
+                                <span>Thời gian</span>
+                                <span class="pull-right">{{itemmmm.timestart}}~{{itemmmm.timeend}}</span>
                             </li>
                             <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
                                 <span>Giá</span>
-                                <span class="pull-right"><strong>{{item.costmin}}</strong>-<strong>{{item.costmax}} VND</strong></span>
+                                <span class="pull-right"><strong>{{itemmmm.costmin}}</strong>-<strong>{{itemmmm.costmax}} VND</strong></span>
                             </li>
                         </ul>
+                        <button type="submit" id="" class="btn btn-primary mt-3" style="width:100%;"><a href="/blog/location/{{itemmmm.id}}"style="color:#ffffff;">Xem thêm</a ></button>
                     </div>
                 </div>
             </div>
             {% endfor %}
-        {% else %}
-        <h3 class="my-4 text-light">Không có gợi ý địa điểm</u></h3>
-        {{request.groups}}
-        {{request.user}}
-        {% endif %}
         </div>
     </div>
-    <div class="bg"></div>
-    
+    <div class="bg"></div> 
 </section>
 <section id="clients-carousel" class="pt-50 pb-50 text-center light">
     <div class="container">
-        <h3 class="mb-40">Địa điểm phổ biến</h3>
-        <div class="carousel-5item-nav owl-drag mt-30">
+        <h3 class="mb-40" data-aos="fade-right" data-aos-duration="2000" >Địa điểm phổ biến</h3>
+        <div class="carousel-5item-nav owl-drag mt-30" data-aos="fade-up"data-aos-duration="2000">
             {% for location in locations %}
                 <div class="">
                     <div class="card" style="border: 0.5px solid #f2f2f2;">
-                        <div style="">
+                        <div class="zoom">
                             <img src="{{location.image.url}}" alt="Photo" class="card-img">
                         </div>
                         <div style="margin: 10px;">
@@ -127,7 +123,7 @@
                                     <span>Đánh giá</span>
                                     <span class="pull-right">{{location.averageReview}}/ 5</span>
                                 </li>
-                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                                <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
                                     <span>Thời gian: </span>
                                     <span class="pull-right">{{location.timestart}}~{{location.timeend}}</span>
                                 </li>
@@ -135,11 +131,12 @@
                                     <span>Giá</span>
                                     <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
                                 </li>
-                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                                <li class="clearfix"><i class="icon-file-preview icon-color icon-size-m icon-position-left"></i>
                                     <span>Lượt truy cập</span>
                                     <span class="pull-right">{{location.views}}</span>
                                 </li>
                             </ul>
+                            <button type="submit" id="" class="btn btn-primary mt-3" style="width:100%;"><a href="/blog/location/{{location.id }}"style="color:#ffffff;">Xem thêm</a ></button>
                         </div>
                     </div>
                 </div>
@@ -148,14 +145,15 @@
     </div>
     <div class="bg"></div>
 </section>
+{% else %}
 <section id="clients-carousel" class="pt-50 pb-50 text-center light">
     <div class="container">
-        <h3 class="mb-40">Địa điểm mới nhất</h3>
-        <div class="carousel-5item-nav owl-drag mt-30">
-            {% for location in locationnew %}
+        <h3 class="mb-40 " data-aos="fade-right" data-aos-duration="2000">Địa điểm phổ biến</h3>
+        <div class="carousel-5item-nav owl-drag mt-30" data-aos="fade-up"data-aos-duration="2000">
+            {% for location in locations %}
                 <div class="">
                     <div class="card" style="border: 0.5px solid #f2f2f2;">
-                        <div style="">
+                        <div class="zoom">
                             <img src="{{location.image.url}}" alt="Photo" class="card-img">
                         </div>
                         <div style="margin: 10px;">
@@ -169,7 +167,52 @@
                                     <span>Đánh giá</span>
                                     <span class="pull-right">{{location.averageReview}}/ 5</span>
                                 </li>
+                                <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
+                                    <span>Thời gian: </span>
+                                    <span class="pull-right">{{location.timestart}}~{{location.timeend}}</span>
+                                </li>
+                                <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
+                                    <span>Giá</span>
+                                    <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
+                                </li>
+                                <li class="clearfix"><i class="icon-file-preview icon-color icon-size-m icon-position-left"></i>
+                                    <span>Lượt truy cập</span>
+                                    <span class="pull-right">{{location.views}}</span>
+                                </li>
+                            </ul>
+                            <button type="submit" id="" class="btn btn-primary mt-3" style="width:100%;"><a href="/blog/location/{{location.id }}"style="color:#ffffff;">Xem thêm</a ></button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="bg"></div>
+</section>
+{% endif %}
+
+<section id="clients-carousel " class="pt-50 pb-50 text-center light">
+    <div class="container">
+        <h3 class="mb-40"data-aos="fade-right" data-aos-duration="2000">Địa điểm mới nhất</h3>
+        <div class="carousel-5item-nav owl-drag mt-30" data-aos="fade-up"data-aos-duration="2000">
+            {% for location in locationnew %}
+                <div class="">
+                    <div class="card" style="border: 0.5px solid #f2f2f2;">
+                        <div class="zoom">
+                            <img src="{{location.image.url}}" alt="Photo" class="card-img">
+                        </div>
+                        <div style="margin: 10px;">
+                            <h4 class="mt-20 mb-0" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;"><strong><a href="/blog/location/{{location.id}}">{{location.name}}</a></strong></h4>
+                            <h4 class="mb-20">{{location.category}}</h4>
+                            <p class="mb-20 address-loca" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                                <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
+                            <ul class="text-icon-list text-icon-list-sep">
+                                
                                 <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"></i>
+                                    <span>Đánh giá</span>
+                                    <span class="pull-right">{{location.averageReview}}/ 5</span>
+                                </li>
+                                <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
                                     <span>Thời gian: </span>
                                     <span class="pull-right">{{location.timestart}}~{{location.timeend}}</span>
                                 </li>
@@ -178,6 +221,7 @@
                                     <span class="pull-right"><strong>{{location.costmin}}</strong>-<strong>{{location.costmax}} VND</strong></span>
                                 </li>
                             </ul>
+                            <button type="submit" id="" class="btn btn-primary mt-3" style="width:100%;"><a href="/blog/location/{{location.id }}"style="color:#ffffff;">Xem thêm</a ></button>
                         </div>
                     </div>
                 </div>
@@ -188,11 +232,11 @@
 </section>
 <section id="clients-carousel" class="pt-50 pb-50 text-center light">
     <div class="container">
-        <h3 class="">Danh mục</h3>
-        <div class="carousel-5item-nav owl-drag mt-30">
+        <h3 class="" data-aos="fade-right" data-aos-duration="2000">Danh mục</h3>
+        <div class="carousel-5item-nav owl-drag mt-30" data-aos="fade-up"data-aos-duration="2000">
             {% for category in category %}
             <div class="item border-box" >
-                <p class="pt-30 pb-30" style="margin-bottom: 0px">{{category.name}}</p>
+                <p class="pt-30 pb-30" style="margin-bottom: 0px"><a href="{% url 'get_location_category' category.id%}">{{category.name}}</a></p>
             </div>
             {% endfor %}
         </div>
@@ -201,8 +245,8 @@
 </section>
 <section id="clients-carousel" class="pt-50 pb-50 text-center light">
     <div class="container">
-        <h3 class="">Đối tác</h3>
-        <div class="carousel-5item-nav owl-drag ">
+        <h3 class=""data-aos="fade-right" data-aos-duration="2000">Đối tác</h3>
+        <div class="carousel-5item-nav owl-drag " data-aos="fade-up"data-aos-duration="2000">
             {% for location in locations %}
             <div class="item">
                 <img src="media/{{location.logo}}" alt="logo" class="screen" width="100px" height="100px">
