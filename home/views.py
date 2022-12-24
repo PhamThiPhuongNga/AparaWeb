@@ -63,7 +63,7 @@ def get_location_category(request, id):
     page_obj = paginator.get_page(page_number)
     return render(request, 'pages/listlocation.html', {'page_obj':page_obj, 'category':category})
 
-
+# Collaborative Filtering (User-user collaborative filtering)
 class CF(object):
     """
     class Collaborative Filtering, hệ thống đề xuất dựa trên sự tương đồng
@@ -164,10 +164,10 @@ class CF(object):
 
     def recommend(self, u):
         """
-        Determine all items should be recommended for user u.
-        The decision is made based on all i such that:
-        self.pred(u, i) > 0. Suppose we are considering items which
-        have not been rated by u yet.
+        Xác định tất cả các items nên được khuyến nghị cho người dùng u.
+        Quyết định được đưa ra dựa trên tất cả i sao cho:
+        self.pred(u, i) > 0. Giả sử chúng ta đang xem xét các mục
+        chưa được bạn đánh giá.
         """
         ids = np.where(self.Y_data[:, 0] == u)[0]
         items_rated_by_u = self.Y_data[ids, 1].tolist()
@@ -182,9 +182,9 @@ class CF(object):
 
     def recommend_top(self, u, top_x):
         """
-        Determine top 10 items should be recommended for user u.
-        . Suppose we are considering items which
-        have not been rated by u yet.
+        Xác định 10 items hàng đầu nên được khuyến nghị cho người dùng u.
+        . Giả sử chúng ta đang xem xét các mục mà
+        chưa được bạn đánh giá.
         """
         ids = np.where(self.Y_data[:, 0] == u)[0]
         items_rated_by_u = self.Y_data[ids, 1].tolist()
@@ -206,24 +206,20 @@ class CF(object):
         return sorted_items
 
     def print_recommendation(self,idUser):
-        print('---------------------------------------------------------',idUser)
         """
-        print all items which should be recommended for each user
+        in tất cả các mục nên được khuyến nghị cho người dùng
         """
         print('Recommendation: ')
         for u in range(self.n_users):
-            # if u == urem:
             recommended_items = self.recommend(u)
             if self.uuCF:
-                # print(recommended_items)
                 if(idUser == u):
                     return recommended_items
                     #print('Recommend item(s):', recommended_items, 'for user', u)
             else:
-                if(idUser == u):
-                    return recommended_items
-                # print('Recommend item', u, 'for user(s) : ', recommended_items)
-                # print(u)
+                # return recommended_items
+                print('Recommend item', u, 'for user(s) : ', recommended_items)
+
                 
 def index(self):
     x = []
@@ -261,14 +257,16 @@ def index(self):
     locations = Location.objects.order_by('-views')
     locationnew = Location.objects.order_by('-date')
     Y_data = rating_df.values
+    
     rs = CF(Y_data, k = 2, uuCF = 1)
     rs.fit()
-    # recommen_CF = rs.print_recommendation(urem = userid)
     recommen_CF = rs.print_recommendation(self.user.id)
+
     locationData = []
-    for i in recommen_CF:
-        locationData.append(Location.objects.filter(id=i)[0])
-    print("--------------------------------------------------",locationData)
+    if recommen_CF is not None:
+        for i in recommen_CF:
+            locationData.append(Location.objects.filter(id=i)[0])
+        print("--------------------------------------------------",locationData)
     if manager:
         return redirect('home_admin')
     else:
@@ -276,87 +274,3 @@ def index(self):
        
        
        
-       
-       
-# =======================================================================CB 
-def get_dataframe_location(text):
-    location =  Location.objects.all()
-    # category = Category.objects.all()
-    x=[] 
-    y=[]
-    A=[]
-    B=[]
-    C=[]
-    D=[]
-    for item in location:
-        x=[item.id,item.name,item.category] 
-        y+=[x]
-    location_df = pd.DataFrame(y,columns=['locationId','name','category'])
-    print("Locations DataFrame")
-    print(location_df)
-    print(location_df.dtypes)
-    return location_df
-def tfidf_matrix(location_df):
-    """
-    Dùng hàm "TfidfVectorizer" để chuẩn hóa "genres" với:
-    + analyzer='word': chọn đơn vị trích xuất là word
-    + ngram_range=(1, 1): mỗi lần trích xuất 1 word
-    + min_df=0: tỉ lệ word không đọc được là 0
-    Lúc này ma trận trả về với số dòng tương ứng với số lượng film và số cột tương ứng với số từ được tách ra từ "genres"
-"""
-    tf = TfidfVectorizer(analyzer='word', ngram_range=(1, 1), min_df=0)
-    new_tfidf_matrix = tf.fit_transform(location_df['category'])
-    print(new_tfidf_matrix)
-    return new_tfidf_matrix
-def cosine_sim(matrix):
-    """
-            Dùng hàm "linear_kernel" để tạo thành ma trận hình vuông với số hàng và số cột là số lượng film
-             để tính toán điểm tương đồng giữa từng bộ phim với nhau
-    """
-    new_cosine_sim = linear_kernel(matrix, matrix)
-    print(new_cosine_sim)
-    return new_cosine_sim
-
-class CB(object):
-    """
-        Khởi tại dataframe "movies" với hàm "get_dataframe_movies_csv"
-    """
-    def __init__(self, movies_csv):
-        self.location_df = get_dataframe_location(movies_csv)
-        self.tfidf_matrix = None
-        self.cosine_sim = None
-
-    def build_model(self):
-        """
-            Tách các giá trị của thể loại ở từng địa điểm đang được ngăn cách bởi '|'
-        """
-        self.location_df['category'] = self.location_df['category'].fillna("").astype('str')
-        self.tfidf_matrix = tfidf_matrix(self.location_df)
-        self.cosine_sim = cosine_sim(self.tfidf_matrix)
-
-    def refresh(self):
-        """
-             Chuẩn hóa dữ liệu và tính toán lại ma trận
-        """
-        self.build_model()
-
-    def fit(self):
-        self.refresh()
-
-    def genre_recommendations(self, name, top_x):
-        """
-            Xây dựng hàm trả về danh sách top film tương đồng theo tên film truyền vào:
-            + Tham số truyền vào gồm "title" là tên film và "topX" là top film tương đồng cần lấy
-            + Tạo ra list "sim_score" là danh sách điểm tương đồng với film truyền vào
-            + Sắp xếp điểm tương đồng từ cao đến thấp
-            + Trả về top danh sách tương đồng cao nhất theo giá trị "topX" truyền vào
-        """
-        name = self.location_df['name']
-        indices = pd.Series(self.location_df.index, index=self.location_df['name'])
-        idx = indices[name]
-        sim_scores = list(enumerate(self.cosine_sim[idx]))
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[1:top_x + 1]
-        location_indices = [i[0] for i in sim_scores]
-        print(sim_scores)
-        return sim_scores, name.iloc[location_indices].values 

@@ -40,6 +40,7 @@ COSTMAX =(
     (300000, '300000'),
 )
 RATING =(
+    (0, '0'),
     (1, '1'),
     (1.5, '1.5'),
     (2, '2'),
@@ -112,7 +113,7 @@ class Comment(models.Model):
 class Rating(models.Model):
     detaillocation = models.ForeignKey(Location, null=True, on_delete=models.CASCADE, related_name = 'ratings')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    rating = models.FloatField(null=True, choices=RATING)
+    rating = models.FloatField(null=True, choices=RATING, default='0')
     status = models.BooleanField(null=True,default=True)
     date = models.DateTimeField(null=True,auto_now_add=True)
     def __str__(self):

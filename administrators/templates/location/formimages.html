@@ -29,7 +29,7 @@
         {% for im in page_obj %}
         <tbody>
             <tr>
-                <th scope="row">1</th>
+                <th scope="row">{{im.id}}</th>
                 <td>{{im.location_id}}</td>
                 <td><img src="/media/{{im.image}}" alt="" style="width:80px; height:80px;"></td>
                 <td>    

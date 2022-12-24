@@ -60,7 +60,7 @@
             {% for location in page_obj %}
             <div class="col-md-3 col-sm-6 mb-30">
                 <div class="card" style="border: 0.5px solid #f2f2f2;">
-                    <div style="">
+                    <div style="zoom">
                         <img src="{{location.image.url}}" alt="Photo" class="card-img">
                     </div>
                     <div style="margin: 10px;">
@@ -119,6 +119,11 @@
 <style>
     .card img{
         height: 200px!important;
+    }
+    .card .zoom {
+        height: 200px;
+        width: auto;
+        overflow: hidden;
     }
 </style>
 <script>

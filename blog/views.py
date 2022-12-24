@@ -99,7 +99,7 @@ class detaillocation(ObjectViewMixin, DetailView):
         categoryy = Category.objects.get(location=self.kwargs.get('pk'))
         category = Category.objects.all()
         similarLoca = Location.objects.filter(category=categoryy).order_by('-views')
-        ratings = Rating.objects.filter(detaillocation=detaillocation)
+        ratings = Rating.objects.filter(detaillocation=detaillocation).order_by('-date')
         print("type  la : ",type(ratings))
         print("data  la : ",ratings.values())
         for i in ratings:
@@ -116,7 +116,7 @@ class detaillocation(ObjectViewMixin, DetailView):
         print(category)
         similarLoca = Location.objects.filter(category=category).order_by('-views')
         print(similarLoca)
-        ratings = Rating.objects.filter(detaillocation=detaillocation)
+        ratings = Rating.objects.filter(detaillocation=detaillocation).order_by('-date')
         print("type  la : ",type(ratings))
         print("data  la : ",ratings.values())
         for i in ratings:

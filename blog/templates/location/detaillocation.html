@@ -111,7 +111,7 @@
                 </ul>
                 <div class="tab-content mt-40" id="myTabContent">
                     <div class="tab-pane fade" role="tabpanel" id="desc_tabs_0--0" aria-labelledby="desc_tabs_0--0-tab">
-                        <p>{{object.describe|safe|linebreaks}}</p>
+                        <p>{{detaillocation.describe|safe|linebreaks}}</p>
                     </div>
                     <div class="tab-pane fade active in" role="tabpanel" id="desc_tabs_0--1" aria-labelledby="desc_tabs_0--1-tab">
                         <div class="">
@@ -259,7 +259,7 @@
                                         <a href="/media/{{img.image}}" class="gallery-box">
                                             <i class="icon icon-size-m icon-plus"></i>
                                             <span class="caption">{{img.location_id}}</span>
-                                            <img src="/media/{{img.image}}" alt="screen">
+                                            <img src="/media/{{img.image}}" alt="screen" style="height:250px!important;object-fit: contain;">
                                         </a>
                                         {% comment %} <a href="https://vimeo.com/123395658" class="gallery-box mfp-iframe">
                                             <i class="icon icon-size-m icon-ion-ios-play-outline"></i>
