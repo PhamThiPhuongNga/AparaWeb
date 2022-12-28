@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row">
             {% if locations%}
-                <h5 class=" mb-40"><span class="text-muted">Kết quả tìm kiếm cho >></span>{{request.GET.q}}</h5>
+                <h5 class=" mb-40"><span class="text-muted">Kết quả tìm kiếm >></h5>
                 {% for location in locations %}
                     <div class="col-md-3 col-sm-6 mb-30">
                         <div class="card" style="border: 0.5px solid #f2f2f2;">
@@ -44,7 +44,7 @@
                 {% endfor %}
             {% else %}
             <div class="container">
-                <h4 class=" mb-40"><span class="text-muted">Không tìm thấy kết quả cho >></span>{{request.GET.q}}</h4>
+                <h4 class=" mb-40"><span class="text-muted">Không tìm thấy kết quả >></span></h4>
             </div>
             {% endif %}
         </div>
