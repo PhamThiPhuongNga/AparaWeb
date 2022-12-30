@@ -74,71 +74,76 @@ class add_location (LoginRequiredMixin, View):
         else:
             return render(request, 'common/error.html')
 
-
-def edit_location (request, id):
-    loca = Location.objects.get(id=id)
-    cate =  Category.objects.filter()
-    if request.method =="POST":
-        # if len(request.FILES) !=0:
-        #     if len(loca.logo) > 0 and len(loca.image) > 0 :
-        #         os.remove(loca.logo.path)
-        #         os.remove(loca.image.path)  
-        #     if len(loca.logo) > 0 :
-        #         os.remove(loca.logo.path)
-        #     elif len(loca.image) > 0:
-        #         os.remove(loca.image.path)
-                
-        loca.logo = request.FILES['logo']
-        loca.image = request.FILES['image']
-        loca.city = request.POST['city']
-        loca.district = request.POST['district']
-        loca.wardcommune = request.POST['ward']  
-        category = request.POST['category']
-        
-        categoryyy = Category.objects.get(id=category)
-        loca.category = categoryyy
-        
-        loca.name = request.POST['name']
-        loca.phone = request.POST['phone']
-        loca.address = request.POST['address']
-        loca.costmin = request.POST['costmin']
-        loca.costmax = request.POST['costmax']
-        loca.describe = request.POST['describe']
-        print(loca)
-        loca.save()
-        messages.success(request, "Cập nhật thành công!")
-        return redirect('/administrators/location')
-    return render(request, 'location/edit.html',{"loca": loca, "cate": cate})
-
-def delete_location(request, id):
-    loca = Location.objects.get(id=id)
-    if len(loca.logo) > 0 and len(loca.image) > 0:
-        os.remove(loca.logo.path)
-        os.remove(loca.image.path)
-    if len(loca.logo) > 0 and len(loca.image) == 0:
-        os.remove(loca.logo.path)
-    if len(loca.logo) == 0 and len(loca.image) > 0:
-        os.remove(loca.image.path)
-    loca.delete()
-    messages.success(request, "Xoá thành công!")
-    return redirect('/administrators/location')  
+class edit_location (LoginRequiredMixin, View):
+    login_url = '/login/' 
+    def post (request, id):
+        loca = Location.objects.get(id=id)
+        cate =  Category.objects.filter()
+        if request.method =="POST":
+            # if len(request.FILES) !=0:
+            #     if len(loca.logo) > 0 and len(loca.image) > 0 :
+            #         os.remove(loca.logo.path)
+            #         os.remove(loca.image.path)  
+            #     if len(loca.logo) > 0 :
+            #         os.remove(loca.logo.path)
+            #     elif len(loca.image) > 0:
+            #         os.remove(loca.image.path)
+                    
+            loca.logo = request.FILES['logo']
+            loca.image = request.FILES['image']
+            loca.city = request.POST['city']
+            loca.district = request.POST['district']
+            loca.wardcommune = request.POST['ward']  
+            category = request.POST['category']
+            
+            categoryyy = Category.objects.get(id=category)
+            loca.category = categoryyy
+            
+            loca.name = request.POST['name']
+            loca.phone = request.POST['phone']
+            loca.address = request.POST['address']
+            loca.costmin = request.POST['costmin']
+            loca.costmax = request.POST['costmax']
+            loca.describe = request.POST['describe']
+            print(loca)
+            loca.save()
+            messages.success(request, "Cập nhật thành công!")
+            return redirect('/administrators/location')
+        return render(request, 'location/edit.html',{"loca": loca, "cate": cate})
+    
+class delete_location (LoginRequiredMixin, View):
+    login_url = '/login/' 
+    def post(request, id):
+        loca = Location.objects.get(id=id)
+        if len(loca.logo) > 0 and len(loca.image) > 0:
+            os.remove(loca.logo.path)
+            os.remove(loca.image.path)
+        if len(loca.logo) > 0 and len(loca.image) == 0:
+            os.remove(loca.logo.path)
+        if len(loca.logo) == 0 and len(loca.image) > 0:
+            os.remove(loca.image.path)
+        loca.delete()
+        messages.success(request, "Xoá thành công!")
+        return redirect('/administrators/location')  
     
 # =============================IMAGES=========================
 def get_images_form(request):
     location_list = Location.objects.filter()
     return render(request, 'location/addImages.html',{"location_list": location_list})
-        
-def add_images (request):
-    if request.method =="POST":
-        locationlis = request.POST['location_id']
-        location = Location.objects.get(id=locationlis)
-        images = request.FILES.getlist('images')
-        for img in images:
-            im = Images.objects.create(location_id=location,image = img)
-            im.save()
-        return redirect('/administrators/formimages')
-    else:
-        return render(request, 'common/error.html')    
+
+class add_images (LoginRequiredMixin, View):    
+    login_url = '/login/'     
+    def post (request):
+        if request.method =="POST":
+            locationlis = request.POST['location_id']
+            location = Location.objects.get(id=locationlis)
+            images = request.FILES.getlist('images')
+            for img in images:
+                im = Images.objects.create(location_id=location,image = img)
+                im.save()
+            return redirect('/administrators/formimages')
+        else:
+            return render(request, 'common/error.html')    
 
 def delete_images(request, images_id):
     immge = Images.objects.get(id=images_id)
@@ -175,7 +180,7 @@ def add_category(request):
 def edit_category (request, id):
     category = Category.objects.get(id=id)
     if request.method =="POST":
-        category.name = request.POST['names']
+        category.name = request.POST['name']
         category.save()
         messages.success(request, "Cập nhật thành công!")
         return redirect('/administrators/category')
@@ -190,7 +195,7 @@ def delete_category(request, id):
 
 # ===================================================
 
-# =================ACCOUNT===========================
+# =========================ACCOUNT===========================
 def viewAccount(request):
     group = Group.objects.filter().order_by('-id')
     paginator = Paginator(group, 10)
@@ -236,9 +241,12 @@ def add_account(request):
         form = AddUserForm(request.POST)
         if form.is_valid():
             # form.save()
-            user = form.save()
-            group = Group.objects.get(name='Manager')
-            group.user_set.add(user)
+            # user = form.save()
+            # group = Group.objects.get(name='Manager')
+            # group.user_set.add(user)
+            g = Group.objects.get(name='Manager')
+            users = form.save()
+            g.user_set.add(users)
             return redirect('account_list')
         else:
             form = AddUserForm()

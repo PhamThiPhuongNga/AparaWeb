@@ -36,10 +36,13 @@ def register(request, *args, **kwargs):
     if request.method == 'POST':
         form = ResistrationForm(request.POST)
         if form.is_valid():
+            form.save()
+            # role= reg.cleaned_data.get('groups')
+            # user = form.save(commit=False)
+            # group = Group.objects.get(name='Customer')
+            # print(group)
+            # group.user_set.add(user)
             # form.save()
-            user = form.save()
-            group = Group.objects.get(name='Customer')
-            group.user_set.add(user)
             return redirect('/login')
         else:
             form = ResistrationForm()   

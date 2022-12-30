@@ -10,14 +10,14 @@
         <div class="row">
             <div class="col-md-12" style="">
                 {% comment %} <img class="screen mb-100" src="{% static 'images/Apara_den.png' %}" alt="logo" width="170" height="170"> {% endcomment %}
-                <h1 data-aos="zoom-in" data-aos-duration="2000" > Apara</h1>
+                <h1 data-aos="zoom-in" data-aos-duration="2000" >Apara</h1>
                 <h2 class="mb-50 " data-aos="fade-up" data-aos-duration="2000" style="">Rent a paradise on the weekend</h2>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
                     <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
-                    <form class="form-inline" action="{% url 'searchlocation'%}">
-                        <input class="form-control mr-sm-2" name="q" type="search" placeholder="Tên địa điểm..." aria-label="Search">
+                    <form  class="form-inline" action="{% url 'searchlocation'%}">
+                        <input class="form-control" name="name" type="search" placeholder="Tên địa điểm..." aria-label="Search">
                         <div class="form-group select-group">
-                            <select class="form-control form-select-sm" name="qcity" id="city" aria-label=".form-select-sm">
+                            <select class="form-control form-select-sm" name="city" id="city" aria-label=".form-select-sm">
                                 <option value="" selected="" disabled="">Chọn tỉnh thành</option>
                             </select>
                         </div>
@@ -31,6 +31,7 @@
                                 <option value="wardcommune" selected="" disabled="">Chọn Phường/Xã</option>
                             </select>
                         </div>
+                        
                         <div class="form-group select-group">
                             <select class="form-control" name="qcost" id="qcost" onChange>
                                 <option value="mincost" selected="" disabled=""  >Giá từ</option>
@@ -41,7 +42,7 @@
                                 <option value="300000">Từ 0 -> 300000</option> 
                             </select>
                         </div>
-                      <button class="btn btn-primary my-2 my-sm-0 " type="submit">Tìm kiếm</button>
+                        <button class="btn btn-primary my-2 my-sm-0 " type="submit">Tìm kiếm</button>
                     </form>
                 <p class="animate__animated animate__fadeInRight "  data-aos="fade-left" data-aos-duration="2000">Bạn rất quan trọng với chúng tôi, mọi thông tin nhận được sẽ luôn được bảo mật.</p>
             </div>

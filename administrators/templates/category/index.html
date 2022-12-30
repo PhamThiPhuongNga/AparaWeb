@@ -10,11 +10,11 @@
 <div class="bg-inf">
   <nav class=" navbar-light bg-light justify-content-between">
     <div class="d-flex">
-        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'add_category'%}" style="color: #fff;">Thêm mới</a></button>
-        <form class="form-inline pull-right ">
+        <button type="button" class="btn btn-primary pull-left mb-10" ><a href="{% url 'add_category'%}" style="color: #fff;">Thêm mới</a></button>
+        {% comment %} <form class="form-inline pull-right ">
             <input class="form-control mr-sm-2"  type="search" placeholder="Tìm kiếm" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
-        </form>
+        </form> {% endcomment %}
     </div>
   </nav>
   <table class="table v-middle">

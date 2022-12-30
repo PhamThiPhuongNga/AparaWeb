@@ -13,11 +13,11 @@ urlpatterns = [
     
     path('addlocation', views.add_location.as_view(), name='add_location'),
     path('location/add', views.get_location_form, name='get_location_form'),
-    path('location/edit/<int:id>/', views.edit_location, name="edit_location"),
-    path('location/delete/<int:id>', views.delete_location, name='delete_location'),
+    path('location/edit/<int:id>/', views.edit_location.as_view(), name="edit_location"),
+    path('location/delete/<int:id>', views.delete_location.as_view(), name='delete_location'),
     
     path('addImages', views.get_images_form, name='get_images_form'),
-    path('ImagesList', views.add_images, name='add_images'),
+    path('ImagesList', views.add_images.as_view(), name='add_images'),
     path('location/deleteImages/<int:images_id>', views.delete_images, name='delete_images'),
     path('formimages', views.viewImages, name = 'i'),
     

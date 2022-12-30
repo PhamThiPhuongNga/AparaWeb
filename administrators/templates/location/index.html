@@ -8,13 +8,13 @@
   <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách địa điểm</span></h5>
 </div>
 <div class="bg-inf">
-  <nav class=" navbar-light bg-light justify-content-between">
+  <nav class=" navbar-light bg-light justify-content-between pb-30">
     <div class="d-flex">
-        <button type="button" class="btn btn-primary pull-left" ><a href="{% url 'get_location_form'%}" style="color: #fff;">Thêm mới</a></button>
-        <form class="form-inline pull-right ">
+        <button type="button" class="btn btn-primary pull-left mb-10" ><a href="{% url 'get_location_form'%}" style="color: #fff;">Thêm mới</a></button>
+        {% comment %} <form class="form-inline pull-right ">
             <input class="form-control mr-sm-2"  type="search" placeholder="Tìm kiếm" aria-label="Search">
             <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
-        </form>
+        </form> {% endcomment %}
     </div>
   </nav>
   <table class="table v-middle">

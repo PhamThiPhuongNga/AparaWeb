@@ -11,6 +11,7 @@ class ResistrationForm(forms.Form):
     email = forms.EmailField(label = 'Email')
     password1 = forms.CharField(label = 'Mật khẩu', widget=forms.PasswordInput())
     password2 = forms.CharField(label = 'Nhập lại mật khẩu', widget=forms.PasswordInput())
+    groups = forms.ModelChoiceField(label='Role', queryset=Group.objects.filter(name='Customer'), required=True)
     # group = forms.ModelChoiceField(queryset=Group.objects.filter(name='Khách hàng'), required=True)
 
     def clean_password2(self):

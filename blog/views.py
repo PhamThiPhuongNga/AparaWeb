@@ -21,91 +21,24 @@ def locationList(request):
     return render(request, 'location/location.html',{'page_obj': page_obj, 'category':category})
 
 def search(request):   
-    if 'name' in request.GET:
-        name = request.GET['name']
-        locations = Location.objects.order_by('-date').filter(name__icontains=name)
-        location_count = locations.count()
-        
-    elif 'city' in request.GET:
-        city = request.GET['city']
-        locations = Location.objects.order_by('-date').filter(city=city)
-        location_count = locations.count()   
+    name = request.GET['name'] if 'name' in request.GET else ''
+    city = request.GET['city'] if 'city' in request.GET else ''
+    qdistrict = request.GET['qdistrict'] if 'qdistrict' in request.GET else ''
+    qward = request.GET['qward'] if 'qward' in request.GET else ''
+    qcost = request.GET['qcost'] if 'qcost' in request.GET else 300000
     
-    if 'name' and 'city' in request.GET:
-        name = request.GET['name']
-        city = request.GET['city']
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,city=city)
-        location_count = locations.count()   
-           
-    elif 'name' and 'city' and 'qdistrict' in request.GET:
-        name = request.GET['name']
-        city = request.GET['city']
-        qdistrict = request.GET['qdistrict']
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,city=city,district=qdistrict)
-        location_count = locations.count()
-    
-    elif 'name' and 'city' and 'qdistrict' and 'qward' in request.GET:
-        name = request.GET['name']
-        qdistrict = request.GET['qdistrict']
-        qward = request.GET['qward']
-        city = request.GET['city'] 
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,city=city,district=qdistrict, wardcommune=qward)
-        location_count = locations.count() 
-                            
-    if 'city' and 'qdistrict' in request.GET:
-        city = request.GET['city']
-        qdistrict = request.GET['qdistrict']
-        locations = Location.objects.order_by('-date').filter(city=city,district=qdistrict)
-        location_count = locations.count()
-            
-    if 'city' and 'qdistrict' and 'qward' in request.GET:
-        qdistrict = request.GET['qdistrict']
-        qward = request.GET['qward']
-        city = request.GET['city'] 
-        locations = Location.objects.order_by('-date').filter(city=city,district=qdistrict, wardcommune=qward)
-        location_count = locations.count()   
-    
-    #======= city và code 
-    elif 'city' and 'qcost'  in request.GET: 
-        qcost = request.GET['qcost'] 
-        city = request.GET['city']
-        locations = Location.objects.order_by('-date').filter(city=city,costmax__lte = qcost)
-        location_count = locations.count() 
-               
-    if 'qcost' in request.GET: 
-        qcost = request.GET['qcost']
-        locations = Location.objects.order_by('-date').filter(Q(Q(costmax__lte = qcost)))
-        location_count = locations.count()  
-            
-    if 'name' and 'qcost'  in request.GET: 
-        name = request.GET['name']
-        qcost = request.GET['qcost'] 
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,costmax__lte = qcost)
-        location_count = locations.count()
-        
-    elif 'name' and 'city' and 'qcost' in request.GET: 
-        name = request.GET['name'] 
-        city = request.GET['city']
-        qcost = request.GET['qcost'] 
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,city=city,costmax__lte = qcost)
-        location_count = locations.count()
-        
-    elif 'name' and 'city' and 'qdistrict' and 'qcost' in request.GET: 
-        name = request.GET['name'] 
-        city = request.GET['city']
-        qdistrict = request.GET['qdistrict']
-        qcost = request.GET['qcost']
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,city=city,costmax__lte = qcost,district=qdistrict)
-        location_count = locations.count() 
-      
-    elif 'name' and 'city' and 'qdistrict' and 'qward' and 'qcost' in request.GET: 
-        name = request.GET['name'] 
-        city = request.GET['city']
-        qdistrict = request.GET['qdistrict']
-        qcost = request.GET['qcost']
-        qward = request.GET['qward']
-        locations = Location.objects.order_by('-date').filter(name__icontains=name,city=city,costmax__lte = qcost,district=qdistrict, wardcommune=qward)
-        location_count = locations.count() 
+    locations = Location.objects.order_by('-date').filter(
+        name__icontains=name,
+        city__contains=city,
+        district__contains=qdistrict, 
+        wardcommune__contains=qward, 
+        costmax__lte = qcost
+    )
+    location_count = locations.count()    
+    # if 'name' in request.GET:
+    #     name = request.GET['name']
+    #     # locations = Location.objects.order_by('-date').filter(name__icontains=name)
+    #     # location_count = locations.count()
         
     context = {
         'locations': locations,
