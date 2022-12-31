@@ -30,19 +30,14 @@ from scipy import sparse
 # Create your views here.
 
 def contact(request):
-    return render(request, 'pages/contact.html')
+    category = Category.objects.all()
+    return render(request, 'pages/contact.html',{'category':category})
 def register(request, *args, **kwargs):
     form = ResistrationForm()
     if request.method == 'POST':
         form = ResistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            # role= reg.cleaned_data.get('groups')
-            # user = form.save(commit=False)
-            # group = Group.objects.get(name='Customer')
-            # print(group)
-            # group.user_set.add(user)
-            # form.save()
             return redirect('/login')
         else:
             form = ResistrationForm()   
@@ -271,9 +266,21 @@ def index(self):
             locationData.append(Location.objects.filter(id=i)[0])
         print("--------------------------------------------------",locationData)
     if manager:
-        return redirect('home_admin')
+        return redirect('home_admin')  
     else:
         return render(self,'pages/home.html',{'locationData':locationData ,'category': category, 'locations': locations, 'locationnew': locationnew})
        
-       
-       
+
+def profile(request):
+    category = Category.objects.all()
+    if request.user.is_authenticated:
+        #"select sum(rating) from Rating where user=request.user.id"
+        r=Rating.objects.filter(author_id=request.user.id)
+        totalReview=0
+        for item in r:
+            totalReview+=int(item.rating)
+        #select count(*) from Rating where user=request.user.id"
+        totalwatchedmovie=Rating.objects.filter(author_id=request.user.id).count()
+        return render(request,'pages/profile.html',{'totalReview':totalReview,'totalwatchedmovie':totalwatchedmovie, 'category':category})
+    else:
+        return HttpResponseRedirect('/login/')  

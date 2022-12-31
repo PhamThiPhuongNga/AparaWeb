@@ -11,8 +11,7 @@ class ResistrationForm(forms.Form):
     email = forms.EmailField(label = 'Email')
     password1 = forms.CharField(label = 'Mật khẩu', widget=forms.PasswordInput())
     password2 = forms.CharField(label = 'Nhập lại mật khẩu', widget=forms.PasswordInput())
-    groups = forms.ModelChoiceField(label='Role', queryset=Group.objects.filter(name='Customer'), required=True)
-    # group = forms.ModelChoiceField(queryset=Group.objects.filter(name='Khách hàng'), required=True)
+
 
     def clean_password2(self):
         if 'password1' in self.cleaned_data:
@@ -32,5 +31,6 @@ class ResistrationForm(forms.Form):
             return username
         raise forms.ValidationError('Tài khoản đã tồn tại')
     def save(self):
-        User.objects.create_user(username=self.cleaned_data['username'], email=self.cleaned_data['email'], password=self.cleaned_data['password1'] )
-        
+        user = User.objects.create_user(username=self.cleaned_data['username'], email=self.cleaned_data['email'], password=self.cleaned_data['password1'] )
+        group = Group.objects.get(name='Customer')
+        user.groups.add(group)     

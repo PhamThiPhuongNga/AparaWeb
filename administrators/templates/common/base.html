@@ -11,7 +11,6 @@
 		<script src="{% static 'js/fonts.js' %}"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-        {% comment %} <link rel="stylesheet" href="/templates/assets/fonts/fontawesome-free-6.1.1-web/css/fontawesome.min.css">  {% endcomment %}
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type='text/css'>
         <link rel="stylesheet" href="{% static 'css/icons.css' %}" type='text/css'>
         <link rel="stylesheet" href="{% static 'css/style.css' %}" type='text/css'>
@@ -22,7 +21,6 @@
         <link rel="stylesheet" href="{% static 'css/contact.css' %}" type='text/css'>
         <link rel="stylesheet" href="{% static 'css/home.css' %}" type='text/css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        {% comment %} <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> {% endcomment %}
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -45,8 +43,9 @@
                         </li>
                         {% if user.username %}
                         <li class=""><a href="#"><span>{{ user.username }}</span><i class="icon-chevron-down-bold icon-position-right icon-color"></i></a>
-                            <ul class="sub-menu" style="background: #fff;">
-                                <li class=""><a href="{% url 'logout' %}"><i class="icon-man icon-position-left icon-color"></i><span>Đăng xuất</span></a></li>
+                            <ul class="sub-menu" style="background: #fff;left: -90px;">
+                                <li class=""><a href="{% url 'profile' %}"><i class="icon-man icon-position-left icon-color"></i><span>Thông tin cá nhân</span></a></li>
+                                <li class=""><a href="{% url 'logout' %}">Đăng xuất</span></a></li>
                             </ul>
                         </li> 
                         {% else %}

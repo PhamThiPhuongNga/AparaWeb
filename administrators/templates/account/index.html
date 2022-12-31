@@ -7,15 +7,21 @@
 <div class="well">
   <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <span>Danh sách tài khoản</span></h5>
 </div>
+</br>
 <div class="bg-inf">
   <nav class=" navbar-light bg-light justify-content-between">
     <div class="d-flex">
         <button type="button" class="btn btn-primary pull-left mb-10" ><a href="{% url 'add_account' %}" style="color: #fff;">Thêm mới</a></button>
-        {% comment %} <form class="form-inline pull-right ">
-            <input class="form-control mr-sm-2" name="search"  type="search" placeholder="Tìm kiếm" aria-label="Search">
-            <button class="btn btn-primary my-2 my-sm-0" type="submit">Tìm kiếm</button>
-        </form>  {% endcomment %}
     </div>
+  </nav>
+  <nav class="text-center">
+    {% if messages %}
+    <div class="messages ">
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}"style="color: green;"{% endif %}><span style="color: green;"> {{ message }}</span></p>
+      {% endfor %}
+    </div>
+    {% endif %}
   </nav>
   <table class="table mt-30 v-middle">
     <thead class="thead-dark">

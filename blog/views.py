@@ -57,8 +57,6 @@ class detaillocation(ObjectViewMixin, DetailView):
         category = Category.objects.all()
         similarLoca = Location.objects.filter(category=categoryy).order_by('-views')
         ratings = Rating.objects.filter(detaillocation=detaillocation).order_by('-date')
-        print("type  la : ",type(ratings))
-        print("data  la : ",ratings.values())
         for i in ratings:
             rateUsers.append(i.author)
         rateUser = request.user in rateUsers
@@ -68,20 +66,13 @@ class detaillocation(ObjectViewMixin, DetailView):
     def post(self,request, **kwargs):
         rateUsers = []
         detaillocation = Location.objects.get(pk=self.kwargs.get('pk'))
-        print(detaillocation)
         category = Category.objects.get(location=self.kwargs.get('pk'))
-        print(category)
         similarLoca = Location.objects.filter(category=category).order_by('-views')
-        print(similarLoca)
         ratings = Rating.objects.filter(detaillocation=detaillocation).order_by('-date')
-        print("type  la : ",type(ratings))
-        print("data  la : ",ratings.values())
         for i in ratings:
             rateUsers.append(i.author)
         rateUser = request.user in rateUsers
         image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
-        # print(category)
-        print(image)
         
         if detaillocation:
             detaillocation.views = detaillocation.views + 1
@@ -89,7 +80,6 @@ class detaillocation(ObjectViewMixin, DetailView):
 
         if self.request.method == 'POST':
             form = CommentForm(self.request.POST,author = self.request.user,detaillocation=detaillocation )
-            # form.save()
             if form.is_valid(): 
                 data = form.save(commit=False) 
                 data.body = self.request.POST['body']
@@ -102,7 +92,6 @@ class detaillocation(ObjectViewMixin, DetailView):
             form = CommentForm()
         if self.request.method == 'POST':
             form = RatingForm(self.request.POST,author = self.request.user,detaillocation=detaillocation )
-            # form.save()
             if form.is_valid(): 
                 data = form.save(commit=False) 
                 data.rating = self.request.POST['rating']
@@ -121,7 +110,6 @@ def edit_review(request, pk, review_id):
     if request.user == review.author:
         if request.method =="POST":
             review.body = request.POST['body']
-            # review.rating = request.POST['rating']  
             review.save()
             messages.success(request, "Cập nhật thành công!")
             return redirect('/blog/location/' + str(detaillocation.id))

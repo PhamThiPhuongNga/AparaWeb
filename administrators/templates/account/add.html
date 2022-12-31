@@ -6,67 +6,18 @@
 <div class="well">
   <h5><a href="{% url 'home_admin'%}">Trang chủ</a> / <a href="{% url 'account_list'%}">Danh sách tài khoản</a> / <span>Thêm mới</span></h5>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-<script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
-{% comment %} <form class=" form-contact bg-nav " action="{% url 'add_account'%}" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  <h4 class="text-center pt-30">Thêm mới</h4>
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <label for="username">Tên tài khoản</label>
-            <input type="text" min="0" class="form-control" id="username" name="username" placeholder="Tên tài khoản">
-        </div>
-    </div>
-    <div class="form-row col-md-12">
-        <div class="form-group ">
-            <label for="email">Email</label>
-            <input type="email" min="0" class="form-control" id="email" name="email" placeholder="Email">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <label for="category">Nhóm</label>
-            <select name="group" required id="group" class="form-control">
-                <option value="">---Chọn---</option> 
-                {% for group in group %}
-                <option value="{{group.id}}">{{group.name}}</option> 
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    <div class="form-row col-md-12">
-        <div class="form-group ">
-            <label for="password">Mật khẩu</label>
-            <input type="password" min="0" class="form-control" id="password" name="password">
-        </div>
-    </div>
-    <div class="form-row col-md-12">
-        <div class="form-group ">
-            <label for="password">Xác minh mật khẩu</label>
-            <input type="password" min="0" class="form-control" id="password" name="password">
-        </div>
-    </div> 
-  <div class="pb-30  text-center">
-    <button type="submit" class="btn btn-primary">Lưu trữ</button>
-  </div>
-  </form>  {% endcomment %}
 
-<form method="POST" class="contact_form text-center bg-inf" id="subscribe-field-halfbg-form">
-    {% comment %} <div class="form-group">
+<form method="POST" class="contact_form text-center bg-inf" id="subscribe-field-halfbg-form" novalidate>
     {% csrf_token %}
-    {{form.as_p}}
-    </div> {% endcomment %}
-    {% csrf_token %}
-    {% comment %} {{form.as_p}} {% endcomment %}
     {% for fm in form %}
-    <span class="text-light">{{fm.label_tag}}</span>
-    <div class="form-group">
-    {{fm}}
-    </div>
-    {% if fm.errors %}
-    <div class="alert alert-danger lert-dismissible fade show">
-    {{fm.errors|striptags}}
-    {% endif %}
+        <span class="text-light">{{fm.label_tag}}</span>
+        <div class="form-group">
+            {{fm}}
+        </div>
+        {% if fm.errors %}
+            <div class="alert alert-danger lert-dismissible fade show">
+                {{fm.errors|striptags}}
+        {% endif %}
     {% endfor %}
     <input type="submit" value="Lưu trữ" class="btn btn-primary">
 </form>

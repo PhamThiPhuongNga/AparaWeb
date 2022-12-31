@@ -1503,7 +1503,9 @@ nav.navbar .btn-lg .icon-position-right {
 .card-img:hover{
     transform: scale(1.5);
 }
-
+.messages{
+    color: green!important;
+}
 .card-icon {
     display: inline-block;
 }

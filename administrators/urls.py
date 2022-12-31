@@ -11,13 +11,13 @@ urlpatterns = [
     path('home', views.index, name='home'),
     path('location', views.viewLocation, name='location_list'),
     
-    path('addlocation', views.add_location.as_view(), name='add_location'),
+    path('addlocation', views.add_location, name='add_location'),
     path('location/add', views.get_location_form, name='get_location_form'),
-    path('location/edit/<int:id>/', views.edit_location.as_view(), name="edit_location"),
-    path('location/delete/<int:id>', views.delete_location.as_view(), name='delete_location'),
+    path('location/edit/<int:id>/', views.edit_location, name="edit_location"),
+    path('location/delete/<int:id>', views.delete_location, name='delete_location'),
     
     path('addImages', views.get_images_form, name='get_images_form'),
-    path('ImagesList', views.add_images.as_view(), name='add_images'),
+    path('ImagesList', views.add_images, name='add_images'),
     path('location/deleteImages/<int:images_id>', views.delete_images, name='delete_images'),
     path('formimages', views.viewImages, name = 'i'),
     
@@ -28,11 +28,8 @@ urlpatterns = [
     
     path('accounts', views.viewAccount, name = 'account_list'),
     path('accounts/<int:id>/', views.viewUser, name = 'account_user_list'),
-    # path('accounts/add/', views.get_group_list, name = 'get_group_list'),
     path('addAccount', views.add_account, name = 'add_account'),
-    
-    # path('login/', auth_views.LoginView.as_view(template_name ='pages/login.html'), name='login' ),
-    # path('logoutt/', auth_views.LogoutView.as_view(), {'next_page':' '}, name='logout' )
+   
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -17,6 +17,15 @@
             </form> {% endcomment %}
         </div>
     </nav>
+    <nav class="text-center">
+        {% if messages %}
+        <div class="messages ">
+          {% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"style="color: green;"{% endif %}><span style="color: green;"> {{ message }}</span></p>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </nav>
     <table class="table v-middle">
         <thead class="thead-dark">
             <tr>

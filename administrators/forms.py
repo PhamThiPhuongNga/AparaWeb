@@ -3,12 +3,14 @@ from django import forms
 import re 
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
-class AddUserForm(forms.Form):
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+
+class AddManagerForm(forms.Form):
     username = forms.CharField(label = 'Họ tên', max_length=30)
     email = forms.EmailField(label = 'Email')
     password1 = forms.CharField(label = 'Mật khẩu', widget=forms.PasswordInput())
     password2 = forms.CharField(label = 'Nhập lại mật khẩu', widget=forms.PasswordInput())
-    # group = forms.ModelChoiceField(label = 'Nhóm', queryset=Group.objects.filter(name='Manager'), required=True)
+
 
     def clean_password2(self):
         if 'password1' in self.cleaned_data:
@@ -28,5 +30,10 @@ class AddUserForm(forms.Form):
             return username
         raise forms.ValidationError('Tài khoản đã tồn tại')
     def save(self):
-        User.objects.create_user(username=self.cleaned_data['username'], email=self.cleaned_data['email'], password=self.cleaned_data['password1'] )
+        user = User.objects.create_user(username=self.cleaned_data['username'], email=self.cleaned_data['email'], password=self.cleaned_data['password1'] )
+        user.is_staff = True
+        user.save()
+        group = Group.objects.get(name='Manager')
+        user.groups.add(group)
+
         
