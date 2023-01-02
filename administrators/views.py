@@ -113,13 +113,13 @@ def edit_location (request, id):
 def delete_location (request, id):
     if request.user.is_authenticated:
         loca = Location.objects.get(id=id)
-        if len(loca.logo) > 0 and len(loca.image) > 0:
-            os.remove(loca.logo.path)
-            os.remove(loca.image.path)
-        if len(loca.logo) > 0 and len(loca.image) == 0:
-            os.remove(loca.logo.path)
-        if len(loca.logo) == 0 and len(loca.image) > 0:
-            os.remove(loca.image.path)
+        # if len(loca.logo) > 0 and len(loca.image) > 0:
+        #     os.remove(loca.logo.path)
+        #     os.remove(loca.image.path)
+        # if len(loca.logo) > 0:
+        #     os.remove(loca.logo.path)
+        # if len(loca.image) > 0:
+        #     os.remove(loca.image.path)
         loca.delete()
         messages.success(request, "Xoá thành công!")
         return redirect('/administrators/location')  
