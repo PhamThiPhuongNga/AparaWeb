@@ -53,6 +53,28 @@
 {% endblock %}
 
 {% block content %}
+<section id="clients-carousel" class="pt-75 pb-50  light">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-40 text-center" data-aos="fade-right" data-aos-duration="2000">Về chúng tôi</h3>
+                <p class=""  data-aos="fade-up"data-aos-duration="2000">
+                    <b>Apara</b> giúp kết nối các giá trị văn hóa với hoạt động kinh doanh của các doanh nghiệp để tạo
+                        ra chuỗi giá trị mang thương hiệu Apara trong nỗ lực quảng bá rộng rãi các địa điểm vui chơi giải trí hình ảnh du lịch Việt Nam đến chính những con người Việt Nam
+                        . Giúp khách hàng cùng với Apara tìm kiếm được địa điểm đi chơi, hẹn hò phù hợp với nhu cầu giải trí của họ
+                        .Đó là động lực thúc đẩy hướng đi thống nhất của tập thể Apara, với mục 
+                        tiêu doanh nghiệp luôn đồng hành cùng xã hội, cộng đồng để phát triển kinh tế và các giá trị tinh
+                        thần, nhân văn.</p>                
+                    {% comment %} <a class="btn btn-danger d-none d-md-inline-block mt-4" href="/ve-chung-toi/co-cau-to-chuc" >XEM THÊM</a> {% endcomment %}
+                </p>
+            </div>
+            <div class="col-sm-6">
+               <img src="/media/images/aboutus.png" width="100%" height="100%">
+            </div>
+        </div>
+    </div>
+    <div class="bg"></div> 
+</section>
 {% if locationData%}
 <section id="clients-carousel" class="pt-75 pb-50  light">
     <div class="container">
@@ -73,6 +95,11 @@
                             <li class="clearfix"><i class="icon-clock icon-color icon-size-m icon-position-left"></i>
                                 <span>Giờ</span>
                                 <span class="pull-right">{{itemmmm.timestart}}~{{itemmmm.timeend}}</span>
+                            </li>
+                            <li class="clearfix"><i class="icon-star-fill icon-color icon-size-m icon-position-left" style=" color: #ffb503 !important;
+                                border-color: #ffb503 !important;"></i>
+                                <span>Đánh giá</span>
+                                <span class="pull-right">{{itemmmm.averageReview}}/ 5</span>
                             </li>
                             <li class="clearfix"><i class="icon-tag icon-color icon-size-m icon-position-left"></i>
                                 <span>Giá</span>
@@ -105,7 +132,8 @@
                                 <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
                             <ul class="text-icon-list text-icon-list-sep">
                                 
-                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left" style=" color: #ffb503 !important;border-color: #ffb503 !important;"></i>
+                                <li class="clearfix"><i class="icon-star-fill icon-color icon-size-m icon-position-left" style=" color: #ffb503 !important;
+                                    border-color: #ffb503 !important;"></i>
                                     <span>Đánh giá</span>
                                     <span class="pull-right">{{location.averageReview}}/ 5</span>
                                 </li>
@@ -149,7 +177,8 @@
                                 <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
                             <ul class="text-icon-list text-icon-list-sep">
                                 
-                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"style=" color: #ffb503 !important;border-color: #ffb503 !important;"></i>
+                                <li class="clearfix"><i class="icon-star-fill icon-color icon-size-m icon-position-left" style=" color: #ffb503 !important;
+                                    border-color: #ffb503 !important;"></i>
                                     <span>Đánh giá</span>
                                     <span class="pull-right">{{location.averageReview}}/ 5</span>
                                 </li>
@@ -194,7 +223,8 @@
                                 <i class="icon-location2 icon-color icon-size-m icon-position-left "></i>{{location.address}}, {{location.wardcommune}}, {{location.district}}, {{location.city}}</p>
                             <ul class="text-icon-list text-icon-list-sep">
                                 
-                                <li class="clearfix"><i class="icon-star icon-color icon-size-m icon-position-left"style=" color: #ffb503 !important;border-color: #ffb503 !important;"></i>
+                                <li class="clearfix"><i class="icon-star-fill icon-color icon-size-m icon-position-left" style=" color: #ffb503 !important;
+                                    border-color: #ffb503 !important;"></i>
                                     <span>Đánh giá</span>
                                     <span class="pull-right">{{location.averageReview}}/ 5</span>
                                 </li>

@@ -20,24 +20,3 @@ class HistoryDelete(SingleObjectMixin, View):
             obj.delete()
         return redirect('history')
     
-# def get_location(request, ip_address):
-#         url = 'http://checkip.dyndns.com/'
-#         loc_url = 'https://ip-api.io/json/{}'
-#         data = requests.get(url)
-#         if not ip_address:
-#             ip_address = re.compile(r'Address:(\d+\.\d+\.\d+\.\d+').search(data.text).group(1)
-#         location = requests.get(loc_url.format(ip_address))
-#         city = location.json()['city']
-#         country = location.json()['country_name']
-#         lat = location.json()['latitude']
-#         log = location.json()['longitude']
-#         print(location)
-#         print(country)
-#         print(ip_address)
-#         return country, city, ip_address, lat, log 
-    
-# def home(request):
-#     """ your vies to handle http request """
-#     ip_address = get_location(request)
-#     return (request,'history/history_list.html',ip_address)
-# Create your views here.

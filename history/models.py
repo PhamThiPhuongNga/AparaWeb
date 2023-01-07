@@ -45,31 +45,3 @@ def object_viewed_receiver(sender, instance, request, *args, **kwargs):
 
 object_viewed_signal.connect(object_viewed_receiver)
 
-
-# class Visitor(models.Model):
-#     ip_address = models.CharField(max_length=200, null=True, blank=True )
-#     city = models.CharField(max_length=200, null=True, blank=True )
-#     location = models.CharField(max_length=200, null=True, blank=True )
-#     country = models.CharField(max_length=200, null=True, blank=True )
-#     state = models.CharField(max_length=200, null=True, blank=True )
-#     email = models.CharField(max_length=200, null=True, blank=True )
-#     name = models.CharField(max_length=200, null=True, blank=True )
-#     created = models.DateTimeField(auto_now_add=True )
-#     active = models.BooleanField(default=True)
-    
-#     class Meta:
-#         ordering = ('created' ,)
-        
-#     def __str__(self):
-#         return self.ip_address
-    
-# class VisitorInterest(models.Model):
-#     visitor = models.ForeignKey(Visitor,on_delete=models.CASCADE, null=True, blank=True,related_name='get_interest')
-#     tags = models.CharField(max_length=100, null=True, blank=True )
-#     score = models.IntegerField(default=1)
-    
-#     class Meta:
-#         ordering = ('tags' ,)
-        
-#     def __str__(self):
-#         return self.visitor.ip_address

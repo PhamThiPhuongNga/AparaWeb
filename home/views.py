@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate,login, logout
 from django.http import HttpResponse
 from .forms import ResistrationForm
 from blog.models import Location, Comment, Category, Rating
+from history.models import History
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -24,7 +25,9 @@ import json
 from urllib.request import urlopen
 from django.views.generic import ListView, View
 from sklearn.metrics.pairwise import cosine_similarity
-from scipy import sparse
+
+#Gói mảng thưa thớt 2-D SciPy cho dữ liệu số.
+from scipy import sparse 
 
 # from pandas import isnull, notnul
 # Create your views here.
@@ -91,28 +94,34 @@ class CF(object):
         """
         self.Y_data = np.concatenate((self.Y_data, new_data), axis=0)
 
+    # Chuẩn hoá dữ liệu
     def normalize_matrix(self):
         """
         Tính similarity giữa các items bằng cách tính trung bình cộng ratings giữa các items.
         Sau đó thực hiện chuẩn hóa bằng cách trừ các ratings đã biết của item cho trung bình cộng
         ratings tương ứng của item đó, đồng thời thay các ratings chưa biết bằng 0.
         """
-        users = self.Y_data[:, 0]
+        users = self.Y_data[:, 0] # tất cả người dùng - cột đầu tiên của Y_data
         self.Ybar_data = self.Y_data.copy()
+        #Trả về một mảng mới có hình dạng và loại đã cho, chứa đầy các số không.
         self.mu = np.zeros((self.n_users,))
         for n in range(self.n_users):
+            # hàng chỉ số đánh giá được thực hiện bởi người dùng n
+            # vì các chỉ số cần phải là số nguyên nên chúng ta cần chuyển đổi
             ids = np.where(users == n)[0].astype(np.int32)
+            # chỉ số của tất cả xếp hạng được liên kết với người dùng n
             item_ids = self.Y_data[ids, 1]
+            # và xếp hạng tương ứng
             ratings = self.Y_data[ids, 2]
             # take mean
             m = np.mean(ratings)
             if np.isnan(m):
-                m = 0  # để tránh mảng trống và nan value
+                m = 0  # để tránh mảng trống và giá trị None
             self.mu[n] = m
             # chuẩn hóa
             self.Ybar_data[ids, 2] = ratings - self.mu[n]
-        self.Ybar = sparse.coo_matrix((self.Ybar_data[:, 2],
-                                       (self.Ybar_data[:, 1], self.Ybar_data[:, 0])), (self.n_items, self.n_users))
+        self.Ybar = sparse.coo_matrix((self.Ybar_data[:, 2],(self.Ybar_data[:, 1], self.Ybar_data[:, 0])), 
+                                      (self.n_items, self.n_users))
         self.Ybar = self.Ybar.tocsr()
 
     def similarity(self):
@@ -136,15 +145,22 @@ class CF(object):
         """
         Dự đoán ra ratings của các users với mỗi items.
         """
-        # tìm tất cả user đã rate item i
+        #Bước 1: tìm tất cả user đã rate item i
         ids = np.where(self.Y_data[:, 1] == i)[0].astype(np.int32)
+        #Bước 2:
         users_rated_i = (self.Y_data[ids, 0]).astype(np.int32)
+        # Bước 3: tìm điểm tương đồng giữa người dùng hiện tại và những người khác
+        # người đã đánh giá tôi
         sim = self.S[u, users_rated_i]
+        #Bước 4: tìm k user giống nhau nhất
         a = np.argsort(sim)[-self.k:]
+        # và các mức tương tự tương ứng
         nearest_s = sim[a]
+        # Mỗi người dùng 'gần' đánh giá item i như thế nào
         r = self.Ybar[i, users_rated_i[a]]
         if normalized:
-            # cộng với 1e-8, để tránh chia cho 0
+            # thêm một số nhỏ, ví dụ, 1e-8, để tránh chia cho 0
+
             return (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8)
 
         return (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8) + self.mu[u]
@@ -215,8 +231,9 @@ class CF(object):
                     return recommended_items
                     #print('Recommend item(s):', recommended_items, 'for user', u)
             else:
-                # return recommended_items
-                print('Recommend item', u, 'for user(s) : ', recommended_items)
+                for u in recommended_items:
+                    if(idUser == u):
+                        print('Recommend item', u, 'for user(s) : ', recommended_items)
 
                 
 def index(self):
@@ -260,6 +277,10 @@ def index(self):
     rs.fit()
     recommen_CF = rs.print_recommendation(self.user.id)
 
+    rsii = CF(Y_data, k = 2, uuCF = 0)
+    rsii.fit()
+    recommen_CFii = rsii.print_recommendation(self.user.id)
+    
     locationData = []
     if recommen_CF is not None:
         for i in recommen_CF:

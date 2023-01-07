@@ -11,6 +11,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.detail import SingleObjectMixin
 from history.mixins import ObjectViewMixin
+import json
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def locationList(request):
     comment = Location.objects.filter().order_by("-date")
@@ -21,6 +24,7 @@ def locationList(request):
     return render(request, 'location/location.html',{'page_obj': page_obj, 'category':category})
 
 def search(request):   
+    category = Category.objects.all()
     name = request.GET['name'] if 'name' in request.GET else ''
     city = request.GET['city'] if 'city' in request.GET else ''
     qdistrict = request.GET['qdistrict'] if 'qdistrict' in request.GET else ''
@@ -43,6 +47,7 @@ def search(request):
     context = {
         'locations': locations,
         'location_count': location_count,
+        'category':category,
     }
     return render(request, 'location/searchlocation.html',context)
 class detaillocation(ObjectViewMixin, DetailView):  
@@ -123,3 +128,17 @@ def delete_review(request, pk, review_id):
         messages.success(request, "Xoá thành công!")
         return redirect('/blog/location/' + str(detaillocation.id))
     
+@csrf_exempt
+def searchkeyup(request):
+    valueSearch = request.POST.get('valueSearch')
+    locations = Location.objects.order_by('-date').filter(
+        name__icontains=valueSearch,
+    )
+    data = []
+    for i in locations:
+        data.append({
+            'name':i.name,
+            'id':i.id,
+            'image' : i.image.url
+        })
+    return HttpResponse(json.dumps({'data':data}), content_type="application/json")
