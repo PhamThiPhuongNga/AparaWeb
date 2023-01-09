@@ -15,7 +15,11 @@
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
                     <script id="dataJson" type="application/json" src="C:/xampp/htdocs/AparaWeb/home/static/data.json"></script>
                     <form  class="form-inline" action="{% url 'searchlocation'%}">
-                        <input class="form-control" name="name" type="search" placeholder="Tên địa điểm..." aria-label="Search">
+                        <div class="form-group" style="position: relative;">
+                            <input onclick="handleItem"class="form-control autocomplete-input" id="name-input" name="name" type="search" placeholder="Tên địa điểm..." aria-label="Search">
+                            <ul class="autocomplete-list " id="name-id">
+                            </ul>
+                        </div>
                         <div class="form-group select-group">
                             <select class="form-control form-select-sm" name="city" id="city" aria-label=".form-select-sm">
                                 <option value="" selected="" disabled="">Chọn tỉnh thành</option>
@@ -78,7 +82,7 @@
 {% if locationData%}
 <section id="clients-carousel" class="pt-75 pb-50  light">
     <div class="container">
-        <h3 class="mb-40 text-center" data-aos="fade-right" data-aos-duration="2000">Địa điểm có thể bạn sẽ thích</h3>
+        <h3 class="mb-40 text-center" data-aos="fade-right" data-aos-duration="2000">Gợi ý hôm nay</h3>
         <div class="carousel-5item-nav owl-drag"  data-aos="fade-up"data-aos-duration="2000">
             {% for itemmmm in locationData%}
             <div class="">
@@ -277,27 +281,55 @@
     .card img{
         height: 200px!important;
     }
+    .autocomplete-input{
+        position: ralative;
+        outline: none;
+    }
+    .autocomplete-list{
+        position: absolute;
+        top: 50px;
+        left: 0;
+        list-style-type:none; 
+        margin:0; 
+        padding: 0; 
+        width:100%; 
+        max-height: 200px; 
+        background-color: #ffffff;  
+        overflow-y: auto;
+    }
+    .autocomplete-list li{
+        float: left; 
+        padding: 10px;
+        width: calc(100%);
+        cursor: pointer;
+    }
+    .autocomplete-list li a{
+        color: black!important;
+    }
+    .autocomplete-list li:hover{
+        background-color: #EEEEEE;
+    }
 </style>
-<script>
-    $( "#qmincost" ).change(function() {
-        const maxCost = [50000,100000,120000,150000,200000,250000,300000]
-        const dataFilter = maxCost.filter((item) => item > this.value)
-        let content = '';
-        dataFilter.map((item)=>{
-            content = content + `<option value="${item}">${item}</option>`
-        })
-        $( "#qmaxcost" ).html(content);
-      });
-
-      $( "#qmaxcost" ).change(function() {
-        const minCost = [25000,50000,100000,120000,150000,200000,250000]
-        const dataFilter = minCost.filter((item) => item < this.value)
-        let content = '';
-        dataFilter.map((item)=>{
-            content = content + `<option value="${item}">${item}</option>`
-        })
-        $( "#qmincost" ).html(content);
-      });
+<script type="text/javascript">
+    const url = window.location.href;
+    {% comment %} function handleItem(){
+        {% comment %} $("#name-input").html('') {% endcomment %}
+        {% comment %} $('#name-id').html('') 
+        document.getElementById('name-id').style.display = "none";
+    } {% endcomment %}
+    $("#name-input").keyup(function() {
+        const value = $("#name-input").val();
+        $.post(`${url}search`,{'valueSearch':value,'csrfmiddlewaretoken': '{{ csrf_token }}'},function(data){
+            let dataInsert = ``;
+            data?.data?.map(item => {
+                dataInsert = `${dataInsert}<li value='${item.id}'"><a href='${url}/blog/location/${item.id}/'>${item.name}</a></li>`
+            })
+            $('#name-id').html(dataInsert)
+        }) 
+    });
+    $("#name-input").mousedown(function() {
+        $("#name-id").html('')
+    });
 </script>
  {% endblock %}
  

@@ -34,7 +34,10 @@
                             <p class=""><a href="{% url 'home' %}">Trang chủ</a> / <a href="{% url 'register' %}">Đăng ký</a></p>
                 			<h2 class="mb-20" style="">Đăng nhập</h2>
                 			<p class="mb-30 light" style="Chào mừng bạn đến với Apara!">Chào mừng bạn đến với Apara!</p>
-                			<form action="." class="contact_form" method="POST" id="subscribe-field-halfbg-form">
+                            {% if error_message %}
+                                <p><strong>{{ error_message }}</strong></p>
+                            {% endif %}
+                			<form action="." class="contact_form" role="form" method="POST" id="subscribe-field-halfbg-form">
                     			{% csrf_token %}
                                 {% for key,value in form.errors.item %}
                                     {{value}}

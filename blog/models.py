@@ -90,7 +90,7 @@ class Location(models.Model):
         return count
      # You can have
     def get_absolute_url(self):
-         return reverse('detaillocaton', kwargs={"id": self.id})
+        return reverse('detaillocaton', kwargs={"id": self.id})
 
     # An alternative to use to update the view count 
     def update_views(self, *args, **kwargs):

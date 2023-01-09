@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="profile-head">
                         <h5>
                             @{{request.user.username}}
@@ -32,12 +32,13 @@
                         </ul>
                     </div>
                 </div>
-                {% comment %} <div class="col-md-2">
+                <div class="col-md-2">
                 <form action="" method="post">
                 {% csrf_token %}
-                    <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Sửa"/>
+                    <a class="profile-edit-btn" href="{% url 'change-password' %}">Đổi mật khẩu</a>
+                    {% comment %} <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Sửa"/> {% endcomment %}
                 </form>
-                </div> {% endcomment %}
+                </div>
             </div>
             <div class="row">
             <div class="col-md-4">

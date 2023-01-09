@@ -14,8 +14,6 @@
             <div class="form-group" style="position: relative;">
                 <input class="form-control autocomplete-input" id="name-input" name="name" type="search" placeholder="Tên địa điểm..." aria-label="Search">
                 <ul class="autocomplete-list " id="name-id">
-                    
-            
                 </ul>
             </div>
             <div class="form-group select-group">
@@ -136,19 +134,22 @@
 </style>
 <script type="text/javascript">
     const url = window.location.href;
-    function handleItem(value){
+    {% comment %} function handleItem(){
         $("#name-input").val(value)
         $('#name-id').html('')
-    }
+    } {% endcomment %}
     $("#name-input").keyup(function() {
         const value = $("#name-input").val();
         $.post(`${url}search`,{'valueSearch':value,'csrfmiddlewaretoken': '{{ csrf_token }}'},function(data){
             let dataInsert = ``;
             data?.data?.map(item => {
-                dataInsert = `${dataInsert}<li onclick="handleItem('${item.name}')">${item.name}</li>`
+                dataInsert = `${dataInsert}<li value='${item.id}'"><a href='${url}${item.id}'>${item.name}</a></li>`
             })
             $('#name-id').html(dataInsert)
         }) 
+    });
+    $("#name-input").mousedown(function() {
+        $("#name-id").html('')
     });
 </script>
  {% endblock %}

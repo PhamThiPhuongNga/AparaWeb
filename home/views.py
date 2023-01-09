@@ -13,18 +13,10 @@ from math import sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 from math import ceil
-from django.contrib.auth.models import User, Group
-from sklearn.metrics.pairwise import linear_kernel
-from sklearn.feature_extraction.text import TfidfVectorizer
-import requests
-from django.forms.models import model_to_dict
-import pickle
-from django.template import loader
-import re
+from django.contrib.auth.models import  Group
 import json
-from urllib.request import urlopen
-from django.views.generic import ListView, View
 from sklearn.metrics.pairwise import cosine_similarity
+from django.views.decorators.csrf import csrf_exempt
 
 #Gói mảng thưa thớt 2-D SciPy cho dữ liệu số.
 from scipy import sparse 
@@ -45,7 +37,8 @@ def register(request, *args, **kwargs):
         else:
             form = ResistrationForm()   
     return render(request, 'pages/register.html', {'form': form})
-    
+
+
 def error(request):
     return render(request, 'pages/error.html')
 
@@ -53,7 +46,20 @@ def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
         return HttpResponseRedirect('/')
-    
+@csrf_exempt
+def searchkeyup(request):
+    valueSearch = request.POST.get('valueSearch')
+    locations = Location.objects.order_by('-date').filter(
+        name__icontains=valueSearch,
+    )
+    data = []
+    for i in locations:
+        data.append({
+            'name':i.name,
+            'id':i.id,
+            'image' : i.image.url
+        })
+    return HttpResponse(json.dumps({'data':data}), content_type="application/json")
 
 def get_location_category(request, id):
     category = Category.objects.all()
@@ -150,7 +156,7 @@ class CF(object):
         #Bước 2:
         users_rated_i = (self.Y_data[ids, 0]).astype(np.int32)
         # Bước 3: tìm điểm tương đồng giữa người dùng hiện tại và những người khác
-        # người đã đánh giá tôi
+        # người đã đánh giá i
         sim = self.S[u, users_rated_i]
         #Bước 4: tìm k user giống nhau nhất
         a = np.argsort(sim)[-self.k:]
@@ -225,14 +231,14 @@ class CF(object):
         """
         print('Recommendation: ')
         for u in range(self.n_users):
-            recommended_items = self.recommend(u)
+            recommended_items = self.recommend(u)   
             if self.uuCF:
                 if(idUser == u):
                     return recommended_items
                     #print('Recommend item(s):', recommended_items, 'for user', u)
             else:
-                for u in recommended_items:
-                    if(idUser == u):
+                for i in recommended_items:
+                    if(idUser == i):
                         print('Recommend item', u, 'for user(s) : ', recommended_items)
 
                 
@@ -277,10 +283,16 @@ def index(self):
     rs.fit()
     recommen_CF = rs.print_recommendation(self.user.id)
 
-    rsii = CF(Y_data, k = 2, uuCF = 0)
-    rsii.fit()
-    recommen_CFii = rsii.print_recommendation(self.user.id)
-    
+    # rsii = CF(Y_data, k = 30, uuCF = 0)
+    # rsii.fit()
+    # recommen_CFii = rsii.print_recommendation(self)
+    # print(recommen_CFii)
+    # locationDataii = []
+    # if recommen_CFii is not None:
+    #     for u in recommen_CFii:
+    #         locationDataii = Location.objects.filter(id=u)
+    #         print("---------------------------------------------",locationDataii)
+        
     locationData = []
     if recommen_CF is not None:
         for i in recommen_CF:
@@ -295,12 +307,10 @@ def index(self):
 def profile(request):
     category = Category.objects.all()
     if request.user.is_authenticated:
-        #"select sum(rating) from Rating where user=request.user.id"
         r=Rating.objects.filter(author_id=request.user.id)
         totalReview=0
         for item in r:
             totalReview+=int(item.rating)
-        #select count(*) from Rating where user=request.user.id"
         totalwatchedmovie=Rating.objects.filter(author_id=request.user.id).count()
         return render(request,'pages/profile.html',{'totalReview':totalReview,'totalwatchedmovie':totalwatchedmovie, 'category':category})
     else:

@@ -1,15 +1,10 @@
-from django.http import JsonResponse
-from django.core import serializers
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Location, Comment, Rating, Images, Category
 from blog.forms import CommentForm, RatingForm
 from django.http import HttpResponseRedirect
-from django.db.models import Q
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.detail import SingleObjectMixin
 from history.mixins import ObjectViewMixin
 import json
 from django.http import HttpResponse
@@ -62,6 +57,9 @@ class detaillocation(ObjectViewMixin, DetailView):
         category = Category.objects.all()
         similarLoca = Location.objects.filter(category=categoryy).order_by('-views')
         ratings = Rating.objects.filter(detaillocation=detaillocation).order_by('-date')
+        if detaillocation:
+            detaillocation.views = detaillocation.views + 1
+            detaillocation.save()
         for i in ratings:
             rateUsers.append(i.author)
         rateUser = request.user in rateUsers
@@ -79,10 +77,6 @@ class detaillocation(ObjectViewMixin, DetailView):
         rateUser = request.user in rateUsers
         image = Images.objects.filter(location_id=detaillocation).order_by('-id')[:5]
         
-        if detaillocation:
-            detaillocation.views = detaillocation.views + 1
-            detaillocation.save()
-
         if self.request.method == 'POST':
             form = CommentForm(self.request.POST,author = self.request.user,detaillocation=detaillocation )
             if form.is_valid(): 
