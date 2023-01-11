@@ -26,18 +26,20 @@ def search(request):
     qward = request.GET['qward'] if 'qward' in request.GET else ''
     qcost = request.GET['qcost'] if 'qcost' in request.GET else 300000
     
-    locations = Location.objects.order_by('-date').filter(
+    locations = Location.objects.order_by('-views').filter(
         name__icontains=name,
         city__contains=city,
         district__contains=qdistrict, 
         wardcommune__contains=qward, 
         costmax__lte = qcost
+        
     )
     location_count = locations.count()    
+    
     # if 'name' in request.GET:
     #     name = request.GET['name']
-    #     # locations = Location.objects.order_by('-date').filter(name__icontains=name)
-    #     # location_count = locations.count()
+    #     locations = Location.objects.order_by('-date').filter(name__icontains=name)
+    #     location_count = locations.count()
         
     context = {
         'locations': locations,

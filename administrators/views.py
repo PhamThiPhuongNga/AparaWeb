@@ -37,7 +37,8 @@ def add_location (request):
             category = request.POST['category']
             name = request.POST['name']
             if len(request.FILES) != 0:
-                logo = request.FILES['logo']
+                # logo = request.FILES['']
+                # logo = request.FILES['logo']
                 image = request.FILES['image']
             phone = request.POST['phone']
             wardcommune = request.POST['ward']
@@ -52,7 +53,7 @@ def add_location (request):
             categoryyy = Category.objects.get(id=category)
             location = Location.objects.create(category=categoryyy,
                                         name = name,
-                                        logo = logo,
+                                        # logo = logo,
                                         phone = phone,
                                         wardcommune = wardcommune,
                                         district = district,

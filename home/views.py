@@ -17,6 +17,8 @@ from django.contrib.auth.models import  Group
 import json
 from sklearn.metrics.pairwise import cosine_similarity
 from django.views.decorators.csrf import csrf_exempt
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 #Gói mảng thưa thớt 2-D SciPy cho dữ liệu số.
 from scipy import sparse 
@@ -166,7 +168,8 @@ class CF(object):
         r = self.Ybar[i, users_rated_i[a]]
         if normalized:
             # thêm một số nhỏ, ví dụ, 1e-8, để tránh chia cho 0
-
+            # pre = (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8)
+            # print ("==============================du doan",pre)
             return (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8)
 
         return (r * nearest_s)[0] / (np.abs(nearest_s).sum() + 1e-8) + self.mu[u]
@@ -247,6 +250,11 @@ def index(self):
     y = []
     A = []
     B = []
+
+    X = []
+    X1 = []
+    Y = []
+    Y1 = []
  
     rating = Rating.objects.all()
     print(rating)
@@ -260,14 +268,45 @@ def index(self):
     rating_df['rating']=rating_df['rating'].astype(str).astype(np.float)
     print(rating_df)
     
+    # # =====================Tập dữ liệu X 
+    # for item in rating:
+    #     X1=[item.author.id,item.detaillocation.id]
+    #     X+=[X1]
+        
+    #     Y1=[item.rating]
+    #     Y+=[Y1]
+    # rating_dfX = pd.DataFrame(X, columns=['authorId','locationId'])
+    # print(rating_dfX)
+    # # =====================Tập dữ liệu Y
+    # rating_dfY = pd.DataFrame(Y, columns=['rating'])
+    # print(rating_dfY)
+    
+    
+    # rate_train, rate_test = train_test_split(rating_df, test_size = 0.3,shuffle = False,random_state = 0)
+    # print ("rate_train",rate_train)
+    # print ("rate_test",rate_test)
+
+    # rs = CF(rate_train.values, k = 30, uuCF = 1)
+    # rs.fit()
+    
+    # n_tests = rate_test.shape[0]
+    # SE = 0 # squared error
+    # for n in range(n_tests):
+    #     pred = rs.pred(rate_test[n, 0], rate_test[n, 1], normalized = 0)
+    #     SE += (pred - rate_test[n, 2])**2 
+
+    # RMSE = np.sqrt(SE/n_tests)
+    # print ("User-user CF, RMSE =", RMSE)
+    
     location =  Location.objects.all()
-    for item in location:
-        x=[item.id,item.name,item.category,item.image.url,item.address,item.wardcommune,item.district, item.city,item.costmin, item.costmax, item.timestart, item.timeend] 
-        y+=[x]
+    
+    # for item in location:
+    #     x=[item.id,item.name,item.category,item.image.url,item.address,item.wardcommune,item.district, item.city,item.costmin, item.costmax, item.timestart, item.timeend] 
+    #     y+=[x]
     # xây dựng dữ liệu hai chiều và các nhãn tương ứng của nó
-    location_df = pd.DataFrame(y,columns=['locationId','name','category','image','address','wardcommune','district','city','costmin','costmax','timestart', 'timeend'])
-    print("Locations DataFrame")
-    print(location_df)
+    # location_df = pd.DataFrame(y,columns=['locationId','name','category','image','address','wardcommune','district','city','costmin','costmax','timestart', 'timeend'])
+    # print("Locations DataFrame")
+    # print(location_df)
     
     listManager = [] 
     users_in_group = Group.objects.get(name="Manager").user_set.all()
@@ -277,12 +316,13 @@ def index(self):
     category = Category.objects.filter()
     locations = Location.objects.order_by('-views')
     locationnew = Location.objects.order_by('-date')
-    Y_data = rating_df.values
     
-    rs = CF(Y_data, k = 2, uuCF = 1)
+    Y_data = rating_df.values
+    rs = CF(Y_data, k = 30, uuCF = 1)
     rs.fit()
     recommen_CF = rs.print_recommendation(self.user.id)
 
+    # print ("Accuracy of 1NN: %.2f %%") %(100*accuracy_score(Y_data, recommen_CF))
     # rsii = CF(Y_data, k = 30, uuCF = 0)
     # rsii.fit()
     # recommen_CFii = rsii.print_recommendation(self)
